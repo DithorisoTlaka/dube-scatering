@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dube's Catering | Premium Catering Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 1000;
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 70px;
+      width: auto;
+    }
+
+    nav a {
+      color: #333;
+      text-decoration: none;
+      margin-left: 2.5rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ff8c00; /* bright orange */
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      min-height: 700px;
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+                  url('https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80') center/cover no-repeat;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 5%;
+    }
+
+    .hero-content h1 {
+      font-size: 4.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .hero-content h2 {
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #ff8c00;
+      color: white;
+      padding: 1rem 2.5rem;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    .btn:hover {
+      background-color: #e07b00;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255,140,0,0.3);
+    }
+
+    /* Services Section */
+    .services {
+      padding: 120px 5% 100px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+
+    .section-subtitle {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 4rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 40px rgba(255,140,0,0.15);
+    }
+
+    .service-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .service-info {
+      padding: 2.2rem;
+    }
+
+    .service-info h3 {
+      color: #ff8c00;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #111;
+      color: #ddd;
+      padding: 4rem 5% 2rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-logo img {
+      height: 80px;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-info p {
+      margin: 0.8rem 0;
+      font-size: 1.05rem;
+    }
+
+    .orange {
+      color: #ff8c00;
+    }
+
+    .copyright {
+      border-top: 1px solid #333;
+      padding-top: 2rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 { font-size: 3rem; }
+      .hero-content h2 { font-size: 1.5rem; }
+      header { padding: 1rem 4%; }
+      nav a { margin-left: 1.2rem; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <!-- Replace the src with your actual logo file path when hosting -->
+      <img src="https://via.placeholder.com/300x100/111111/ffffff?text=Dube's+Catering+Logo" alt="Dube's Catering Logo">
+    </div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Dube's Catering</h1>
+      <h2>Elevating Every Occasion with Exceptional Flavor & Style</h2>
+      <a href="#contact" class="btn">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services" id="services">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-subtitle">We bring delicious food, beautiful presentation and professional service to make your event unforgettable.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <img src="https://images.unsplash.com/photo-1519167758481-83f22837cbc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Party Catering">
+        <div class="service-info">
+          <h3>Parties</h3>
+          <p>Birthdays, anniversaries, braais, cocktail parties and everything in between — we create fun, delicious menus tailored to your celebration.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img src="https://images.unsplash.com/photo-1519741497674-281450b9b157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding Catering">
+        <div class="service-info">
+          <h3>Weddings</h3>
+          <p>Your dream day deserves perfect food. From elegant plated dinners to lavish buffets — we make your wedding deliciously memorable.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img src="https://images.unsplash.com/photo-1519167758481-83f22837cbc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Special Events">
+        <div class="service-info">
+          <h3>Special Events</h3>
+          <p>Corporate functions, product launches, family reunions, milestone celebrations — we handle every detail with professionalism and flair.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="https://via.placeholder.com/300x100/111111/ffffff?text=Dube's+Catering+Logo" alt="Dube's Catering Logo">
+      </div>
+
+      <div class="contact-info">
+        <h3>Contact Us</h3>
+        <p><span class="orange">Phone:</span> +27 82 123 4567</p>
+        <p><span class="orange">Email:</span> info@dubescatering.co.za</p>
+        <p><span class="orange">Location:</span> Gqeberha, Eastern Cape</p>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>© 2026 Dube's Catering. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
