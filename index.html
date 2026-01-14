@@ -23,10 +23,10 @@
       overflow-x: hidden;
     }
 
-    /* ── Sidebar on the RIGHT side ── */
+    /* ── Previous sidebar/hamburger styles remain unchanged ── */
     .sidebar {
       position: fixed;
-      right: -220px;                    /* hidden to the right */
+      right: -220px;
       top: 0;
       bottom: 0;
       width: 220px;
@@ -38,17 +38,14 @@
       flex-direction: column;
       transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-
     .sidebar:hover,
     .sidebar-trigger:hover + .sidebar {
       right: 0;
     }
-
-    /* Hamburger Icon - top right */
     .hamburger {
       position: fixed;
       top: 20px;
-      right: 20px;                      /* moved to right */
+      right: 20px;
       z-index: 1600;
       cursor: pointer;
       width: 40px;
@@ -58,7 +55,6 @@
       justify-content: space-between;
       padding: 6px 0;
     }
-
     .hamburger span {
       width: 100%;
       height: 4px;
@@ -66,21 +62,9 @@
       border-radius: 2px;
       transition: all 0.3s;
     }
-
-    /* Logo */
-    .sidebar .logo {
-      margin: 1.5rem 0 2.5rem;
-    }
-
-    .sidebar .logo img {
-      max-height: 80px;
-      width: auto;
-    }
-
-    .sidebar nav {
-      flex: 1;
-    }
-
+    .sidebar .logo { margin: 1.5rem 0 2.5rem; }
+    .sidebar .logo img { max-height: 80px; width: auto; }
+    .sidebar nav { flex: 1; }
     .sidebar nav a {
       display: block;
       color: #333;
@@ -92,13 +76,7 @@
       border-radius: 10px;
       transition: all 0.25s;
     }
-
-    .sidebar nav a:hover {
-      background: #fff5e9;
-      color: #ff8c00;
-    }
-
-    /* Trigger zone - right edge */
+    .sidebar nav a:hover { background: #fff5e9; color: #ff8c00; }
     .sidebar-trigger {
       position: fixed;
       right: 0;
@@ -107,17 +85,13 @@
       width: 50px;
       z-index: 1400;
     }
-
     .main-content {
       margin-right: 0;
       transition: margin-right 0.5s ease;
     }
+    .sidebar:hover ~ .main-content { margin-right: 30px; }
 
-    .sidebar:hover ~ .main-content {
-      margin-right: 30px;               /* subtle content shift when sidebar opens */
-    }
-
-    /* Hero */
+    /* Hero (unchanged) */
     .hero {
       height: 100vh;
       min-height: 700px;
@@ -130,18 +104,8 @@
       text-align: center;
       padding: 0 8%;
     }
-
-    .hero-content h1 {
-      font-size: 4.6rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-
-    .hero-content h2 {
-      font-size: 2rem;
-      margin-bottom: 2.5rem;
-    }
-
+    .hero-content h1 { font-size: 4.6rem; margin-bottom: 1rem; font-weight: 700; }
+    .hero-content h2 { font-size: 2rem; margin-bottom: 2.5rem; }
     .btn {
       display: inline-block;
       padding: 1.1rem 3rem;
@@ -156,65 +120,143 @@
       transition: all 0.35s ease;
       box-shadow: 0 8px 25px rgba(255, 140, 0, 0.35);
     }
-
     .btn:hover {
       transform: scale(1.08);
       box-shadow: 0 14px 35px rgba(255, 140, 0, 0.5);
       animation: none;
       background-position: right center;
     }
-
     @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── Enhanced Services Section ── */
+    .services {
+      padding: 140px 8% 120px;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .section-title {
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
+      color: #222;
+    }
+
+    .section-subtitle {
+      font-size: 1.3rem;
+      color: #555;
+      margin-bottom: 5rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 3rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      transition: all 0.4s ease;
+      height: 580px; /* taller cards */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card:hover {
+      transform: translateY(-16px) scale(1.03);
+      box-shadow: 0 25px 60px rgba(255,140,0,0.25);
+    }
+
+    /* Animated gradient border */
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 23px;
+      background: linear-gradient(45deg, #ff8c00, #a855f7, #3b82f6, #ff8c00);
+      background-size: 300% 300%;
+      animation: borderFlow 7s ease infinite;
+      z-index: -1;
+      opacity: 0.85;
+      transition: opacity 0.4s;
+    }
+
+    .service-card:hover::before {
+      opacity: 1;
+    }
+
+    .service-card img {
+      width: 100%;
+      height: 320px; /* larger image area */
+      object-fit: cover;
+    }
+
+    .service-info {
+      padding: 2.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .service-info h3 {
+      color: #ff8c00;
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .service-info p {
+      color: #555;
+      font-size: 1.05rem;
+    }
+
+    @keyframes borderFlow {
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
 
-    /* Services & Footer */
-    .services { padding: 120px 8% 100px; text-align: center; }
-    .section-title { font-size: 3rem; margin-bottom: 1rem; }
-    .section-subtitle { font-size: 1.25rem; color: #666; margin-bottom: 4rem; max-width: 780px; margin-left: auto; margin-right: auto; }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2.8rem; max-width: 1300px; margin: 0 auto; }
-    .service-card { border-radius: 16px; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,0.08); transition: all 0.35s; }
-    .service-card:hover { transform: translateY(-14px); box-shadow: 0 22px 45px rgba(255,140,0,0.18); }
-    .service-card img { width: 100%; height: 260px; object-fit: cover; }
-    .service-info { padding: 2.4rem; }
-    .service-info h3 { color: #ff8c00; font-size: 1.75rem; margin-bottom: 1rem; }
-
-    footer { background: #111; color: #ddd; padding: 5rem 8% 2.5rem; text-align: center; }
+    /* Footer */
+    footer {
+      background: #111;
+      color: #ddd;
+      padding: 5rem 8% 2.5rem;
+      text-align: center;
+    }
     .orange { color: #ff8c00; }
 
-    /* Mobile - top bar */
+    /* Mobile adjustments */
     @media (max-width: 992px) {
-      .sidebar { 
-        right: 0 !important; 
-        width: 100%; 
-        height: auto; 
-        flex-direction: row; 
-        padding: 1rem 5%; 
-      }
+      .sidebar { right: 0 !important; width: 100%; height: auto; flex-direction: row; padding: 1rem 5%; }
       .hamburger { display: none; }
       .main-content, footer { margin-right: 0 !important; }
-      .hero-content h1 { font-size: 3.4rem; }
+      .services { padding: 100px 5% 80px; }
+      .service-card { height: 540px; }
+      .service-card img { height: 280px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hamburger Icon - top right -->
+  <!-- Hamburger & Sidebar (unchanged) -->
   <div class="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
   </div>
-
-  <!-- Trigger zone on right edge -->
   <div class="sidebar-trigger"></div>
-
-  <!-- Sidebar on the right -->
   <div class="sidebar">
     <div class="logo">
-      <!-- Replace with your real logo file -->
       <img src="https://via.placeholder.com/300x100/000000/ffffff?text=Dube's+Logo" alt="Dube's Catering">
     </div>
     <nav>
