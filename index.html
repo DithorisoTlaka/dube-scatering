@@ -4,33 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dube's Catering | Exquisite Culinary Experiences</title>
-  
+ 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
+ 
   <style>
     :root {
-      --primary: #1a1a1a;       /* Charcoal */
-      --secondary: #f4f1ea;     /* Cream/Off-White */
-      --accent: #D4AF37;        /* Metallic Gold */
+      --primary: #1a1a1a;
+      --secondary: #f4f1ea;
+      --accent-start: #ff6b00;
+      --accent-end: #ff8c00;
+      --accent-gradient: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+      --accent-gradient-hover: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
       --text-light: #666;
       --white: #ffffff;
       --shadow: 0 10px 40px rgba(0,0,0,0.08);
       --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      --radius: 50px;
     }
-    
+   
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+   
     html {
       scroll-behavior: smooth;
     }
-    
+   
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: var(--secondary);
@@ -57,14 +61,14 @@
       align-items: center;
       z-index: 1000;
       transition: var(--transition);
-      background: rgba(26, 26, 26, 0.05); /* Initial transparency */
+      background: rgba(26, 26, 26, 0.05);
       backdrop-filter: blur(5px);
     }
 
     nav.scrolled {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.97);
       padding: 1rem 5%;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
     }
 
     .logo {
@@ -83,6 +87,7 @@
     .nav-links {
       display: flex;
       gap: 3rem;
+      align-items: center;
     }
 
     .nav-links a {
@@ -92,7 +97,6 @@
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 1px;
-      position: relative;
       transition: color 0.3s;
     }
 
@@ -100,31 +104,21 @@
       color: var(--primary);
     }
 
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: var(--accent);
-      transition: width 0.3s;
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
     .btn-nav {
       padding: 0.8rem 1.8rem;
-      border: 1px solid var(--accent);
-      color: var(--accent) !important;
-      border-radius: 0;
+      background: var(--accent-gradient);
+      color: white !important;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 0, 0.25);
     }
 
     .btn-nav:hover {
-      background: var(--accent);
-      color: var(--white) !important;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
+      background: var(--accent-gradient-hover);
     }
 
     /* ── Hero Section ── */
@@ -136,14 +130,13 @@
       justify-content: center;
       text-align: center;
       background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=2560&q=80') center/cover no-repeat;
-      background-attachment: fixed; /* Parallax */
+      background-attachment: fixed;
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.4);
-      background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+      background: rgba(0,0,0,0.45);
     }
 
     .hero-content {
@@ -152,16 +145,17 @@
       color: var(--white);
       max-width: 800px;
       padding: 0 20px;
-      animation: fadeInUp 1s ease-out;
     }
 
     .hero-subtitle {
       font-size: 1rem;
-      letter-spacing: 4px;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      margin-bottom: 1rem;
-      color: var(--accent);
-      font-weight: 600;
+      margin-bottom: 1.2rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .hero h1 {
@@ -171,32 +165,29 @@
       font-style: italic;
     }
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 3rem;
-      font-weight: 300;
-      opacity: 0.9;
-    }
-
     .btn-gold {
       display: inline-block;
-      padding: 1rem 3rem;
-      background: var(--accent);
-      color: var(--white);
+      padding: 1.1rem 3rem;
+      background: var(--accent-gradient);
+      color: white;
       text-decoration: none;
       text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius);
       transition: var(--transition);
-      border: 1px solid var(--accent);
+      box-shadow: 0 6px 25px rgba(255, 107, 0, 0.35);
     }
 
     .btn-gold:hover {
-      background: transparent;
-      color: var(--white);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(255, 107, 0, 0.45);
+      background: var(--accent-gradient-hover);
     }
 
-    /* ── About Section (Story) ── */
+    /* ── Sections ── */
     .section {
       padding: 120px 8%;
     }
@@ -208,136 +199,116 @@
       align-items: center;
     }
 
-    .about-img-wrapper {
-      position: relative;
-    }
-
     .about-img {
       width: 100%;
       height: 550px;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 8px;
     }
 
     .about-badge {
       position: absolute;
-      bottom: -30px;
-      right: -30px;
-      background: var(--white);
-      padding: 2rem;
+      bottom: -40px;
+      right: -40px;
+      background: white;
+      padding: 2rem 2.5rem;
       box-shadow: var(--shadow);
+      border-radius: 16px;
       text-align: center;
     }
 
     .about-badge span {
       display: block;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3rem;
-      color: var(--accent);
+      font-size: 3.5rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       line-height: 1;
     }
 
     .section-head h2 {
       font-size: 3.5rem;
       margin-bottom: 1.5rem;
-      color: var(--primary);
     }
 
-    .section-head p {
-      color: var(--text-light);
-      margin-bottom: 2rem;
-      font-size: 1.05rem;
-    }
-
-    /* ── Services Cards ── */
-    .bg-white {
-      background: var(--white);
-    }
-
+    /* ── Services ── */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
+      gap: 2.5rem;
       margin-top: 4rem;
     }
 
     .service-card {
       position: relative;
-      height: 450px;
+      height: 460px;
       overflow: hidden;
-      group: group;
-      cursor: pointer;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
     }
 
     .service-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.8s ease;
+      transition: transform 0.7s ease;
     }
 
     .service-card:hover img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     .service-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 10%, transparent);
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 30%, transparent 60%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       padding: 2.5rem;
-      color: var(--white);
+      color: white;
     }
 
     .service-overlay h3 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-size: 2.1rem;
+      margin-bottom: 0.6rem;
       font-style: italic;
-    }
-
-    .service-overlay p {
-      opacity: 0.8;
-      font-weight: 300;
-      transform: translateY(20px);
-      transition: var(--transition);
     }
 
     /* ── Gallery ── */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 250px);
-      gap: 10px;
+      grid-template-rows: repeat(2, 260px);
+      gap: 12px;
+      padding: 0 8%;
     }
 
     .gallery-item {
       overflow: hidden;
-      position: relative;
+      border-radius: 12px;
     }
 
-    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; height: 100%; }
-    .gallery-item:nth-child(2) { grid-column: span 1; }
-    
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+
     .gallery-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s ease;
-      filter: grayscale(20%);
+      transition: transform 0.6s ease, filter 0.6s ease;
+      filter: brightness(0.9) saturate(0.95);
     }
 
     .gallery-item:hover img {
-      transform: scale(1.05);
-      filter: grayscale(0%);
+      transform: scale(1.06);
+      filter: brightness(1.05) saturate(1.15);
     }
 
-    /* ── Reservation/Contact ── */
+    /* ── Contact ── */
     .contact-section {
       background: var(--primary);
       color: var(--white);
-      padding: 100px 8%;
+      padding: 120px 8%;
     }
 
     .contact-container {
@@ -347,84 +318,59 @@
     }
 
     .contact-info h2 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-    }
-    
-    .contact-details {
-      margin-top: 3rem;
-    }
-
-    .contact-item {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 2rem;
-    }
-
-    .contact-item i {
-      color: var(--accent);
-      font-size: 1.5rem;
-      margin-right: 1.5rem;
-      margin-top: 5px;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .form-control {
       width: 100%;
       background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+      border-bottom: 1px solid rgba(255,255,255,0.25);
       padding: 1rem 0;
-      color: var(--white);
-      font-family: 'Montserrat', sans-serif;
+      color: white;
       font-size: 1rem;
       transition: 0.3s;
     }
 
     .form-control:focus {
       outline: none;
-      border-bottom: 1px solid var(--accent);
+      border-bottom-color: #ff8c00;
     }
 
-    ::placeholder {
-      color: rgba(255,255,255,0.4);
-    }
-
-    select.form-control {
-      color: rgba(255,255,255,0.7);
-    }
-
-    select.form-control option {
-      background: var(--primary);
+    .btn-gold[type="submit"] {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 1.2rem;
+      font-size: 1rem;
     }
 
     /* ── Footer ── */
     footer {
-      background: #111;
+      background: #0f0f0f;
       color: #888;
       text-align: center;
-      padding: 3rem;
-      font-size: 0.85rem;
+      padding: 3.5rem 1rem;
+      font-size: 0.9rem;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    /* ── Mobile ── */
+    /* ── Responsive ── */
     @media (max-width: 992px) {
-      .hero h1 { font-size: 3.5rem; }
-      .about-grid, .contact-container { grid-template-columns: 1fr; gap: 3rem; }
-      .about-badge { right: 0; bottom: -20px; }
-      .nav-links { display: none; } /* Simplified for this demo */
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
-      .gallery-item:nth-child(1) { grid-column: span 2; height: 300px; }
+      .hero h1 { font-size: 3.8rem; }
+      .about-grid, .contact-container { grid-template-columns: 1fr; }
+      .about-badge { right: 20px; bottom: -30px; padding: 1.5rem; }
+      .nav-links { display: none; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); padding: 0 5%; }
+      .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; height: 400px; }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.8rem; }
+      .section { padding: 80px 5%; }
     }
   </style>
 </head>
@@ -445,37 +391,35 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-subtitle">Est. 2015 • South Africa</div>
-      <h1>Taste the <span style="color:var(--accent)">Extraordinary</span></h1>
+      <h1>Taste the <span style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Extraordinary</span></h1>
       <p>From intimate gatherings in Gqeberha to grand weddings across the Cape. We craft bespoke culinary experiences that linger in memory.</p>
       <a href="#contact" class="btn-gold">Start Planning</a>
     </div>
   </section>
 
-  <section class="section bg-white" id="about">
+  <section class="section" id="about">
     <div class="about-grid">
-      <div class="about-img-wrapper">
+      <div style="position: relative;">
         <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&w=1200&q=80" alt="Chef Plating" class="about-img">
         <div class="about-badge">
           <span>10+</span>
           <small>Years of Excellence</small>
         </div>
       </div>
-      <div class="section-head">
-        <h4 style="color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-size:0.9rem; margin-bottom:1rem;">The Art of Dining</h4>
+      <div>
+        <h4 style="color:#ff8c00; text-transform:uppercase; letter-spacing:3px; font-size:1rem; margin-bottom:1rem;">The Art of Dining</h4>
         <h2>We Don't Just Serve Food,<br>We Create Memories.</h2>
         <p>At Dube's Catering, we believe that food is the heart of every celebration. Rooted in traditional South African flavors but elevated with modern culinary techniques, our dishes are designed to surprise and delight.</p>
         <p>Whether it’s a perfectly braised lamb shank or a delicate dessert tower, our commitment to fresh, locally sourced ingredients ensures that every bite tells a story of quality and passion.</p>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Signature_sample.svg/1200px-Signature_sample.svg.png" alt="Signature" style="height: 40px; opacity: 0.5; margin-top: 1rem;">
       </div>
     </div>
   </section>
 
   <section class="section" id="services" style="background-color: #fdfbf7;">
-    <div style="text-align: center; max-width: 700px; margin: 0 auto;">
-      <h2 style="font-size: 3rem; color: var(--primary);">Curated Services</h2>
-      <p style="color: var(--text-light);"> tailored to your specific taste and style.</p>
+    <div style="text-align: center; max-width: 700px; margin: 0 auto 4rem;">
+      <h2 style="font-size: 3.2rem;">Curated Services</h2>
+      <p style="color: var(--text-light);">Tailored to your specific taste and style.</p>
     </div>
-
     <div class="services-grid">
       <div class="service-card">
         <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80" alt="Weddings">
@@ -501,13 +445,13 @@
     </div>
   </section>
 
-  <section id="gallery">
+  <section id="gallery" style="padding: 120px 0;">
     <div class="gallery-grid">
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1000&q=80" alt="Food"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1546241072-48010ad2862c?auto=format&fit=crop&w=1000&q=80" alt="Food"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1000&q=80" alt="Food"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=1000&q=80" alt="Food"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1505935428862-770b6f24f629?auto=format&fit=crop&w=1000&q=80" alt="Food"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1000&q=80" alt=""></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1546241072-48010ad2862c?auto=format&fit=crop&w=1000&q=80" alt=""></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1000&q=80" alt=""></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=1000&q=80" alt=""></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1505935428862-770b6f24f629?auto=format&fit=crop&w=1000&q=80" alt=""></div>
     </div>
   </section>
 
@@ -515,45 +459,45 @@
     <div class="contact-container">
       <div class="contact-info">
         <h2>Let's Plan Your Event</h2>
-        <p style="opacity:0.8; margin-bottom: 2rem;">Ready to create something spectacular? Fill out the form or contact us directly.</p>
+        <p style="opacity:0.8; margin-bottom: 2.5rem;">Ready to create something spectacular? Fill out the form or contact us directly.</p>
         
         <div class="contact-details">
           <div class="contact-item">
-            <i class="fas fa-phone-alt"></i>
+            <i class="fas fa-phone-alt" style="color:#ff8c00; font-size:1.6rem; margin-right:1.5rem;"></i>
             <div>
-              <h5 style="color:var(--white); margin-bottom:5px;">Phone</h5>
-              <p style="opacity:0.7;">+27 82 123 4567</p>
+              <h5 style="margin-bottom:5px;">Phone</h5>
+              <p style="opacity:0.8;">+27 82 123 4567</p>
             </div>
           </div>
           <div class="contact-item">
-            <i class="fas fa-envelope"></i>
+            <i class="fas fa-envelope" style="color:#ff8c00; font-size:1.6rem; margin-right:1.5rem;"></i>
             <div>
-              <h5 style="color:var(--white); margin-bottom:5px;">Email</h5>
-              <p style="opacity:0.7;">bookings@dubescatering.co.za</p>
+              <h5 style="margin-bottom:5px;">Email</h5>
+              <p style="opacity:0.8;">bookings@dubescatering.co.za</p>
             </div>
           </div>
           <div class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
+            <i class="fas fa-map-marker-alt" style="color:#ff8c00; font-size:1.6rem; margin-right:1.5rem;"></i>
             <div>
-              <h5 style="color:var(--white); margin-bottom:5px;">Location</h5>
-              <p style="opacity:0.7;">Gqeberha & Surrounding Areas, Eastern Cape</p>
+              <h5 style="margin-bottom:5px;">Location</h5>
+              <p style="opacity:0.8;">Gqeberha & Surrounding Areas, Eastern Cape</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="contact-form">
+      <div>
         <form>
-          <div class="form-group">
+          <div style="margin-bottom:1.6rem;">
             <input type="text" class="form-control" placeholder="Your Name" required>
           </div>
-          <div class="form-group">
+          <div style="margin-bottom:1.6rem;">
             <input type="email" class="form-control" placeholder="Email Address" required>
           </div>
-          <div class="form-group">
+          <div style="margin-bottom:1.6rem;">
             <input type="text" class="form-control" placeholder="Date of Event" onfocus="(this.type='date')">
           </div>
-          <div class="form-group">
+          <div style="margin-bottom:1.6rem;">
             <select class="form-control">
               <option value="" disabled selected>Event Type</option>
               <option>Wedding</option>
@@ -562,34 +506,28 @@
               <option>Other</option>
             </select>
           </div>
-          <div class="form-group">
+          <div style="margin-bottom:1.6rem;">
             <textarea class="form-control" rows="4" placeholder="Tell us about your vision..."></textarea>
           </div>
-          <button type="submit" class="btn-gold" style="width:100%; text-align:center; background:var(--accent); border:none; margin-top:1rem;">Submit Request</button>
+          <button type="submit" class="btn-gold">Submit Request</button>
         </form>
       </div>
     </div>
   </section>
 
   <footer>
-    <p>&copy; 2026 Dube's Catering. All Rights Reserved.</p>
-    <div style="margin-top: 1rem; opacity: 0.6;">
-      <i class="fab fa-instagram" style="margin: 0 10px;"></i>
-      <i class="fab fa-facebook" style="margin: 0 10px;"></i>
+    <p>© 2026 Dube's Catering. All Rights Reserved.</p>
+    <div style="margin-top: 1.2rem; font-size: 1.4rem;">
+      <i class="fab fa-instagram" style="margin: 0 14px; color:#ff8c00;"></i>
+      <i class="fab fa-facebook" style="margin: 0 14px; color:#ff8c00;"></i>
     </div>
   </footer>
 
   <script>
-    // Sticky Navbar Script
     window.addEventListener('scroll', function() {
       const nav = document.getElementById('navbar');
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
+      nav.classList.toggle('scrolled', window.scrollY > 60);
     });
   </script>
-
 </body>
 </html>
