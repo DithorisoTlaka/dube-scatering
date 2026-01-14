@@ -20,25 +20,33 @@
       background-color: #ffffff;
       color: #333;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    /* ── Side Pane Navigation ── */
+    /* ── Hidden Slide-in Sidebar ── */
     .sidebar {
       position: fixed;
-      left: 0;
+      left: -240px;              /* hidden by default */
       top: 0;
       bottom: 0;
       width: 240px;
       background: #fff;
-      box-shadow: 2px 0 15px rgba(0,0,0,0.08);
-      z-index: 1000;
+      box-shadow: 3px 0 20px rgba(0,0,0,0.12);
+      z-index: 1500;
       padding: 2.5rem 1.5rem;
       display: flex;
       flex-direction: column;
+      transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Hover trigger area + sidebar itself */
+    .sidebar:hover,
+    .sidebar-trigger:hover + .sidebar {
+      left: 0;
     }
 
     .sidebar .logo {
-      margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
     }
 
     .sidebar .logo img {
@@ -57,21 +65,36 @@
       font-size: 1.1rem;
       font-weight: 500;
       padding: 1rem 1.2rem;
-      margin: 0.4rem 0;
+      margin: 0.5rem 0;
       border-radius: 10px;
-      transition: all 0.3s;
+      transition: all 0.25s;
     }
 
-    .sidebar nav a:hover,
-    .sidebar nav a.active {
+    .sidebar nav a:hover {
       background: #fff3e6;
       color: #ff8c00;
     }
 
-    /* Main content offset */
+    /* Invisible trigger strip on the very left edge */
+    .sidebar-trigger {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 30px;               /* hover this thin area to show sidebar */
+      z-index: 1400;
+    }
+
+    /* Main content - full width by default */
     .main-content {
-      margin-left: 240px;
+      margin-left: 0;
+      transition: margin-left 0.5s ease;
       min-height: 100vh;
+    }
+
+    /* When sidebar is visible → add some offset to content (optional) */
+    .sidebar:hover ~ .main-content {
+      margin-left: 40px;        /* subtle shift - you can remove or increase this */
     }
 
     /* Hero */
@@ -85,7 +108,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 0 8% 0 5%;
+      padding: 0 8%;
     }
 
     .hero-content h1 {
@@ -98,7 +121,6 @@
       font-size: 2rem;
       font-weight: 400;
       margin-bottom: 2.5rem;
-      opacity: 0.9;
     }
 
     .btn {
@@ -110,7 +132,6 @@
       border-radius: 50px;
       font-weight: 600;
       transition: all 0.3s;
-      font-size: 1.15rem;
     }
 
     .btn:hover {
@@ -119,17 +140,15 @@
       box-shadow: 0 10px 25px rgba(255,140,0,0.3);
     }
 
-    /* Services */
+    /* Services & Footer styles remain mostly the same */
     .services {
       padding: 120px 8% 100px;
-      background: #fff;
       text-align: center;
     }
 
     .section-title {
       font-size: 3rem;
       margin-bottom: 1rem;
-      color: #222;
     }
 
     .section-subtitle {
@@ -150,7 +169,7 @@
     }
 
     .service-card {
-      background: #fff;
+      background: white;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 12px 35px rgba(0,0,0,0.08);
@@ -178,13 +197,11 @@
       margin-bottom: 1.1rem;
     }
 
-    /* Footer */
     footer {
       background: #111;
       color: #ddd;
       padding: 5rem 8% 2.5rem;
       text-align: center;
-      margin-left: 240px;
     }
 
     .footer-content {
@@ -193,7 +210,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 3.5rem;
-      margin-bottom: 3.5rem;
     }
 
     .footer-logo img {
@@ -201,36 +217,37 @@
       margin-bottom: 1.8rem;
     }
 
-    .contact-info p {
-      margin: 1rem 0;
-      font-size: 1.1rem;
-    }
-
-    .orange {
-      color: #ff8c00;
-    }
+    .orange { color: #ff8c00; }
 
     .copyright {
       border-top: 1px solid #333;
       padding-top: 2.5rem;
+      margin-top: 2rem;
       font-size: 1rem;
     }
 
-    /* Mobile - collapse sidebar into top bar */
+    /* ── Mobile: always visible horizontal bar ── */
     @media (max-width: 992px) {
       .sidebar {
+        position: relative;
+        left: 0 !important;
         width: 100%;
         height: auto;
-        position: relative;
-        padding: 1.2rem 5%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        padding: 1.2rem 5%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: none;
       }
 
-      .sidebar .logo {
-        margin: 0;
+      .sidebar-trigger {
+        display: none;
+      }
+
+      .main-content,
+      footer {
+        margin-left: 0 !important;
       }
 
       .sidebar nav {
@@ -241,11 +258,6 @@
       .sidebar nav a {
         padding: 0.8rem 1.2rem;
         margin: 0;
-      }
-
-      .main-content,
-      footer {
-        margin-left: 0;
       }
 
       .hero-content h1 { font-size: 3.4rem; }
@@ -260,7 +272,10 @@
 </head>
 <body>
 
-  <!-- Side Pane Navigation -->
+  <!-- Hover trigger (thin invisible strip on left edge) -->
+  <div class="sidebar-trigger"></div>
+
+  <!-- Slide-in Sidebar -->
   <div class="sidebar">
     <div class="logo">
       <img src="https://via.placeholder.com/300x100/111111/ffffff?text=Dube's+Catering+Logo" alt="Dube's Catering Logo">
@@ -275,7 +290,6 @@
   <!-- Main Content -->
   <div class="main-content">
 
-    <!-- Hero -->
     <section class="hero" id="home">
       <div class="hero-content">
         <h1>Dube's Catering</h1>
@@ -284,7 +298,6 @@
       </div>
     </section>
 
-    <!-- Services -->
     <section class="services" id="services">
       <h2 class="section-title">Our Services</h2>
       <p class="section-subtitle">We bring delicious food, beautiful presentation and professional service to make your event unforgettable.</p>
@@ -316,7 +329,6 @@
       </div>
     </section>
 
-    <!-- Footer -->
     <footer id="contact">
       <div class="footer-content">
         <div class="footer-logo">
