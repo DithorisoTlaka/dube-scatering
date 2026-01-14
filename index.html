@@ -23,32 +23,32 @@
       overflow-x: hidden;
     }
 
-    /* ── Narrower Slide-in Sidebar ── */
+    /* ── Sidebar on the RIGHT side ── */
     .sidebar {
       position: fixed;
-      left: -220px;
+      right: -220px;                    /* hidden to the right */
       top: 0;
       bottom: 0;
       width: 220px;
       background: #fff;
-      box-shadow: 3px 0 18px rgba(0,0,0,0.12);
+      box-shadow: -3px 0 18px rgba(0,0,0,0.12);
       z-index: 1500;
       padding: 2rem 1.4rem;
       display: flex;
       flex-direction: column;
-      transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .sidebar:hover,
     .sidebar-trigger:hover + .sidebar {
-      left: 0;
+      right: 0;
     }
 
-    /* Hamburger Icon (always visible) */
+    /* Hamburger Icon - top right */
     .hamburger {
       position: fixed;
       top: 20px;
-      left: 20px;
+      right: 20px;                      /* moved to right */
       z-index: 1600;
       cursor: pointer;
       width: 40px;
@@ -98,10 +98,10 @@
       color: #ff8c00;
     }
 
-    /* Trigger zone */
+    /* Trigger zone - right edge */
     .sidebar-trigger {
       position: fixed;
-      left: 0;
+      right: 0;
       top: 0;
       bottom: 0;
       width: 50px;
@@ -109,12 +109,12 @@
     }
 
     .main-content {
-      margin-left: 0;
-      transition: margin-left 0.5s ease;
+      margin-right: 0;
+      transition: margin-right 0.5s ease;
     }
 
     .sidebar:hover ~ .main-content {
-      margin-left: 30px;
+      margin-right: 30px;               /* subtle content shift when sidebar opens */
     }
 
     /* Hero */
@@ -142,7 +142,6 @@
       margin-bottom: 2.5rem;
     }
 
-    /* Modern Gradient Button with Animation */
     .btn {
       display: inline-block;
       padding: 1.1rem 3rem;
@@ -171,7 +170,7 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Services & Footer styles (condensed) */
+    /* Services & Footer */
     .services { padding: 120px 8% 100px; text-align: center; }
     .section-title { font-size: 3rem; margin-bottom: 1rem; }
     .section-subtitle { font-size: 1.25rem; color: #666; margin-bottom: 4rem; max-width: 780px; margin-left: auto; margin-right: auto; }
@@ -185,26 +184,34 @@
     footer { background: #111; color: #ddd; padding: 5rem 8% 2.5rem; text-align: center; }
     .orange { color: #ff8c00; }
 
-    /* Mobile */
+    /* Mobile - top bar */
     @media (max-width: 992px) {
-      .sidebar { left: 0 !important; width: 100%; height: auto; flex-direction: row; padding: 1rem 5%; }
+      .sidebar { 
+        right: 0 !important; 
+        width: 100%; 
+        height: auto; 
+        flex-direction: row; 
+        padding: 1rem 5%; 
+      }
       .hamburger { display: none; }
-      .main-content, footer { margin-left: 0 !important; }
+      .main-content, footer { margin-right: 0 !important; }
       .hero-content h1 { font-size: 3.4rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Always-visible Hamburger Icon -->
+  <!-- Hamburger Icon - top right -->
   <div class="hamburger">
     <span></span>
     <span></span>
     <span></span>
   </div>
 
+  <!-- Trigger zone on right edge -->
   <div class="sidebar-trigger"></div>
 
+  <!-- Sidebar on the right -->
   <div class="sidebar">
     <div class="logo">
       <!-- Replace with your real logo file -->
@@ -230,9 +237,8 @@
     <section class="services" id="services">
       <h2 class="section-title">Our Services</h2>
       <p class="section-subtitle">We bring delicious food, beautiful presentation and professional service to make your event unforgettable.</p>
-
+      
       <div class="services-grid">
-        <!-- Your three service cards here (same as before) -->
         <div class="service-card">
           <img src="https://images.unsplash.com/photo-1519167758481-83f22837cbc1?auto=format&fit=crop&w=800&q=80" alt="Parties">
           <div class="service-info">
