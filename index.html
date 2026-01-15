@@ -34,17 +34,18 @@
     }
 
     .container {
-      background: rgba(30, 30, 50, 0.75);
-      backdrop-filter: blur(10px);
+      background: rgba(30, 30, 50, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 24px;
-      padding: 3.5rem 2.5rem;
+      padding: 3rem 2rem;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       text-align: center;
       box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
       z-index: 1;
-      transition: all 0.4s ease;
     }
 
     .logo {
@@ -54,7 +55,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 1rem;
-      letter-spacing: -1px;
     }
 
     h1 {
@@ -68,92 +68,32 @@
       margin-bottom: 2.5rem;
     }
 
-    .btn {
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
       width: 100%;
-      padding: 15px;
-      margin: 14px 0;
+      padding: 16px;
+      background: white;
+      color: #1e293b;
       border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
       border: none;
-    }
-
-    .google-btn {
-      background: white;
-      color: #1e293b;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
     .google-btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255,255,255,0.18);
-    }
-
-    .email-btn {
-      background: linear-gradient(90deg, #7c3aed, #a78bfa);
-      color: white;
-    }
-
-    .email-btn:hover {
-      transform: translateY(-3px);
-      opacity: 0.92;
-    }
-
-    .form-group {
-      margin: 1.5rem 0;
-      text-align: left;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.45s ease;
-    }
-
-    .form-group.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.06);
-      color: white;
-      font-size: 1.05rem;
-    }
-
-    input::placeholder {
-      color: #94a3b8;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 2rem 0;
-      color: #64748b;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,0.1);
-    }
-
-    .divider span {
-      padding: 0 1.5rem;
-      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
 
     .google-icon {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
     }
 
     .info {
@@ -175,15 +115,16 @@
     }
 
     .modal-content {
-      background: rgba(25, 25, 45, 0.94);
-      backdrop-filter: blur(14px);
+      background: rgba(30, 30, 50, 0.95);
+      backdrop-filter: blur(16px);
       border-radius: 24px;
-      width: 92%;
-      max-width: 440px;
+      width: 90%;
+      max-width: 400px;
       padding: 2.5rem 2rem;
       position: relative;
-      border: 1px solid rgba(255,255,255,0.08);
-      animation: fadeUp 0.45s ease;
+      border: 1px solid rgba(255,255,255,0.12);
+      text-align: center;
+      animation: fadeUp 0.4s ease;
     }
 
     @keyframes fadeUp {
@@ -200,7 +141,7 @@
       cursor: pointer;
     }
 
-    /* Mobile Bottom Sheet */
+    /* Mobile → Bottom Sheet */
     @media (max-width: 640px) {
       .modal-content {
         position: fixed;
@@ -209,6 +150,8 @@
         right: 0;
         border-radius: 24px 24px 0 0;
         max-width: 100%;
+        width: 100%;
+        padding: 2.8rem 1.8rem 3.5rem;
         animation: slideUp 0.45s ease;
       }
 
@@ -219,8 +162,9 @@
     }
 
     .loading {
-      opacity: 0.6;
+      opacity: 0.65;
       cursor: not-allowed;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -228,48 +172,40 @@
 
   <div class="container">
     <div class="logo">TheHub</div>
-    <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to continue your journey</p>
+    <h1>Welcome</h1>
+    <p class="subtitle">Sign in to access your account</p>
 
-    <button class="btn email-btn" id="showLoginModal">Sign In</button>
+    <button class="google-btn" id="showGoogleModal">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
+        <path fill="#EA4335" d="M12 4.98c1.64 0 3.11.56 4.27 1.66l3.19-3.19C17.46 1.01 14.97 0 12 0 7.1 0 2.75 2.06.96 5.34l4.55 2.45C6.42 5.02 8.98 3 12 3z"/>
+      </svg>
+      Continue with Google
+    </button>
 
     <div class="info">
       By continuing, you agree to our<br>Terms of Service • Privacy Policy
     </div>
   </div>
 
-  <!-- Modal / Bottom Sheet -->
+  <!-- Modal / Bottom Sheet with ONLY Google button -->
   <div class="auth-modal" id="authModal">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">×</span>
       
-      <h2 style="margin-bottom: 1.8rem; text-align:center;">Sign In</h2>
-
-      <button class="btn google-btn" id="googleSignInBtn">
+      <h2 style="margin-bottom: 2rem;">Sign in</h2>
+      
+      <button class="google-btn" id="googleSignInBtn">
         <svg class="google-icon" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
           <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
           <path fill="#EA4335" d="M12 4.98c1.64 0 3.11.56 4.27 1.66l3.19-3.19C17.46 1.01 14.97 0 12 0 7.1 0 2.75 2.06.96 5.34l4.55 2.45C6.42 5.02 8.98 3 12 3z"/>
         </svg>
-        Continue with Google
+        Sign in with Google
       </button>
-
-      <div class="divider"><span>or</span></div>
-
-      <div class="form-group">
-        <input type="text" id="firstName" placeholder="First Name" required>
-      </div>
-
-      <div class="form-group">
-        <input type="text" id="surname" placeholder="Surname" required>
-      </div>
-
-      <div class="form-group">
-        <input type="password" id="password" placeholder="Password" required>
-      </div>
-
-      <button class="btn email-btn" id="emailSignInBtn">Sign In with Email</button>
     </div>
   </div>
 
@@ -280,7 +216,6 @@
       getAuth, 
       GoogleAuthProvider, 
       signInWithPopup,
-      signInWithEmailAndPassword,
       onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
@@ -298,73 +233,57 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Elements
-    const showModalBtn = document.getElementById('showLoginModal');
     const modal = document.getElementById('authModal');
-    const closeModal = document.getElementById('closeModal');
-    const googleBtn = document.getElementById('googleSignInBtn');
-    const emailSignInBtn = document.getElementById('emailSignInBtn');
+    const showModalBtn = document.getElementById('showGoogleModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
-    // Show modal
+    // Open modal/bottom sheet
     showModalBtn.addEventListener('click', () => {
       modal.style.display = 'flex';
-      setTimeout(() => {
-        document.querySelectorAll('.form-group').forEach(el => el.classList.add('visible'));
-      }, 150);
     });
 
     // Close modal
-    closeModal.addEventListener('click', () => modal.style.display = 'none');
+    closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.style.display = 'none';
     });
 
     // Google Sign-In
-    googleBtn.addEventListener('click', async () => {
+    googleSignInBtn.addEventListener('click', async () => {
       try {
-        googleBtn.classList.add('loading');
-        googleBtn.textContent = 'Signing in...';
+        googleSignInBtn.classList.add('loading');
+        googleSignInBtn.textContent = 'Signing in...';
+
         const result = await signInWithPopup(auth, provider);
-        console.log("Signed in:", result.user.displayName);
-        window.location.href = "/dashboard.html"; // ← your destination
+        const user = result.user;
+        console.log("Signed in as:", user.displayName, user.email);
+
+        window.location.href = "/dashboard.html"; // ← change to your real destination
+
       } catch (error) {
-        console.error(error);
-        alert("Google Sign-In failed: " + (error.message || "Please try again"));
+        console.error("Google Sign-In Error:", error.code, error.message);
+        let message = "Something went wrong. Please try again.";
+        if (error.code === 'auth/popup-blocked') message = "Popup blocked. Please allow popups.";
+        if (error.code === 'auth/popup-closed-by-user') message = "Sign in cancelled.";
+        alert(message);
       } finally {
-        googleBtn.classList.remove('loading');
-        googleBtn.innerHTML = `<svg class="google-icon" viewBox="0 0 24 24">…</svg> Continue with Google`;
+        googleSignInBtn.classList.remove('loading');
+        googleSignInBtn.innerHTML = `
+          <svg class="google-icon" viewBox="0 0 24 24">…</svg>
+          Sign in with Google
+        `;
       }
     });
 
-    // Email Sign-In (dummy email example - you should adjust this!)
-    emailSignInBtn.addEventListener('click', async () => {
-      const firstName = document.getElementById('firstName').value.trim();
-      const surname = document.getElementById('surname').value.trim();
-      const password = document.getElementById('password').value;
-
-      if (!firstName || !surname || !password) {
-        alert("Please fill in all fields");
-        return;
-      }
-
-      // You should have proper email input in real app!
-      // This is just a placeholder example
-      const email = `${firstName.toLowerCase()}.${surname.toLowerCase()}@thehub.com`;
-
-      try {
-        const result = await signInWithEmailAndPassword(auth, email, password);
-        console.log("Email login success:", result.user.email);
-        window.location.href = "/dashboard.html";
-      } catch (error) {
-        alert("Login failed: " + error.message);
-      }
-    });
-
-    // Auto redirect if already logged in
+    // Optional: Auto redirect if already signed in
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log("Already signed in:", user.email);
         // window.location.href = "/dashboard.html";
-        console.log("Already signed in as:", user.email);
       }
     });
   </script>
