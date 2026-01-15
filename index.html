@@ -265,7 +265,7 @@ body::before {
         const user = result.user;
         console.log("Signed in as:", user.displayName, user.email);
 
-        window.location.href = "/dashboard.html"; // ← your actual destination
+        window.location.href = "dashboard.html"; // ← your actual destination
 
       } catch (error) {
         console.error("Google Sign-In Error:", error);
@@ -286,7 +286,7 @@ body::before {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("Already signed in as:", user.email);
-        // window.location.href = "/dashboard.html";
+       window.location.href = "dashboard.html";
       }
     });
   </script>
