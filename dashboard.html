@@ -83,6 +83,11 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(124,58,237,0.4);
     }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
     /* Logout button specific styling */
     .btn-logout {
       background: transparent;
@@ -130,15 +135,14 @@
       getAuth, 
       onAuthStateChanged, 
       updateProfile,
-      signOut // Added SignOut import
+      signOut 
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
     
     import { 
       getDatabase, 
       ref, 
       set, 
-      get, 
-      child 
+      get 
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -183,7 +187,6 @@
           photoEl.style.display = 'block';
         }
 
-        // Load custom username from Realtime DB
         const userRef = ref(db, 'users/' + user.uid + '/username');
         const snapshot = await get(userRef);
         const customUsername = snapshot.exists() ? snapshot.val() : name;
@@ -191,13 +194,15 @@
         usernameDisplay.textContent = customUsername;
         usernameInput.value = customUsername;
 
-        // Save button handler
         saveBtn.onclick = async () => {
           const newUsername = usernameInput.value.trim();
           if (!newUsername) {
             showStatus("Username cannot be empty", "error");
             return;
           }
+
+          saveBtn.disabled = true;
+          saveBtn.textContent = "Updating...";
 
           try {
             await updateProfile(user, { displayName: newUsername });
@@ -209,22 +214,25 @@
           } catch (err) {
             console.error(err);
             showStatus("Failed to update: " + err.message, "error");
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Username";
           }
         };
 
-        // Logout button handler
         logoutBtn.onclick = async () => {
           try {
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = "Signing out...";
             await signOut(auth);
-            // Redirection is handled by the 'else' block of onAuthStateChanged
           } catch (err) {
             console.error("Logout Error:", err);
-            showStatus("Error signing out", "error");
+            logoutBtn.disabled = false;
+            logoutBtn.textContent = "Sign Out";
           }
         };
 
       } else {
-        // Not logged in: Redirect to login page
         window.location.href = "index.html";
       }
     });
