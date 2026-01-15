@@ -21,7 +21,7 @@
       backdrop-filter: blur(12px);
       border-radius: 20px;
       padding: 3rem 2.5rem;
-      max-width: 500px;
+      max-width: 520px;
       border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     }
@@ -48,10 +48,44 @@
     .info strong {
       color: #e0e7ff;
     }
-    .loading {
-      font-size: 1.4rem;
-      opacity: 0.7;
+    .edit-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
     }
+    input[type="text"] {
+      padding: 12px 16px;
+      font-size: 1.1rem;
+      width: 80%;
+      max-width: 320px;
+      border-radius: 12px;
+      border: 1px solid rgba(124,58,237,0.4);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.2);
+    }
+    button {
+      margin-top: 1rem;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      background: linear-gradient(90deg, #7c3aed, #a78bfa);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(124,58,237,0.4);
+    }
+    .loading { font-size: 1.4rem; opacity: 0.7; }
+    .success { color: #34d399; font-size: 1.1rem; margin-top: 0.8rem; }
+    .error   { color: #f87171;   font-size: 1.1rem; margin-top: 0.8rem; }
   </style>
 </head>
 <body>
@@ -62,16 +96,37 @@
     <div id="profile" style="display: none;">
       <img id="photo" class="profile-pic" src="" alt="Profile" />
       <h1 id="welcome"></h1>
+
       <div class="info"><strong>Email:</strong> <span id="email"></span></div>
       <div class="info"><strong>User ID:</strong> <span id="uid"></span></div>
-      <!-- Add more fields if needed -->
+      <div class="info"><strong>Username:</strong> <span id="usernameDisplay"></span></div>
+
+      <!-- Edit Username Section -->
+      <div class="edit-section">
+        <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Change Username</h3>
+        <input type="text" id="usernameInput" placeholder="Enter new username" />
+        <button id="saveBtn">Save Username</button>
+        <div id="status" class="success" style="display:none;"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Firebase SDK (same as your login page) -->
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    
+    import { 
+      getDatabase, 
+      ref, 
+      set, 
+      get, 
+      child 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBU3RFrnyCkKOQkR-WIxsl1UXprwzozVhc",
@@ -80,44 +135,85 @@
       storageBucket: "dee-shub.firebasestorage.app",
       messagingSenderId: "993759340836",
       appId: "1:993759340836:web:c533801c3288e1b8122bb1",
-      measurementId: "G-3DFH9QEZ26"
+      measurementId: "G-3DFH9QEZ26",
+      databaseURL: "https://dee-shub-default-rtdb.firebaseio.com/"  // ← ADD THIS!
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getDatabase(app);
 
-    const loadingEl = document.getElementById('loading');
-    const profileEl  = document.getElementById('profile');
-    const welcomeEl  = document.getElementById('welcome');
-    const emailEl    = document.getElementById('email');
-    const uidEl      = document.getElementById('uid');
-    const photoEl    = document.getElementById('photo');
+    const loadingEl      = document.getElementById('loading');
+    const profileEl      = document.getElementById('profile');
+    const welcomeEl      = document.getElementById('welcome');
+    const emailEl        = document.getElementById('email');
+    const uidEl          = document.getElementById('uid');
+    const photoEl        = document.getElementById('photo');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const usernameInput  = document.getElementById('usernameInput');
+    const saveBtn        = document.getElementById('saveBtn');
+    const statusEl       = document.getElementById('status');
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       loadingEl.style.display = 'none';
 
       if (user) {
-        // User is signed in → show profile
         profileEl.style.display = 'block';
 
         const name = user.displayName || "User";
         welcomeEl.textContent = `Welcome, ${name}!`;
-        emailEl.textContent    = user.email || "Not available";
-        uidEl.textContent      = user.uid;
-        
+        emailEl.textContent   = user.email || "Not available";
+        uidEl.textContent     = user.uid;
+
         if (user.photoURL) {
           photoEl.src = user.photoURL;
           photoEl.style.display = 'block';
-        } else {
-          photoEl.style.display = 'none';
         }
 
-        console.log("User loaded:", user);
+        // Load custom username from Realtime DB
+        const userRef = ref(db, 'users/' + user.uid + '/username');
+        const snapshot = await get(userRef);
+        const customUsername = snapshot.exists() ? snapshot.val() : name;
+        
+        usernameDisplay.textContent = customUsername;
+        usernameInput.value = customUsername; // pre-fill input
+
+        // Save button handler
+        saveBtn.onclick = async () => {
+          const newUsername = usernameInput.value.trim();
+          if (!newUsername) {
+            showStatus("Username cannot be empty", "error");
+            return;
+          }
+
+          try {
+            // 1. Update Firebase Auth displayName
+            await updateProfile(user, { displayName: newUsername });
+
+            // 2. Update Realtime Database (for more flexibility)
+            await set(ref(db, 'users/' + user.uid + '/username'), newUsername);
+
+            // Refresh UI
+            welcomeEl.textContent = `Welcome, ${newUsername}!`;
+            usernameDisplay.textContent = newUsername;
+            showStatus("Username updated successfully!", "success");
+          } catch (err) {
+            console.error(err);
+            showStatus("Failed to update: " + err.message, "error");
+          }
+        };
+
       } else {
-        // No user → redirect back to login
-        window.location.href = "/index.html";  // ← change to your login page name
+        window.location.href = "/index.html"; // ← your login page
       }
     });
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = type === "success" ? "success" : "error";
+      statusEl.style.display = "block";
+      setTimeout(() => statusEl.style.display = "none", 4000);
+    }
   </script>
 </body>
 </html>
