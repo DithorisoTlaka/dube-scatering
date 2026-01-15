@@ -29,55 +29,54 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.58);
       z-index: 0;
     }
 
     .container {
       background: rgba(30, 30, 50, 0.75);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
+      border-radius: 24px;
+      padding: 3.5rem 2.5rem;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       border: 1px solid rgba(255,255,255,0.08);
-      position: relative;
       z-index: 1;
       transition: all 0.4s ease;
     }
 
     .logo {
-      font-size: 3rem;
-      font-weight: 800;
-      background: linear-gradient(90deg, #a78bfa, #7c3aed);
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #a78bfa, #7c3aed, #c084fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
     }
 
     h1 {
-      font-size: 1.9rem;
-      margin-bottom: 0.6rem;
+      font-size: 2.2rem;
+      margin-bottom: 0.8rem;
     }
 
     .subtitle {
       color: #cbd5e1;
-      margin-bottom: 2rem;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
+      margin-bottom: 2.5rem;
     }
 
     .btn {
       width: 100%;
-      padding: 14px;
-      margin: 12px 0;
+      padding: 15px;
+      margin: 14px 0;
       border-radius: 12px;
-      font-size: 1.05rem;
-      font-weight: 500;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -91,25 +90,26 @@
     }
 
     .google-btn:hover {
-      box-shadow: 0 6px 20px rgba(255,255,255,0.15);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255,255,255,0.18);
     }
 
     .email-btn {
-      background: #7c3aed;
+      background: linear-gradient(90deg, #7c3aed, #a78bfa);
       color: white;
     }
 
     .email-btn:hover {
-      background: #6d28d9;
+      transform: translateY(-3px);
+      opacity: 0.92;
     }
 
     .form-group {
-      margin: 1.4rem 0;
+      margin: 1.5rem 0;
       text-align: left;
       opacity: 0;
-      transform: translateY(15px);
-      transition: all 0.4s ease;
+      transform: translateY(20px);
+      transition: all 0.45s ease;
     }
 
     .form-group.visible {
@@ -121,88 +121,95 @@
       width: 100%;
       padding: 14px 16px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
       color: white;
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
 
     input::placeholder {
       color: #94a3b8;
     }
 
-    .submit-btn {
-      background: linear-gradient(90deg, #7c3aed, #a78bfa);
-      color: white;
-      margin-top: 1.5rem;
-      font-weight: 600;
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
+      color: #64748b;
     }
 
-    .submit-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .divider span {
+      padding: 0 1.5rem;
+      font-size: 0.95rem;
     }
 
     .google-icon {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
     }
 
     .info {
-      margin-top: 2rem;
-      font-size: 0.85rem;
+      margin-top: 2.5rem;
+      font-size: 0.9rem;
       color: #94a3b8;
     }
 
-    /* ── Modal / Bottom Sheet ──────────────────────────────── */
+    /* Modal / Bottom Sheet */
     .auth-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.65);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
 
     .modal-content {
-      background: rgba(30, 30, 50, 0.92);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      width: 90%;
-      max-width: 420px;
-      padding: 2.2rem 1.8rem;
+      background: rgba(25, 25, 45, 0.94);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      width: 92%;
+      max-width: 440px;
+      padding: 2.5rem 2rem;
       position: relative;
-      border: 1px solid rgba(255,255,255,0.1);
-      animation: fadeUp 0.4s ease;
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: fadeUp 0.45s ease;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px); }
+      from { opacity: 0; transform: translateY(50px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .close-btn {
       position: absolute;
-      top: 14px;
-      right: 18px;
-      font-size: 1.6rem;
+      top: 16px;
+      right: 20px;
+      font-size: 2rem;
       color: #94a3b8;
       cursor: pointer;
     }
 
-    /* Mobile → Bottom Sheet style */
+    /* Mobile Bottom Sheet */
     @media (max-width: 640px) {
       .modal-content {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        border-radius: 20px 20px 0 0;
+        border-radius: 24px 24px 0 0;
         max-width: 100%;
-        width: 100%;
-        animation: slideUp 0.4s ease;
+        animation: slideUp 0.45s ease;
       }
 
       @keyframes slideUp {
@@ -212,7 +219,7 @@
     }
 
     .loading {
-      opacity: 0.7;
+      opacity: 0.6;
       cursor: not-allowed;
     }
   </style>
@@ -221,32 +228,34 @@
 
   <div class="container">
     <div class="logo">TheHub</div>
-    <h1>Welcome</h1>
+    <h1>Welcome Back</h1>
     <p class="subtitle">Sign in to continue your journey</p>
 
-    <button class="btn google-btn" id="googleSignInBtn">
-      <svg class="google-icon" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
-        <path fill="#EA4335" d="M12 4.98c1.64 0 3.11.56 4.27 1.66l3.19-3.19C17.46 1.01 14.97 0 12 0 7.1 0 2.75 2.06.96 5.34l4.55 2.45C6.42 5.02 8.98 3 12 3z"/>
-      </svg>
-      Continue with Google
-    </button>
-
-    <button class="btn email-btn" id="showEmailForm">Login with Email</button>
+    <button class="btn email-btn" id="showLoginModal">Sign In</button>
 
     <div class="info">
       By continuing, you agree to our<br>Terms of Service • Privacy Policy
     </div>
   </div>
 
-  <!-- Modal / Bottom Sheet for Email Login -->
+  <!-- Modal / Bottom Sheet -->
   <div class="auth-modal" id="authModal">
     <div class="modal-content">
-      <span class="close-btn" id="closeModal">&times;</span>
+      <span class="close-btn" id="closeModal">×</span>
       
-      <h2 style="margin-bottom:1.5rem;">Sign in with Email</h2>
+      <h2 style="margin-bottom: 1.8rem; text-align:center;">Sign In</h2>
+
+      <button class="btn google-btn" id="googleSignInBtn">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
+          <path fill="#EA4335" d="M12 4.98c1.64 0 3.11.56 4.27 1.66l3.19-3.19C17.46 1.01 14.97 0 12 0 7.1 0 2.75 2.06.96 5.34l4.55 2.45C6.42 5.02 8.98 3 12 3z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><span>or</span></div>
 
       <div class="form-group">
         <input type="text" id="firstName" placeholder="First Name" required>
@@ -260,7 +269,7 @@
         <input type="password" id="password" placeholder="Password" required>
       </div>
 
-      <button class="btn submit-btn" id="emailSignInBtn">Sign In</button>
+      <button class="btn email-btn" id="emailSignInBtn">Sign In with Email</button>
     </div>
   </div>
 
@@ -289,26 +298,23 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    const googleBtn = document.getElementById('googleSignInBtn');
-    const showEmailBtn = document.getElementById('showEmailForm');
+    // Elements
+    const showModalBtn = document.getElementById('showLoginModal');
     const modal = document.getElementById('authModal');
     const closeModal = document.getElementById('closeModal');
+    const googleBtn = document.getElementById('googleSignInBtn');
     const emailSignInBtn = document.getElementById('emailSignInBtn');
 
-    // Show email form in modal/bottom sheet
-    showEmailBtn.addEventListener('click', () => {
+    // Show modal
+    showModalBtn.addEventListener('click', () => {
       modal.style.display = 'flex';
-      // Small delay for animation
       setTimeout(() => {
         document.querySelectorAll('.form-group').forEach(el => el.classList.add('visible'));
-      }, 100);
+      }, 150);
     });
 
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-      document.querySelectorAll('.form-group').forEach(el => el.classList.remove('visible'));
-    });
-
+    // Close modal
+    closeModal.addEventListener('click', () => modal.style.display = 'none');
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.style.display = 'none';
     });
@@ -319,42 +325,46 @@
         googleBtn.classList.add('loading');
         googleBtn.textContent = 'Signing in...';
         const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("Google Sign-in success:", user.displayName);
+        console.log("Signed in:", result.user.displayName);
         window.location.href = "/dashboard.html"; // ← your destination
       } catch (error) {
         console.error(error);
-        alert("Google Sign-In failed: " + (error.message || "Try again"));
+        alert("Google Sign-In failed: " + (error.message || "Please try again"));
       } finally {
         googleBtn.classList.remove('loading');
         googleBtn.innerHTML = `<svg class="google-icon" viewBox="0 0 24 24">…</svg> Continue with Google`;
       }
     });
 
-    // Email Sign-In (very basic – in real app you'd want validation + create user if needed)
+    // Email Sign-In (dummy email example - you should adjust this!)
     emailSignInBtn.addEventListener('click', async () => {
-      const email = `${document.getElementById('firstName').value.trim().toLowerCase()}@example.com`; // ← dummy email logic - CHANGE THIS!
+      const firstName = document.getElementById('firstName').value.trim();
+      const surname = document.getElementById('surname').value.trim();
       const password = document.getElementById('password').value;
 
-      if (!email || !password) {
+      if (!firstName || !surname || !password) {
         alert("Please fill in all fields");
         return;
       }
 
+      // You should have proper email input in real app!
+      // This is just a placeholder example
+      const email = `${firstName.toLowerCase()}.${surname.toLowerCase()}@thehub.com`;
+
       try {
         const result = await signInWithEmailAndPassword(auth, email, password);
-        console.log("Email sign-in success:", result.user.email);
+        console.log("Email login success:", result.user.email);
         window.location.href = "/dashboard.html";
       } catch (error) {
         alert("Login failed: " + error.message);
       }
     });
 
-    // Auto-redirect if already signed in
+    // Auto redirect if already logged in
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("Already signed in:", user.email);
         // window.location.href = "/dashboard.html";
+        console.log("Already signed in as:", user.email);
       }
     });
   </script>
