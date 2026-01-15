@@ -12,27 +12,26 @@
       box-sizing: border-box;
     }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  min-height: 100vh;
-  background: url('https://i.postimg.cc/rmjwwkSk/a930c640-7a41-4402-b3f2-bfea6640a3b0.jpg')
-              center/cover no-repeat fixed;
-  color: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  position: relative;
-}
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: url('https://i.postimg.cc/rmjwwkSk/a930c640-7a41-4402-b3f2-bfea6640a3b0.jpg')
+                  center/cover no-repeat fixed;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
 
-/* Strong dark overlay for better readability on the studio image */
-body::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.82);
-  z-index: 0;
-}
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      z-index: 0;
+    }
 
     .landing-container {
       text-align: center;
@@ -83,7 +82,6 @@ body::before {
       box-shadow: 0 12px 35px rgba(124, 58, 237, 0.5);
     }
 
-    /* Modal / Bottom Sheet */
     .auth-modal {
       position: fixed;
       inset: 0;
@@ -100,8 +98,8 @@ body::before {
       backdrop-filter: blur(18px);
       border-radius: 28px;
       width: 90%;
-      max-width: 380px;
-      padding: 3rem 2rem;
+      max-width: 400px;
+      padding: 2.5rem 2rem;
       position: relative;
       border: 1px solid rgba(255,255,255,0.1);
       text-align: center;
@@ -120,66 +118,107 @@ body::before {
       font-size: 2.2rem;
       color: #94a3b8;
       cursor: pointer;
-      transition: color 0.2s;
     }
 
-    .close-btn:hover {
-      color: #cbd5e1;
+    .auth-form {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .name-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #a78bfa;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .forgot-pass {
+      text-align: right;
+      font-size: 0.85rem;
+      color: #a78bfa;
+      cursor: pointer;
+      margin-top: -5px;
+      display: none; /* Hidden by default in Sign Up mode */
+    }
+
+    .submit-btn {
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #7c3aed;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .divider {
+      margin: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 0 10px;
     }
 
     .google-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       background: white;
       color: #1e293b;
-      border-radius: 14px;
-      font-size: 1.15rem;
+      border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
       border: none;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.3);
+    }
+
+    .toggle-text {
       margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #cbd5e1;
     }
 
-    .google-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    .toggle-text span {
+      color: #a78bfa;
+      cursor: pointer;
+      font-weight: 600;
     }
 
-    .google-icon {
-      width: 28px;
-      height: 28px;
-    }
-
-    /* Mobile → Bottom Sheet */
     @media (max-width: 640px) {
       .modal-content {
         position: fixed;
         bottom: 0;
-        left: 0;
-        right: 0;
         border-radius: 28px 28px 0 0;
         max-width: 100%;
-        width: 100%;
-        padding: 3.2rem 2rem 4rem;
-        animation: slideUp 0.5s ease;
       }
-
-      @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to   { transform: translateY(0); }
-      }
-    }
-
-    .loading {
-      opacity: 0.6;
-      cursor: not-allowed;
-      pointer-events: none;
     }
   </style>
 </head>
@@ -189,36 +228,54 @@ body::before {
     <div class="logo">TheHub</div>
     <h1>Welcome</h1>
     <p class="subtitle">Your personal space awaits</p>
-    
-    <button class="sign-in-btn" id="showGoogleModal">Sign In</button>
+    <button class="sign-in-btn" id="showGoogleModal">Get Started</button>
   </div>
 
-  <!-- Modal / Bottom Sheet - only Google button -->
   <div class="auth-modal" id="authModal">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">×</span>
-      
-      <h2 style="margin-bottom: 2.2rem; font-size: 1.8rem;">Choose sign-in method</h2>
-      
+      <h2 id="modalTitle" style="margin-bottom: 0.5rem; font-size: 1.8rem;">Create Account</h2>
+      <p id="modalSub" style="color: #94a3b8; margin-bottom: 1.5rem;">Join the community today</p>
+
+      <form class="auth-form" id="emailAuthForm">
+        <div class="name-row" id="nameFields">
+          <input type="text" id="firstName" placeholder="First Name">
+          <input type="text" id="surname" placeholder="Surname">
+        </div>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <div id="forgotPass" class="forgot-pass">Forgot password?</div>
+        <button type="submit" class="submit-btn" id="submitAuth">Sign Up</button>
+      </form>
+
+      <div class="divider">or</div>
+
       <button class="google-btn" id="googleSignInBtn">
-        <svg class="google-icon" viewBox="0 0 24 24">
+        <svg style="width:20px" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
           <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
           <path fill="#EA4335" d="M12 4.98c1.64 0 3.11.56 4.27 1.66l3.19-3.19C17.46 1.01 14.97 0 12 0 7.1 0 2.75 2.06.96 5.34l4.55 2.45C6.42 5.02 8.98 3 12 3z"/>
         </svg>
-        Sign in with Google
+        Continue with Google
       </button>
+
+      <p class="toggle-text" id="toggleMode">
+        Already have an account? <span id="toggleAction">Sign In</span>
+      </p>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { 
       getAuth, 
       GoogleAuthProvider, 
       signInWithPopup,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      updateProfile,
       onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
@@ -237,57 +294,73 @@ body::before {
     const provider = new GoogleAuthProvider();
 
     const modal = document.getElementById('authModal');
-    const showModalBtn = document.getElementById('showGoogleModal');
-    const closeModalBtn = document.getElementById('closeModal');
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const toggleAction = document.getElementById('toggleAction');
+    const nameFields = document.getElementById('nameFields');
+    const modalTitle = document.getElementById('modalTitle');
+    const submitBtn = document.getElementById('submitAuth');
+    const forgotPass = document.getElementById('forgotPass');
+    let isSignUp = true;
 
-    // Show modal
-    showModalBtn.addEventListener('click', () => {
-      modal.style.display = 'flex';
+    toggleAction.addEventListener('click', () => {
+      isSignUp = !isSignUp;
+      nameFields.style.display = isSignUp ? 'flex' : 'none';
+      forgotPass.style.display = isSignUp ? 'none' : 'block';
+      modalTitle.textContent = isSignUp ? 'Create Account' : 'Welcome Back';
+      submitBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+      toggleAction.textContent = isSignUp ? 'Sign In' : 'Sign Up';
+      document.getElementById('modalSub').textContent = isSignUp ? 'Join the community today' : 'Log in to your account';
     });
 
-    // Close modal
-    closeModalBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
+    document.getElementById('showGoogleModal').onclick = () => modal.style.display = 'flex';
+    document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.style.display = 'none';
-    });
-
-    // Google Sign-In
-    googleSignInBtn.addEventListener('click', async () => {
+    // Forgot Password Logic
+    forgotPass.onclick = async () => {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        alert("Please enter your email address first.");
+        return;
+      }
       try {
-        googleSignInBtn.classList.add('loading');
-        googleSignInBtn.textContent = 'Signing in...';
-
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("Signed in as:", user.displayName, user.email);
-
-        window.location.href = "dashboard.html"; // ← your actual destination
-
-      } catch (error) {
-        console.error("Google Sign-In Error:", error);
-        let message = "Something went wrong. Please try again.";
-        if (error.code === 'auth/popup-blocked') message = "Popup blocked. Please allow popups.";
-        if (error.code === 'auth/popup-closed-by-user') message = "Sign in cancelled.";
-        alert(message);
-      } finally {
-        googleSignInBtn.classList.remove('loading');
-        googleSignInBtn.innerHTML = `
-          <svg class="google-icon" viewBox="0 0 24 24">…</svg>
-          Sign in with Google
-        `;
+        await sendPasswordResetEmail(auth, email);
+        alert("Password reset email sent! Check your inbox.");
+      } catch (err) {
+        alert("Error: " + err.message);
       }
-    });
+    };
 
-    // Optional: redirect if already signed in
+    document.getElementById('emailAuthForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const fName = document.getElementById('firstName').value;
+      const sName = document.getElementById('surname').value;
+
+      try {
+        if (isSignUp) {
+          if(!fName || !sName) { alert("Please enter first name and surname."); return; }
+          const res = await createUserWithEmailAndPassword(auth, email, password);
+          await updateProfile(res.user, { displayName: `${fName} ${sName}` });
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+
+    document.getElementById('googleSignInBtn').onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("Already signed in as:", user.email);
-       window.location.href = "dashboard.html";
-      }
+      if (user) window.location.href = "dashboard.html";
     });
   </script>
 </body>
