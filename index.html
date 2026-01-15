@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Dee's Hub</title>
+  <title>TheHub - Sign In</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   
   <style>
@@ -14,79 +15,120 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=90') 
+                  center/cover no-repeat fixed;
+      color: #111;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(30,58,138,0.75), rgba(59,130,246,0.65));
+      z-index: 1;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      color: #333;
     }
 
-    .login-container {
-      background: white;
-      padding: 2.5rem 2rem;
+    .login-box {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
       border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      padding: 2.5rem 2rem;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
       text-align: center;
     }
 
     .logo {
       font-size: 2.8rem;
-      font-weight: bold;
-      color: #4f46e5;
-      margin-bottom: 0.5rem;
+      font-weight: 800;
+      color: #1d4ed8;
+      margin-bottom: 0.4rem;
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-      color: #1f2937;
+      font-size: 1.85rem;
+      margin: 0.4rem 0 1.2rem;
+      color: #111827;
     }
 
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 2rem;
+    .input-group {
+      margin-bottom: 1.3rem;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
       font-size: 1rem;
+      transition: all 0.2s;
     }
 
-    .google-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .google-btn, .submit-btn {
       width: 100%;
       padding: 14px;
-      background-color: white;
-      border: 1px solid #d1d5db;
       border-radius: 10px;
       font-size: 1.05rem;
       font-weight: 500;
-      color: #374151;
       cursor: pointer;
-      transition: all 0.25s ease;
-      margin: 1.5rem 0;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 1rem 0;
     }
 
-    .google-btn:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .google-btn {
+      background: white;
+      border: 1px solid #d1d5db;
+      color: #111827;
+    }
+
+    .submit-btn {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+    }
+
+    .google-btn:hover, .submit-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      border-color: #9ca3af;
-    }
-
-    .google-icon {
-      width: 24px;
-      height: 24px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     }
 
     .divider {
       display: flex;
       align-items: center;
-      margin: 1.5rem 0;
-      color: #9ca3af;
+      margin: 1.6rem 0;
+      color: #6b7280;
     }
 
     .divider::before,
@@ -98,31 +140,109 @@
     }
 
     .divider span {
-      padding: 0 1.5rem;
+      padding: 0 1.4rem;
       font-size: 0.9rem;
     }
 
-    .info {
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      color: #6b7280;
+    /* Bottom Sheet / Modal */
+    .auth-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    .loading {
-      opacity: 0.7;
-      cursor: not-allowed;
+    .modal-content, .bottom-sheet {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .bottom-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 20px 20px 0 0;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slide-up 0.4s ease-out;
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .status-icon {
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .success { color: #10b981; }
+    .error   { color: #ef4444; }
+
+    @media (max-width: 640px) {
+      .auth-modal {
+        align-items: flex-end;
+      }
+      .modal-content {
+        display: none;
+      }
+      .bottom-sheet {
+        display: block;
+      }
+    }
+
+    @media (min-width: 641px) {
+      .bottom-sheet {
+        display: none;
+      }
+      .modal-content {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
+<main>
+  <div class="login-box">
     <div class="logo">TheHub</div>
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to continue</p>
+    <h1>Welcome</h1>
+
+    <form id="authForm">
+      <div class="input-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="Thabo" required autocomplete="given-name"/>
+      </div>
+
+      <div class="input-group">
+        <label for="lastName">Surname</label>
+        <input type="text" id="lastName" placeholder="Mokoena" required autocomplete="family-name"/>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="new-password"/>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span>Create Account / Sign In</span>
+      </button>
+    </form>
+
+    <div class="divider"><span>or</span></div>
 
     <button class="google-btn" id="googleSignInBtn">
-      <svg class="google-icon" viewBox="0 0 24 24">
+      <svg width="22" height="22" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.51h5.84c-.25 1.31-.98 2.42-2.07 3.16v2.63h3.35c1.96-1.81 3.1-4.47 3.1-7.99z"/>
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.35-2.63c-.98.66-2.23 1.06-3.93 1.06-3.02 0-5.58-2.04-6.49-4.79H.96v2.67C2.75 20.94 7.1 23 12 23z"/>
         <path fill="#FBBC05" d="M5.51 14.21c-.23-.66-.36-1.37-.36-2.21s.13-1.55.36-2.21V7.34H.96C.35 8.85 0 10.39 0 12s.35 3.15.96 4.66l4.55-2.45z"/>
@@ -131,83 +251,115 @@
       Continue with Google
     </button>
 
-    <div class="info">
+    <p style="margin-top:1.8rem; font-size:0.9rem; color:#4b5563;">
       By continuing, you agree to our<br>
-      Terms of Service • Privacy Policy
-    </div>
+      <a href="#" style="color:#1d4ed8;">Terms</a> • <a href="#" style="color:#1d4ed8;">Privacy</a>
+    </p>
   </div>
+</main>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Import Firebase (use latest modular syntax)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { 
-      getAuth, 
-      GoogleAuthProvider, 
-      signInWithPopup,
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+<!-- Auth feedback modal / bottom sheet -->
+<div class="auth-modal" id="authModal">
+  <div class="modal-content">
+    <div id="modalInner"></div>
+  </div>
+  
+  <div class="bottom-sheet">
+    <div id="sheetInner"></div>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBU3RFrnyCkKOQkR-WIxsl1UXprwzozVhc",
-      authDomain: "dee-shub.firebaseapp.com",
-      projectId: "dee-shub",
-      storageBucket: "dee-shub.firebasestorage.app",
-      messagingSenderId: "993759340836",
-      appId: "1:993759340836:web:c533801c3288e1b8122bb1",
-      measurementId: "G-3DFH9QEZ26"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup,
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+  const firebaseConfig = {
+    apiKey: "AIzaSyBU3RFrnyCkKOQkR-WIxsl1UXprwzozVhc",
+    authDomain: "dee-shub.firebaseapp.com",
+    projectId: "dee-shub",
+    storageBucket: "dee-shub.firebasestorage.app",
+    messagingSenderId: "993759340836",
+    appId: "1:993759340836:web:c533801c3288e1b8122bb1",
+    measurementId: "G-3DFH9QEZ26"
+  };
 
-    const googleBtn = document.getElementById('googleSignInBtn');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-    googleBtn.addEventListener('click', async () => {
-      try {
-        googleBtn.classList.add('loading');
-        googleBtn.textContent = 'Signing in...';
+  const googleBtn = document.getElementById('googleSignInBtn');
+  const authModal = document.getElementById('authModal');
+  const modalInner = document.getElementById('modalInner');
+  const sheetInner = document.getElementById('sheetInner');
 
-        const result = await signInWithPopup(auth, provider);
-        
-        // You can get user info here
-        const user = result.user;
-        console.log("Signed in as:", user.displayName, user.email);
+  function showAuthMessage(title, message, isSuccess = true, icon = isSuccess ? 'check-circle' : 'exclamation-circle') {
+    const content = `
+      <i class="fas fa-${icon} status-icon ${isSuccess ? 'success' : 'error'}"></i>
+      <h2>${title}</h2>
+      <p style="margin:1rem 0 1.5rem; color:#4b5563;">${message}</p>
+      <button onclick="document.getElementById('authModal').style.display='none'" 
+              style="padding:12px 32px; background:#1d4ed8; color:white; border:none; border-radius:10px; font-size:1.05rem; cursor:pointer;">
+        ${isSuccess ? 'Continue' : 'Try Again'}
+      </button>
+    `;
 
-        // Redirect or update UI
-        window.location.href = "/dashboard.html"; // ← change this to your real destination
+    modalInner.innerHTML = content;
+    sheetInner.innerHTML = content;
+    authModal.style.display = 'flex';
+  }
 
-      } catch (error) {
-        console.error("Google Sign-In Error:", error.code, error.message);
-        
-        let message = "Something went wrong. Please try again.";
-        
-        if (error.code === 'auth/popup-blocked') {
-          message = "Popup was blocked. Please allow popups for this site.";
-        } else if (error.code === 'auth/popup-closed-by-user') {
-          message = "Sign in cancelled.";
-        }
+  googleBtn.addEventListener('click', async () => {
+    try {
+      googleBtn.disabled = true;
+      googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
 
-        alert(message);
-      } finally {
-        googleBtn.classList.remove('loading');
-        googleBtn.innerHTML = `
-          <svg class="google-icon" viewBox="0 0 24 24">…</svg>
-          Continue with Google
-        `;
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      showAuthMessage(
+        "Welcome!",
+        `Signed in as ${user.displayName || user.email}`,
+        true
+      );
+
+      // You can redirect here after a delay
+      setTimeout(() => {
+        window.location.href = "/dashboard.html";
+      }, 1800);
+
+    } catch (error) {
+      let message = "Something went wrong. Please try again.";
+      
+      if (error.code === 'auth/popup-blocked') {
+        message = "Popup blocked. Please allow popups for this website.";
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        message = "Sign in was cancelled.";
+      } else if (error.code) {
+        message = error.message;
       }
-    });
 
-    // Optional: Listen for auth state (useful for redirecting already logged-in users)
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in → redirect
-        // window.location.href = "/dashboard.html";
-        console.log("Already signed in:", user.email);
-      }
-    });
-  </script>
+      showAuthMessage("Error", message, false);
+    } finally {
+      googleBtn.disabled = false;
+      googleBtn.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24">...</svg>
+        Continue with Google
+      `;
+    }
+  });
+
+  // Optional: already signed in?
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("User already signed in:", user.email);
+      // window.location.href = "/dashboard.html";
+    }
+  });
+</script>
 </body>
 </html>
