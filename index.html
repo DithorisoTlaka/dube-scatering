@@ -11,59 +11,81 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .app-card:active { transform: scale(0.96); }
-        
-        /* Custom Sidebar Hover Logic */
-        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-label { transition: opacity 0.2s ease; white-space: nowrap; }
+
+        /* Smooth Transitions */
+        .sidebar-smooth { 
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .content-smooth {
+            transition: margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-label {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Entrance Animation */
+        @keyframes cardPop {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-pop {
+            animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Modal Transitions */
+        #detail-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #detail-content { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .modal-hidden #detail-content { transform: scale(0.9) translateY(40px); }
     </style>
 </head>
 <body class="bg-[#F2F2F7] text-gray-900 pb-24 md:pb-0">
 
-    <aside id="sidebar" class="hidden md:flex flex-col w-20 hover:w-72 sidebar-transition fixed h-full bg-white border-r p-5 hover:p-8 z-50 group/sidebar">
-        <h1 class="text-3xl font-black text-blue-600 tracking-tighter mb-10 overflow-hidden">
-            <span class="group-hover/sidebar:inline hidden">All"Apps</span>
-            <span class="group-hover/sidebar:hidden inline text-4xl">A"</span>
+    <aside id="sidebar" class="hidden md:flex flex-col w-20 hover:w-72 sidebar-smooth fixed h-full bg-white border-r p-4 hover:p-8 z-50 group/sidebar">
+        <h1 class="text-3xl font-black text-blue-600 tracking-tighter mb-10 whitespace-nowrap overflow-hidden">
+            <span class="inline-block group-hover/sidebar:hidden">A"</span>
+            <span class="hidden group-hover/sidebar:inline">All"Apps</span>
         </h1>
         
-        <nav id="sidebar-nav" class="space-y-1 flex-1">
-            <a href="#" data-tab="Discover" class="nav-item flex items-center space-x-4 bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold transition-all">
-                <i class="fa-solid fa-house text-lg shrink-0"></i> 
-                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Discover</span>
+        <nav class="space-y-1 flex-1">
+            <a href="#" data-tab="Discover" class="nav-link flex items-center bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold transition-all">
+                <i class="fa-solid fa-house text-lg w-6 flex justify-center"></i> 
+                <span class="fade-label ml-4 opacity-0 group-hover/sidebar:opacity-100 pointer-events-none">Discover</span>
             </a>
-            <a href="#" data-tab="Games" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
-                <i class="fa-solid fa-gamepad text-lg shrink-0 group-hover:text-blue-500"></i> 
-                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Games</span>
+            <a href="#" data-tab="Games" class="nav-link flex items-center text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-gamepad text-lg w-6 flex justify-center group-hover:text-blue-500"></i> 
+                <span class="fade-label ml-4 opacity-0 group-hover/sidebar:opacity-100 pointer-events-none">Games</span>
             </a>
-            <a href="#" data-tab="Apps" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
-                <i class="fa-solid fa-layer-group text-lg shrink-0 group-hover:text-blue-500"></i> 
-                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Apps</span>
+            <a href="#" data-tab="Apps" class="nav-link flex items-center text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-layer-group text-lg w-6 flex justify-center group-hover:text-blue-500"></i> 
+                <span class="fade-label ml-4 opacity-0 group-hover/sidebar:opacity-100 pointer-events-none">Apps</span>
             </a>
-            <a href="#" data-tab="Arcade" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
-                <i class="fa-solid fa-rocket text-lg shrink-0 group-hover:text-blue-500"></i> 
-                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Arcade</span>
+            <a href="#" data-tab="Arcade" class="nav-link flex items-center text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-rocket text-lg w-6 flex justify-center group-hover:text-blue-500"></i> 
+                <span class="fade-label ml-4 opacity-0 group-hover/sidebar:opacity-100 pointer-events-none">Arcade</span>
             </a>
         </nav>
 
-        <div class="mt-auto flex items-center space-x-3 p-2 group-hover/sidebar:p-4 bg-gray-50 rounded-2xl cursor-pointer transition-all">
+        <div class="mt-auto flex items-center p-3 bg-gray-50 rounded-2xl cursor-pointer overflow-hidden">
             <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">JS</div>
-            <div class="opacity-0 group-hover/sidebar:opacity-100 transition-opacity">
-                <p class="text-sm font-bold truncate">John Smith</p>
+            <div class="ml-3 fade-label opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap">
+                <p class="text-sm font-bold">John Smith</p>
                 <p class="text-[10px] text-gray-400">Pro Account</p>
             </div>
         </div>
     </aside>
 
-    <main class="md:ml-20 min-h-screen transition-all">
+    <main class="md:ml-20 content-smooth min-h-screen">
         
         <header class="p-6 md:p-10 flex justify-between items-end sticky top-0 z-40 md:static glass md:bg-transparent md:backdrop-blur-none">
             <div>
                 <p class="text-[11px] font-extrabold text-gray-400 uppercase tracking-[0.2em]">Tuesday, Jan 27</p>
-                <h1 id="page-title" class="text-4xl font-black tracking-tight">Today</h1>
+                <h1 id="header-title" class="text-4xl font-black tracking-tight">Today</h1>
             </div>
             <div class="hidden md:block w-80">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Search apps..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition shadow-sm">
+                    <input type="text" id="app-search" placeholder="Search apps..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition shadow-sm">
                 </div>
             </div>
             <div class="md:hidden w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
@@ -72,7 +94,7 @@
         </header>
 
         <section class="px-6 md:px-10 pb-12 max-w-7xl">
-            <div class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer">
+            <div class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer animate-pop">
                 <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105" alt="Feature">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                 <div class="absolute bottom-10 left-10 right-10 text-white">
@@ -85,53 +107,89 @@
 
             <div class="flex justify-between items-end mb-8">
                 <div>
-                    <h2 class="text-3xl font-black">Must-Have Apps</h2>
+                    <h2 id="section-title" class="text-3xl font-black">Must-Have Apps</h2>
                     <p class="text-gray-500 font-medium">Updated just now</p>
                 </div>
                 <a href="#" class="text-blue-600 font-bold hover:underline">See All</a>
             </div>
 
-            <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            </div>
+            <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
     </main>
 
     <nav class="md:hidden fixed bottom-6 left-6 right-6 h-16 glass border border-white/20 shadow-2xl rounded-3xl flex justify-around items-center text-gray-400 z-50">
-        <a href="#" data-tab="Discover" class="mobile-nav-item flex flex-col items-center text-blue-600">
+        <a href="#" data-tab="Discover" class="mobile-link flex flex-col items-center text-blue-600">
             <i class="fa-solid fa-house text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Today</span>
         </a>
-        <a href="#" data-tab="Games" class="mobile-nav-item flex flex-col items-center">
+        <a href="#" data-tab="Games" class="mobile-link flex flex-col items-center">
             <i class="fa-solid fa-gamepad text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Games</span>
         </a>
-        <a href="#" data-tab="Apps" class="mobile-nav-item flex flex-col items-center">
+        <a href="#" data-tab="Apps" class="mobile-link flex flex-col items-center">
             <i class="fa-solid fa-layer-group text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Apps</span>
         </a>
-        <a href="#" data-tab="Arcade" class="mobile-nav-item flex flex-col items-center">
+        <a href="#" data-tab="Arcade" class="mobile-link flex flex-col items-center">
             <i class="fa-solid fa-rocket text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Arcade</span>
         </a>
     </nav>
 
-    <script>
-        // MOCK DATA ARRAY
-        const mockApps = [
-            { name: "ProCreate Pocket", category: "Graphics & Design", icon: "fa-palette", color: "from-purple-500 to-pink-500", rating: "4.9", price: "Free" },
-            { name: "Sky Guide", category: "Education", icon: "fa-star", color: "from-blue-600 to-indigo-900", rating: "4.8", price: "Free" },
-            { name: "LumaFusion", category: "Video Editing", icon: "fa-clapperboard", color: "from-orange-400 to-red-600", rating: "4.7", price: "Get" },
-            { name: "Streaks", category: "Health & Fitness", icon: "fa-check", color: "from-emerald-400 to-teal-600", rating: "4.9", price: "Free" },
-            { name: "Overcast", category: "Entertainment", icon: "fa-podcast", color: "from-orange-500 to-yellow-500", rating: "4.8", price: "Free" },
-            { name: "Bear Notes", category: "Productivity", icon: "fa-pen-nib", color: "from-gray-700 to-black", rating: "4.6", price: "Get" }
-        ];
+    <div id="detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8 bg-black/40 backdrop-blur-md modal-hidden">
+        <div id="detail-content" class="bg-white w-full max-w-4xl h-full md:h-auto md:max-h-[90vh] rounded-[3rem] overflow-hidden shadow-2xl relative flex flex-col">
+            <button onclick="closeDetail()" class="absolute top-6 right-6 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-body" class="overflow-y-auto">
+                </div>
+        </div>
+    </div>
 
-        // RENDER LOGIC
+    <script>
+        const appData = {
+            Discover: [
+                { id: 1, name: "ProCreate Pocket", category: "Graphics & Design", icon: "fa-palette", color: "from-purple-500 to-pink-500", rating: "4.9", price: "Free", desc: "A powerful drawing tool for the creative mind.", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800" },
+                { id: 2, name: "Sky Guide", category: "Education", icon: "fa-star", color: "from-blue-600 to-indigo-900", rating: "4.8", price: "Free", desc: "Stargazing has never been this easy.", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800" },
+                { id: 3, name: "LumaFusion", category: "Video Editing", icon: "fa-clapperboard", color: "from-orange-400 to-red-600", rating: "4.7", price: "Get", desc: "Professional video editing on the go.", img: "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800" },
+                { id: 4, name: "Streaks", category: "Health & Fitness", icon: "fa-check", color: "from-emerald-400 to-teal-600", rating: "4.9", price: "Free", desc: "The to-do list that helps you form good habits.", img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800" },
+                { id: 5, name: "Overcast", category: "Entertainment", icon: "fa-podcast", color: "from-orange-500 to-yellow-500", rating: "4.8", price: "Free", desc: "A powerful yet simple podcast player.", img: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=800" },
+                { id: 6, name: "Bear Notes", category: "Productivity", icon: "fa-pen-nib", color: "from-gray-700 to-black", rating: "4.6", price: "Get", desc: "Write notes and prose in Markdown.", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800" }
+            ],
+            Games: [
+                { id: 7, name: "Genshin Impact", category: "Adventure", icon: "fa-wand-magic-sparkles", color: "from-blue-400 to-cyan-500", rating: "4.8", price: "Get", desc: "Explore a massive open world.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" },
+                { id: 8, name: "Wild Rift", category: "Action", icon: "fa-shield-halved", color: "from-gold-500 to-yellow-600", rating: "4.6", price: "Get", desc: "League of Legends optimized for mobile.", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&q=80&w=800" }
+            ],
+            Apps: [
+                { id: 9, name: "Notion", category: "Productivity", icon: "fa-book-open", color: "from-gray-600 to-gray-900", rating: "4.7", price: "Free", desc: "Your all-in-one workspace.", img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800" }
+            ],
+            Arcade: [
+                { id: 10, name: "Sneaky Sasquatch", category: "Arcade Original", icon: "fa-tree", color: "from-green-700 to-emerald-900", rating: "4.9", price: "Play", desc: "Live the life of a Sasquatch.", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800" }
+            ]
+        };
+
         const grid = document.getElementById('app-grid');
-        
-        mockApps.forEach(app => {
-            const card = `
-                <div class="app-card flex items-center space-x-4 bg-white p-5 rounded-[2rem] shadow-sm hover:shadow-xl transition duration-300 cursor-pointer group border border-transparent hover:border-blue-100">
+        const headerTitle = document.getElementById('header-title');
+        const sectionTitle = document.getElementById('section-title');
+        const searchInput = document.getElementById('app-search');
+        const modal = document.getElementById('detail-modal');
+        const modalBody = document.getElementById('modal-body');
+        let currentCategory = 'Discover';
+
+        function renderApps(category, filter = '') {
+            grid.innerHTML = '';
+            const apps = Object.values(appData).flat().filter(app => {
+                const matchesTab = category === 'Discover' || appData[category].some(a => a.id === app.id);
+                const matchesSearch = app.name.toLowerCase().includes(filter.toLowerCase());
+                return matchesTab && matchesSearch;
+            });
+            
+            apps.forEach((app, index) => {
+                const card = document.createElement('div');
+                card.className = "app-card flex items-center space-x-4 bg-white p-5 rounded-[2rem] shadow-sm hover:shadow-xl transition duration-300 cursor-pointer border border-transparent hover:border-blue-100 opacity-0 animate-pop";
+                card.style.animationDelay = `${index * 40}ms`;
+                card.onclick = () => openDetail(app);
+                card.innerHTML = `
                     <div class="w-20 h-20 bg-gradient-to-br ${app.color} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shadow-lg shrink-0 group-hover:rotate-2 transition">
                         <i class="fa-solid ${app.icon}"></i>
                     </div>
@@ -139,47 +197,51 @@
                         <h3 class="font-extrabold text-gray-900 truncate text-lg tracking-tight leading-tight">${app.name}</h3>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">${app.category}</p>
                         <div class="flex items-center justify-between">
-                             <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">
-                                 ${app.price}
-                             </button>
+                             <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">${app.price}</button>
                              <div class="flex items-center space-x-1">
                                 <span class="text-xs font-bold text-gray-800">${app.rating}</span>
                                 <i class="fa-solid fa-star text-[10px] text-yellow-400"></i>
                              </div>
                         </div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function openDetail(app) {
+            modalBody.innerHTML = `
+                <img src="${app.img}" class="w-full h-72 object-cover" />
+                <div class="p-10">
+                    <div class="flex items-start space-x-6 mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-br ${app.color} rounded-3xl flex items-center justify-center text-white text-4xl shadow-xl">
+                            <i class="fa-solid ${app.icon}"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-4xl font-black">${app.name}</h2>
+                            <p class="text-blue-600 font-bold mb-4">${app.category}</p>
+                            <button class="bg-blue-600 text-white px-8 py-2 rounded-full font-bold">GET</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            grid.innerHTML += card;
-        });
+                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc} This app provides a seamless experience for users looking to enhance their daily workflow or digital entertainment.</p>
+                </div>`;
+            modal.classList.remove('modal-hidden');
+        }
 
-        // SIDEBAR TAB FUNCTIONALITY
-        const navItems = document.querySelectorAll('.nav-item, .mobile-nav-item');
-        const pageTitle = document.getElementById('page-title');
+        function closeDetail() { modal.classList.add('modal-hidden'); }
 
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
+        searchInput.addEventListener('input', (e) => renderApps(currentCategory, e.target.value));
+
+        document.querySelectorAll('.nav-link, .mobile-link').forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const tabName = item.getAttribute('data-tab');
-                
-                // Update UI Header
-                pageTitle.innerText = tabName === 'Discover' ? 'Today' : tabName;
-
-                // Reset all tabs
-                navItems.forEach(nav => {
-                    nav.classList.remove('bg-blue-50', 'text-blue-600');
-                    nav.classList.add('text-gray-400');
-                });
-
-                // Set active tab (Desktop & Mobile Sync)
-                const relatedTabs = document.querySelectorAll(`[data-tab="${tabName}"]`);
-                relatedTabs.forEach(t => {
-                    t.classList.add('bg-blue-50', 'text-blue-600');
-                    t.classList.remove('text-gray-400');
-                });
+                currentCategory = link.getAttribute('data-tab');
+                headerTitle.innerText = currentCategory === 'Discover' ? 'Today' : currentCategory;
+                sectionTitle.innerText = currentCategory === 'Discover' ? 'Must-Have Apps' : `Top ${currentCategory}`;
+                renderApps(currentCategory);
             });
         });
-    </script>
 
+        renderApps('Discover');
+    </script>
 </body>
 </html>
