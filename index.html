@@ -32,6 +32,9 @@
             animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* Carousel Fade */
+        .carousel-item { transition: opacity 0.8s ease-in-out; }
+
         /* Modal Transitions */
         #detail-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         #detail-content { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -94,16 +97,8 @@
         </header>
 
         <section class="px-6 md:px-10 pb-12 max-w-7xl">
-            <div class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer animate-pop">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105" alt="Feature">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div class="absolute bottom-10 left-10 right-10 text-white">
-                    <p class="text-xs font-bold uppercase opacity-70 tracking-widest mb-2">Editor's Choice</p>
-                    <h2 class="text-5xl font-black mb-4 leading-none">Retro Vibes:<br>Ultimate Synth</h2>
-                    <p class="text-lg text-gray-300 max-w-md mb-6 hidden md:block">Step into the 80s with the most advanced synthesizer app ever built for mobile.</p>
-                    <button class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-sm hover:scale-105 transition active:scale-95 shadow-lg shadow-blue-500/50">Get Now</button>
+            <div id="discover-carousel" class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer animate-pop">
                 </div>
-            </div>
 
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -141,20 +136,22 @@
             <button onclick="closeDetail()" class="absolute top-6 right-6 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div id="modal-body" class="overflow-y-auto">
-                </div>
+            <div id="modal-body" class="overflow-y-auto"></div>
         </div>
     </div>
 
     <script>
+        const featuredItems = [
+            { title: "Retro Vibes: Ultimate Synth", subtitle: "Editor's Choice", desc: "Step into the 80s with the most advanced synthesizer app.", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" },
+            { title: "Wild Rift: New Season", subtitle: "Top Game", desc: "Master the Rift with brand new champions and rewards.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200" },
+            { title: "ProCreate: Masterclass", subtitle: "Featured App", desc: "Unlock your artistic potential with new brush engines.", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=1200" }
+        ];
+
         const appData = {
             Discover: [
                 { id: 1, name: "ProCreate Pocket", category: "Graphics & Design", icon: "fa-palette", color: "from-purple-500 to-pink-500", rating: "4.9", price: "Free", desc: "A powerful drawing tool for the creative mind.", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800" },
                 { id: 2, name: "Sky Guide", category: "Education", icon: "fa-star", color: "from-blue-600 to-indigo-900", rating: "4.8", price: "Free", desc: "Stargazing has never been this easy.", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800" },
-                { id: 3, name: "LumaFusion", category: "Video Editing", icon: "fa-clapperboard", color: "from-orange-400 to-red-600", rating: "4.7", price: "Get", desc: "Professional video editing on the go.", img: "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800" },
-                { id: 4, name: "Streaks", category: "Health & Fitness", icon: "fa-check", color: "from-emerald-400 to-teal-600", rating: "4.9", price: "Free", desc: "The to-do list that helps you form good habits.", img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800" },
-                { id: 5, name: "Overcast", category: "Entertainment", icon: "fa-podcast", color: "from-orange-500 to-yellow-500", rating: "4.8", price: "Free", desc: "A powerful yet simple podcast player.", img: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=800" },
-                { id: 6, name: "Bear Notes", category: "Productivity", icon: "fa-pen-nib", color: "from-gray-700 to-black", rating: "4.6", price: "Get", desc: "Write notes and prose in Markdown.", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800" }
+                { id: 4, name: "Streaks", category: "Health & Fitness", icon: "fa-check", color: "from-emerald-400 to-teal-600", rating: "4.9", price: "Free", desc: "The to-do list that helps you form good habits.", img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800" }
             ],
             Games: [
                 { id: 7, name: "Genshin Impact", category: "Adventure", icon: "fa-wand-magic-sparkles", color: "from-blue-400 to-cyan-500", rating: "4.8", price: "Get", desc: "Explore a massive open world.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" },
@@ -172,17 +169,41 @@
         const headerTitle = document.getElementById('header-title');
         const sectionTitle = document.getElementById('section-title');
         const searchInput = document.getElementById('app-search');
+        const carousel = document.getElementById('discover-carousel');
         const modal = document.getElementById('detail-modal');
         const modalBody = document.getElementById('modal-body');
         let currentCategory = 'Discover';
+        let slideIndex = 0;
+
+        function initCarousel() {
+            carousel.innerHTML = featuredItems.map((item, i) => `
+                <div class="carousel-item absolute inset-0 opacity-0 ${i === 0 ? 'opacity-100' : ''}">
+                    <img src="${item.img}" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                    <div class="absolute bottom-10 left-10 right-10 text-white">
+                        <p class="text-xs font-bold uppercase opacity-70 tracking-widest mb-2">${item.subtitle}</p>
+                        <h2 class="text-5xl font-black mb-4 leading-none">${item.title}</h2>
+                        <p class="text-lg text-gray-300 max-w-md mb-6 hidden md:block">${item.desc}</p>
+                        <button class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/50">Get Now</button>
+                    </div>
+                </div>
+            `).join('');
+
+            setInterval(() => {
+                const slides = document.querySelectorAll('.carousel-item');
+                slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
+                slideIndex = (slideIndex + 1) % slides.length;
+                slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
+            }, 5000);
+        }
 
         function renderApps(category, filter = '') {
             grid.innerHTML = '';
-            const apps = Object.values(appData).flat().filter(app => {
-                const matchesTab = category === 'Discover' || appData[category].some(a => a.id === app.id);
-                const matchesSearch = app.name.toLowerCase().includes(filter.toLowerCase());
-                return matchesTab && matchesSearch;
-            });
+            carousel.style.display = category === 'Discover' ? 'block' : 'none';
+            
+            const apps = (category === 'Discover' ? Object.values(appData).flat() : appData[category]).filter(app => 
+                app.name.toLowerCase().includes(filter.toLowerCase())
+            );
             
             apps.forEach((app, index) => {
                 const card = document.createElement('div');
@@ -190,14 +211,14 @@
                 card.style.animationDelay = `${index * 40}ms`;
                 card.onclick = () => openDetail(app);
                 card.innerHTML = `
-                    <div class="w-20 h-20 bg-gradient-to-br ${app.color} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shadow-lg shrink-0 group-hover:rotate-2 transition">
+                    <div class="w-20 h-20 bg-gradient-to-br ${app.color} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shrink-0">
                         <i class="fa-solid ${app.icon}"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-extrabold text-gray-900 truncate text-lg tracking-tight leading-tight">${app.name}</h3>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">${app.category}</p>
                         <div class="flex items-center justify-between">
-                             <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">${app.price}</button>
+                             <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">${app.price}</button>
                              <div class="flex items-center space-x-1">
                                 <span class="text-xs font-bold text-gray-800">${app.rating}</span>
                                 <i class="fa-solid fa-star text-[10px] text-yellow-400"></i>
@@ -213,16 +234,14 @@
                 <img src="${app.img}" class="w-full h-72 object-cover" />
                 <div class="p-10">
                     <div class="flex items-start space-x-6 mb-8">
-                        <div class="w-24 h-24 bg-gradient-to-br ${app.color} rounded-3xl flex items-center justify-center text-white text-4xl shadow-xl">
-                            <i class="fa-solid ${app.icon}"></i>
-                        </div>
+                        <div class="w-24 h-24 bg-gradient-to-br ${app.color} rounded-3xl flex items-center justify-center text-white text-4xl"><i class="fa-solid ${app.icon}"></i></div>
                         <div class="flex-1">
                             <h2 class="text-4xl font-black">${app.name}</h2>
                             <p class="text-blue-600 font-bold mb-4">${app.category}</p>
                             <button class="bg-blue-600 text-white px-8 py-2 rounded-full font-bold">GET</button>
                         </div>
                     </div>
-                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc} This app provides a seamless experience for users looking to enhance their daily workflow or digital entertainment.</p>
+                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc}</p>
                 </div>`;
             modal.classList.remove('modal-hidden');
         }
@@ -237,10 +256,18 @@
                 currentCategory = link.getAttribute('data-tab');
                 headerTitle.innerText = currentCategory === 'Discover' ? 'Today' : currentCategory;
                 sectionTitle.innerText = currentCategory === 'Discover' ? 'Must-Have Apps' : `Top ${currentCategory}`;
+                
+                document.querySelectorAll('.nav-link, .mobile-link').forEach(l => {
+                    const active = l.getAttribute('data-tab') === currentCategory;
+                    l.classList.toggle('bg-blue-50', active && l.classList.contains('nav-link'));
+                    l.classList.toggle('text-blue-600', active);
+                    l.classList.toggle('text-gray-400', !active);
+                });
                 renderApps(currentCategory);
             });
         });
 
+        initCarousel();
         renderApps('Discover');
     </script>
 </body>
