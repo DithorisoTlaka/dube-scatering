@@ -8,44 +8,57 @@
     <title>All"Apps | Discover</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .app-card:active { transform: scale(0.96); }
+        
+        /* Custom Sidebar Hover Logic */
+        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-label { transition: opacity 0.2s ease; white-space: nowrap; }
     </style>
 </head>
 <body class="bg-[#F2F2F7] text-gray-900 pb-24 md:pb-0">
 
-    <aside class="hidden md:flex flex-col w-72 fixed h-full bg-white border-r p-8 z-50">
-        <h1 class="text-3xl font-black text-blue-600 tracking-tighter mb-10">All"Apps</h1>
-        <nav class="space-y-1 flex-1">
-            <a href="#" class="flex items-center space-x-4 bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold">
-                <i class="fa-solid fa-house text-lg"></i> <span>Discover</span>
+    <aside id="sidebar" class="hidden md:flex flex-col w-20 hover:w-72 sidebar-transition fixed h-full bg-white border-r p-5 hover:p-8 z-50 group/sidebar">
+        <h1 class="text-3xl font-black text-blue-600 tracking-tighter mb-10 overflow-hidden">
+            <span class="group-hover/sidebar:inline hidden">All"Apps</span>
+            <span class="group-hover/sidebar:hidden inline text-4xl">A"</span>
+        </h1>
+        
+        <nav id="sidebar-nav" class="space-y-1 flex-1">
+            <a href="#" data-tab="Discover" class="nav-item flex items-center space-x-4 bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold transition-all">
+                <i class="fa-solid fa-house text-lg shrink-0"></i> 
+                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Discover</span>
             </a>
-            <a href="#" class="flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition group">
-                <i class="fa-solid fa-gamepad text-lg group-hover:text-blue-500"></i> <span>Games</span>
+            <a href="#" data-tab="Games" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-gamepad text-lg shrink-0 group-hover:text-blue-500"></i> 
+                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Games</span>
             </a>
-            <a href="#" class="flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition group">
-                <i class="fa-solid fa-layer-group text-lg group-hover:text-blue-500"></i> <span>Apps</span>
+            <a href="#" data-tab="Apps" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-layer-group text-lg shrink-0 group-hover:text-blue-500"></i> 
+                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Apps</span>
             </a>
-            <a href="#" class="flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition group">
-                <i class="fa-solid fa-rocket text-lg group-hover:text-blue-500"></i> <span>Arcade</span>
+            <a href="#" data-tab="Arcade" class="nav-item flex items-center space-x-4 text-gray-400 hover:bg-gray-50 px-4 py-3 rounded-2xl transition-all group">
+                <i class="fa-solid fa-rocket text-lg shrink-0 group-hover:text-blue-500"></i> 
+                <span class="sidebar-label opacity-0 group-hover/sidebar:opacity-100">Arcade</span>
             </a>
         </nav>
-        <div class="mt-auto flex items-center space-x-3 p-4 bg-gray-50 rounded-2xl cursor-pointer">
-            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">JS</div>
-            <div>
-                <p class="text-sm font-bold">John Smith</p>
+
+        <div class="mt-auto flex items-center space-x-3 p-2 group-hover/sidebar:p-4 bg-gray-50 rounded-2xl cursor-pointer transition-all">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">JS</div>
+            <div class="opacity-0 group-hover/sidebar:opacity-100 transition-opacity">
+                <p class="text-sm font-bold truncate">John Smith</p>
                 <p class="text-[10px] text-gray-400">Pro Account</p>
             </div>
         </div>
     </aside>
 
-    <main class="md:ml-72 min-h-screen">
+    <main class="md:ml-20 min-h-screen transition-all">
         
         <header class="p-6 md:p-10 flex justify-between items-end sticky top-0 z-40 md:static glass md:bg-transparent md:backdrop-blur-none">
             <div>
                 <p class="text-[11px] font-extrabold text-gray-400 uppercase tracking-[0.2em]">Tuesday, Jan 27</p>
-                <h1 class="text-4xl font-black tracking-tight">Today</h1>
+                <h1 id="page-title" class="text-4xl font-black tracking-tight">Today</h1>
             </div>
             <div class="hidden md:block w-80">
                 <div class="relative">
@@ -79,26 +92,26 @@
             </div>
 
             <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                </div>
+            </div>
         </section>
     </main>
 
     <nav class="md:hidden fixed bottom-6 left-6 right-6 h-16 glass border border-white/20 shadow-2xl rounded-3xl flex justify-around items-center text-gray-400 z-50">
-        <a href="#" class="flex flex-col items-center text-blue-600">
+        <a href="#" data-tab="Discover" class="mobile-nav-item flex flex-col items-center text-blue-600">
             <i class="fa-solid fa-house text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Today</span>
         </a>
-        <a href="#" class="flex flex-col items-center">
+        <a href="#" data-tab="Games" class="mobile-nav-item flex flex-col items-center">
             <i class="fa-solid fa-gamepad text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Games</span>
         </a>
-        <a href="#" class="flex flex-col items-center">
+        <a href="#" data-tab="Apps" class="mobile-nav-item flex flex-col items-center">
             <i class="fa-solid fa-layer-group text-xl"></i>
             <span class="text-[9px] font-bold mt-1">Apps</span>
         </a>
-        <a href="#" class="flex flex-col items-center">
-            <i class="fa-solid fa-magnifying-glass text-xl"></i>
-            <span class="text-[9px] font-bold mt-1">Search</span>
+        <a href="#" data-tab="Arcade" class="mobile-nav-item flex flex-col items-center">
+            <i class="fa-solid fa-rocket text-xl"></i>
+            <span class="text-[9px] font-bold mt-1">Arcade</span>
         </a>
     </nav>
 
@@ -127,7 +140,7 @@
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">${app.category}</p>
                         <div class="flex items-center justify-between">
                              <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition">
-                                ${app.price}
+                                 ${app.price}
                              </button>
                              <div class="flex items-center space-x-1">
                                 <span class="text-xs font-bold text-gray-800">${app.rating}</span>
@@ -138,6 +151,33 @@
                 </div>
             `;
             grid.innerHTML += card;
+        });
+
+        // SIDEBAR TAB FUNCTIONALITY
+        const navItems = document.querySelectorAll('.nav-item, .mobile-nav-item');
+        const pageTitle = document.getElementById('page-title');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabName = item.getAttribute('data-tab');
+                
+                // Update UI Header
+                pageTitle.innerText = tabName === 'Discover' ? 'Today' : tabName;
+
+                // Reset all tabs
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-blue-50', 'text-blue-600');
+                    nav.classList.add('text-gray-400');
+                });
+
+                // Set active tab (Desktop & Mobile Sync)
+                const relatedTabs = document.querySelectorAll(`[data-tab="${tabName}"]`);
+                relatedTabs.forEach(t => {
+                    t.classList.add('bg-blue-50', 'text-blue-600');
+                    t.classList.remove('text-gray-400');
+                });
+            });
         });
     </script>
 
