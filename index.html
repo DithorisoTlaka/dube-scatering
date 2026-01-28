@@ -101,7 +101,6 @@
         </section>
     </main>
 
-    <!-- Detail Modal -->
     <div id="detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8 bg-black/40 backdrop-blur-md modal-hidden">
         <div id="detail-content" class="bg-white w-full max-w-4xl h-full md:h-auto md:max-h-[90vh] rounded-[3rem] overflow-hidden shadow-2xl relative flex flex-col scale-100 transition-transform">
             <button onclick="closeDetail()" class="absolute top-6 right-6 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center transition">
@@ -111,7 +110,6 @@
         </div>
     </div>
 
-    <!-- Download Progress Modal -->
     <div id="download-modal" class="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
         <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] text-center shadow-2xl">
             <div id="dl-icon-container" class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">
@@ -126,7 +124,6 @@
         </div>
     </div>
 
-    <!-- Confirm Download Modal -->
     <div id="confirm-modal" class="fixed inset-0 z-[75] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
         <div class="bg-white w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl text-center">
             <div id="confirm-icon" class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg bg-gradient-to-br from-blue-500 to-indigo-600">
@@ -141,7 +138,6 @@
         </div>
     </div>
 
-    <!-- Success Modal -->
     <div id="success-modal" class="fixed inset-0 z-[80] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
         <div class="bg-white w-full max-w-md p-10 rounded-[2.5rem] shadow-2xl text-center relative overflow-hidden">
             <div class="absolute -top-20 -right-20 w-40 h-40 bg-green-100 rounded-full opacity-30"></div>
@@ -227,14 +223,14 @@
         });
 
         function updateCarousel() {
-            // Only apps where banner === true (or exists and is truthy)
+            // Updated to pull from the "apps" node where banner property is true
             const featured = allAppsRaw
                 .filter(item => item.banner === true)
-                .slice(-3)           // still take up to the last 3 banner apps (most recent)
-                .reverse();          // newest on first slide
+                .slice(-5)           // Get latest 5 banner apps
+                .reverse();          // Newest first
 
             if (featured.length === 0) {
-                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold">No Banner Apps Available</div>`;
+                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold">No Banner Apps Featured</div>`;
                 return;
             }
 
@@ -243,7 +239,7 @@
                     <img src="${item.img || 'https://images.unsplash.com/photo-1614332287897-cdc485fa562d?q=80&w=1200'}" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-10 left-10 right-10 text-white">
-                        <p class="text-xs font-bold uppercase opacity-70 tracking-widest mb-2">Editor's Choice</p>
+                        <p class="text-xs font-bold uppercase opacity-70 tracking-widest mb-2">Featured</p>
                         <h2 class="text-5xl font-black mb-4 leading-none">${item.name}</h2>
                         <button onclick="openDetailByKey('${item.id}')" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/50">View App</button>
                     </div>
@@ -251,13 +247,16 @@
             `).join('');
 
             clearInterval(carouselTimer);
-            carouselTimer = setInterval(() => {
-                const slides = document.querySelectorAll('.carousel-item');
-                if (slides.length < 2) return;
-                slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
-                slideIndex = (slideIndex + 1) % slides.length;
-                slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
-            }, 5000);
+            slideIndex = 0;
+            if (featured.length > 1) {
+                carouselTimer = setInterval(() => {
+                    const slides = document.querySelectorAll('.carousel-item');
+                    if (slides.length < 2) return;
+                    slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
+                    slideIndex = (slideIndex + 1) % slides.length;
+                    slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
+                }, 5000);
+            }
         }
 
         window.openDetailByKey = (id) => {
