@@ -90,7 +90,7 @@
                     <span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Spotlights
                 </h3>
                 <div id="featured-container" class="flex overflow-x-auto gap-6 no-scrollbar snap-x pb-4">
-                    <div class="animate-pulse bg-gray-200 min-w-[320px] h-52 rounded-[3rem]"></div>
+                    <div class="animate-pulse bg-gray-200 min-w-[450px] h-72 rounded-[3rem]"></div>
                 </div>
             </section>
 
@@ -142,12 +142,15 @@
             container.innerHTML = data ? "" : "<p class='text-gray-400 px-4'>No featured spotlights today.</p>";
             if(data) {
                 Object.values(data).forEach(item => {
+                    // Pulling directly from item.banner or item.icon as defined in your admin hub
+                    const displayImg = item.banner || item.icon || "https://via.placeholder.com/800x400";
                     container.innerHTML += `
-                        <div class="relative min-w-[320px] h-52 rounded-[2.5rem] overflow-hidden snap-center shadow-lg group">
-                            <img src="${item.banner || item.icon}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-8 flex flex-col justify-end">
-                                <span class="text-blue-400 text-[10px] font-black uppercase tracking-widest mb-1">${item.category}</span>
-                                <h4 class="text-white text-xl font-black">${item.name}</h4>
+                        <div class="relative min-w-[320px] md:min-w-[500px] h-72 rounded-[3rem] overflow-hidden snap-center shadow-lg group cursor-pointer">
+                            <img src="${displayImg}" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent p-10 flex flex-col justify-end">
+                                <span class="text-blue-400 text-xs font-black uppercase tracking-widest mb-2">${item.category}</span>
+                                <h4 class="text-white text-3xl font-black leading-tight tracking-tighter">${item.name}</h4>
+                                <p class="text-gray-300 text-sm line-clamp-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">${item.description || ''}</p>
                             </div>
                         </div>`;
                 });
@@ -199,7 +202,6 @@
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             
-            // Update UI state for sidebar buttons
             document.querySelectorAll('.category-item').forEach(btn => {
                 const btnText = btn.querySelector('.sidebar-text').innerText;
                 const isMatch = (cat === 'All' && btnText === 'All Discoveries') || 
