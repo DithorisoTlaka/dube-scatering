@@ -147,7 +147,7 @@
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // CONFIGURATION: Update with your project details
+        // CONFIG: Replace with your Firebase credentials
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -163,11 +163,9 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Data Storage
         let remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
         let currentUser = null;
 
-        // UI References
         const grid = document.getElementById('app-grid');
         const headerTitle = document.getElementById('header-title');
         const sectionTitle = document.getElementById('section-title');
@@ -179,19 +177,12 @@
         let currentCategory = 'Discover';
         let slideIndex = 0;
 
-        // --- AUTH LOGIC ---
+        // --- AUTH ---
         window.handleAuth = async () => {
             if (currentUser) {
-                if (confirm("Do you want to sign out?")) {
-                    await signOut(auth);
-                }
+                if (confirm("Sign out?")) await signOut(auth);
             } else {
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch (error) {
-                    console.error("Auth Error:", error);
-                    alert("Failed to sign in. Check console for details.");
-                }
+                try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); }
             }
         };
 
@@ -215,23 +206,31 @@
             }
         });
 
-        // --- DATABASE LOGIC ---
+        // --- REALTIME SCANNING ---
         const appsRef = ref(db, 'apps');
         onValue(appsRef, (snapshot) => {
             const data = snapshot.val();
+            // Clear current arrays before scanning database
             remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
+            
             if (data) {
                 Object.keys(data).forEach(key => {
                     const appObj = { id: key, ...data[key] };
                     const cat = appObj.category || 'Apps';
-                    if (remoteAppData[cat]) remoteAppData[cat].push(appObj);
-                    else remoteAppData.Apps.push(appObj);
+                    
+                    // Categorize based on DB field
+                    if (remoteAppData[cat]) {
+                        remoteAppData[cat].push(appObj);
+                    } else {
+                        remoteAppData.Apps.push(appObj);
+                    }
                 });
             }
-            renderApps(currentCategory);
+            // Trigger instant UI update
+            renderApps(currentCategory, searchInput.value);
         });
 
-        // --- CAROUSEL ---
+        // --- UI RENDERING ---
         const featuredItems = [
             { title: "Retro Vibes: Ultimate Synth", subtitle: "Editor's Choice", desc: "Step into the 80s with the most advanced synthesizer app.", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" },
             { title: "Wild Rift: New Season", subtitle: "Top Game", desc: "Master the Rift with brand new champions and rewards.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200" },
@@ -261,7 +260,6 @@
             }, 5000);
         }
 
-        // --- CORE UI RENDERING ---
         window.renderApps = (category, filter = '') => {
             grid.innerHTML = '';
             carousel.style.display = category === 'Discover' ? 'block' : 'none';
@@ -312,7 +310,7 @@
 
         window.closeDetail = () => modal.classList.add('modal-hidden');
 
-        // Event Listeners
+        // Listeners
         searchInput.addEventListener('input', (e) => renderApps(currentCategory, e.target.value));
 
         document.querySelectorAll('.nav-link, .mobile-link').forEach(link => {
@@ -332,7 +330,6 @@
             });
         });
 
-        // Initialize UI
         initCarousel();
         const date = new Date();
         document.getElementById('header-date').innerText = date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
