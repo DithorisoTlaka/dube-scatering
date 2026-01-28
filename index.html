@@ -182,7 +182,12 @@
             if (currentUser) {
                 if (confirm("Sign out?")) await signOut(auth);
             } else {
-                try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); }
+                try { 
+                    await signInWithPopup(auth, provider); 
+                } catch (e) { 
+                    console.error("Auth Error:", e);
+                    alert("Auth failed. Check if Authorized Domains are set in Firebase Console.");
+                }
             }
         };
 
@@ -206,11 +211,10 @@
             }
         });
 
-        // --- REALTIME SCANNING ---
+        // --- REALTIME SCANNING (Publicly Accessible) ---
         const appsRef = ref(db, 'apps');
         onValue(appsRef, (snapshot) => {
             const data = snapshot.val();
-            // Clear current arrays before scanning database
             remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
             
             if (data) {
@@ -218,7 +222,6 @@
                     const appObj = { id: key, ...data[key] };
                     const cat = appObj.category || 'Apps';
                     
-                    // Categorize based on DB field
                     if (remoteAppData[cat]) {
                         remoteAppData[cat].push(appObj);
                     } else {
@@ -226,7 +229,6 @@
                     }
                 });
             }
-            // Trigger instant UI update
             renderApps(currentCategory, searchInput.value);
         });
 
@@ -265,7 +267,7 @@
             carousel.style.display = category === 'Discover' ? 'block' : 'none';
             
             const source = (category === 'Discover' ? Object.values(remoteAppData).flat() : remoteAppData[category] || []);
-            const apps = source.filter(app => app.name.toLowerCase().includes(filter.toLowerCase()));
+            const apps = source.filter(app => (app.name || '').toLowerCase().includes(filter.toLowerCase()));
             
             apps.forEach((app, index) => {
                 const card = document.createElement('div');
