@@ -266,7 +266,6 @@
             const modal = document.getElementById('confirm-modal');
             document.getElementById('confirm-app-name').innerText = name;
             
-            // Optional: use icon/color from app if available
             const iconEl = document.getElementById('confirm-icon');
             iconEl.innerHTML = `<i class="fa-solid ${icon || 'fa-cloud-arrow-down'}"></i>`;
             iconEl.className = `w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg bg-gradient-to-br ${color || 'from-blue-500 to-indigo-600'}`;
@@ -343,7 +342,7 @@
                 card.onclick = () => openDetail(app);
                 card.innerHTML = `
                     <div class="w-20 h-20 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shrink-0 overflow-hidden">
-                        ${app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid ${app.icon || 'fa-rocket'}"></i>`}
+                        ${app.icon ? `<i class="fa-solid ${app.icon}"></i>` : (app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-rocket"></i>`)}
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-extrabold text-gray-900 truncate text-lg leading-tight">${app.name}</h3>
@@ -363,7 +362,7 @@
                 <div class="p-10">
                     <div class="flex items-start space-x-6 mb-8">
                         <div class="w-24 h-24 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-3xl flex items-center justify-center text-white text-4xl overflow-hidden">
-                             ${app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid ${app.icon || 'fa-rocket'}"></i>`}
+                            ${app.icon ? `<i class="fa-solid ${app.icon}"></i>` : (app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-rocket"></i>`)}
                         </div>
                         <div class="flex-1">
                             <h2 class="text-4xl font-black">${app.name}</h2>
