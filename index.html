@@ -24,9 +24,8 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Desktop Sidebar logic */
         @media (min-width: 768px) {
-            .sidebar { width: 80px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex !important; }
+            .sidebar { width: 80px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
             .sidebar:hover { width: 260px; }
             .sidebar-text { opacity: 0; white-space: nowrap; transition: opacity 0.2s; pointer-events: none; }
             .sidebar:hover .sidebar-text { opacity: 1; pointer-events: auto; }
@@ -34,7 +33,7 @@
         }
 
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
-        .category-item.active { background: #2563eb !important; color: white !important; }
+        .category-item.active { background: #2563eb; color: white; }
 
         .slide { display: none; animation: slideFade 0.8s ease-in-out forwards; }
         .slide.active { display: block; }
@@ -47,17 +46,6 @@
 
         .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); }
         .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
-
-        /* Mobile Bottom Nav Glassmorphism */
-        .mobile-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        .dark .mobile-nav {
-            background: rgba(30, 41, 59, 0.8);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
     </style>
 </head>
 <body class="bg-[#F8F9FB] text-[#1a1a1a] dark:bg-darkBg dark:text-gray-100 pb-24 md:pb-0">
@@ -135,30 +123,11 @@
 
         <div class="px-4 mt-auto">
             <button onclick="toggleDarkMode()" class="w-full flex items-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition hover:bg-gray-100 dark:hover:bg-gray-700">
-                <i id="mode-icon-desktop" class="fa-solid fa-moon min-w-[20px] text-center"></i>
+                <i id="mode-icon" class="fa-solid fa-moon min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Appearance</span>
             </button>
         </div>
     </aside>
-
-    <nav class="mobile-nav fixed bottom-0 left-0 right-0 z-[150] flex md:hidden items-center justify-around px-2 py-3">
-        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center gap-1 p-2 rounded-xl transition flex-1">
-            <i class="fa-solid fa-grid-2 text-lg"></i>
-            <span class="text-[10px] font-bold">Home</span>
-        </button>
-        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center gap-1 p-2 rounded-xl transition flex-1">
-            <i class="fa-solid fa-gamepad text-lg"></i>
-            <span class="text-[10px] font-bold">Games</span>
-        </button>
-        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center gap-1 p-2 rounded-xl transition flex-1">
-            <i class="fa-solid fa-layer-group text-lg"></i>
-            <span class="text-[10px] font-bold">Apps</span>
-        </button>
-        <button onclick="toggleDarkMode()" class="flex flex-col items-center gap-1 p-2 rounded-xl text-gray-500 dark:text-gray-400 flex-1">
-            <i id="mode-icon-mobile" class="fa-solid fa-moon text-lg"></i>
-            <span class="text-[10px] font-bold">Theme</span>
-        </button>
-    </nav>
 
     <main class="main-content min-h-screen">
         <div class="max-w-6xl mx-auto px-6 py-10">
@@ -177,10 +146,10 @@
                         <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white dark:bg-darkCard shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
-                <div id="slideshow-container" class="relative w-full h-[300px] md:h-[400px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200 dark:bg-gray-800"></div>
+                <div id="slideshow-container" class="relative w-full h-[400px] rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200 dark:bg-gray-800"></div>
             </section>
 
-            <section class="mb-20 md:mb-10">
+            <section>
                 <h3 id="current-cat-title" class="text-2xl font-black mb-8">All Discoveries</h3>
                 <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start"></div>
             </section>
@@ -201,29 +170,23 @@
             appId: "1:1051904277079:web:8166b47b1a1407e2fe0112"
         };
 
-        const firebaseApp = initializeApp(firebaseConfig);
-        const db = getDatabase(firebaseApp);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
         let allApps = [];
         let currentFilter = 'All';
         let activeDlUrl = "";
         let slideIndex = 0;
 
         // Dark Mode Initialization
-        const setModeIcons = (isDark) => {
-            const iconClass = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-            document.getElementById('mode-icon-desktop').className = `${iconClass} min-w-[20px] text-center`;
-            document.getElementById('mode-icon-mobile').className = `${iconClass} text-lg`;
-        };
-
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
-            setModeIcons(true);
+            document.getElementById('mode-icon').className = 'fa-solid fa-sun min-w-[20px] text-center';
         }
 
         window.toggleDarkMode = () => {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.theme = isDark ? 'dark' : 'light';
-            setModeIcons(isDark);
+            document.getElementById('mode-icon').className = isDark ? 'fa-solid fa-sun min-w-[20px] text-center' : 'fa-solid fa-moon min-w-[20px] text-center';
         };
 
         onValue(ref(db, 'featured'), (snap) => {
@@ -235,15 +198,15 @@
                 container.innerHTML += `
                     <div class="slide ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full">
                         <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent p-6 md:p-12 flex flex-col justify-end">
-                            <div class="flex items-center gap-4 md:gap-5 mb-5">
-                                <img src="${item.icon}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent p-12 flex flex-col justify-end">
+                            <div class="flex items-center gap-5 mb-5">
+                                <img src="${item.icon}" class="w-16 h-16 rounded-2xl shadow-2xl">
                                 <div>
                                     <span class="text-blue-400 text-[10px] font-black uppercase tracking-widest">${item.category}</span>
-                                    <h4 class="text-white text-2xl md:text-4xl font-black tracking-tighter">${item.name}</h4>
+                                    <h4 class="text-white text-4xl font-black tracking-tighter">${item.name}</h4>
                                 </div>
                             </div>
-                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-8 py-4 rounded-2xl font-black text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
                         </div>
                     </div>`;
             });
@@ -353,22 +316,10 @@
         };
 
         document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
-        
         window.filterCat = (cat) => {
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             document.getElementById('spotlight-section').style.display = cat === 'All' ? 'block' : 'none';
-            
-            // Update active states for both Navbars
-            document.querySelectorAll('.category-item').forEach(item => {
-                const itemOnClick = item.getAttribute('onclick');
-                if (itemOnClick && itemOnClick.includes(`'${cat}'`)) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-
             renderApps(cat, document.getElementById('search-bar').value);
         };
     </script>
