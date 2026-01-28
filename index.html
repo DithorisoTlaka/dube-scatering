@@ -8,10 +8,9 @@
     <title>App Discovery | Home</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8F9FB; color: #1a1a1a; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8F9FB; color: #1a1a1a; overflow-x: hidden; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Sidebar expansion logic */
         @media (min-width: 768px) {
             .sidebar { width: 80px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
             .sidebar:hover { width: 260px; }
@@ -22,9 +21,47 @@
 
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
         .category-item.active { background: #2563eb; color: white; }
+
+        /* Expansion Styling */
+        .app-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; height: fit-content; }
+        .app-card.expanded { grid-column: 1 / -1; cursor: default; }
+        .details-pane { display: none; animation: fadeIn 0.5s ease forwards; }
+        .expanded .details-pane { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal styling */
+        .modal-backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-backdrop.active { display: flex; opacity: 1; }
     </style>
 </head>
 <body class="pb-24 md:pb-0">
+
+    <div id="dl-modal" class="modal-backdrop fixed inset-0 z-[200] items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-8 max-w-sm w-full text-center shadow-2xl">
+            <div id="dl-initial">
+                <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                </div>
+                <h3 class="text-2xl font-black tracking-tighter mb-2">Confirm Download</h3>
+                <p class="text-gray-500 font-medium mb-8">Are you sure you want to download <span id="target-app-name" class="text-black font-bold">this app</span>?</p>
+                <div class="flex flex-col gap-3">
+                    <button id="start-dl-btn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition active:scale-95">Download Now</button>
+                    <button onclick="closeDlModal()" class="w-full bg-gray-100 text-gray-500 py-4 rounded-2xl font-bold hover:bg-gray-200 transition">Cancel</button>
+                </div>
+            </div>
+            
+            <div id="dl-progress" class="hidden">
+                <div class="w-20 h-20 bg-gray-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 relative overflow-hidden">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+                <h3 class="text-2xl font-black tracking-tighter mb-2">Downloading...</h3>
+                <div class="w-full bg-gray-100 h-3 rounded-full mb-4 overflow-hidden">
+                    <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+                </div>
+                <p id="dl-percent" class="text-blue-600 font-black">0%</p>
+            </div>
+        </div>
+    </div>
 
     <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white border-r border-gray-100 z-[100] hidden md:flex flex-col py-8 shadow-xl">
         <div class="px-6 mb-10 flex items-center overflow-hidden">
@@ -33,7 +70,6 @@
             </div>
             <span class="sidebar-text ml-4 font-black text-xl tracking-tighter">MarketHub</span>
         </div>
-
         <nav class="flex-1 px-4 space-y-2">
             <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl transition group">
                 <i class="fa-solid fa-grid-2 min-w-[20px] text-center"></i>
@@ -60,25 +96,10 @@
                 <span class="sidebar-text ml-4 font-bold text-sm">Design Tools</span>
             </button>
         </nav>
-
-        <div class="px-4 mt-auto">
-            <div class="flex items-center p-4 bg-gray-50 rounded-2xl overflow-hidden">
-                <div class="min-w-[32px] h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-user text-gray-500 text-xs"></i>
-                </div>
-                <span class="sidebar-text ml-4 font-bold text-xs text-gray-500">Guest User</span>
-            </div>
-        </div>
     </aside>
-
-    <header class="md:hidden sticky top-0 bg-white/80 backdrop-blur-md z-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h1 class="text-xl font-black tracking-tighter">MarketHub</h1>
-        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div>
-    </header>
 
     <main class="main-content min-h-screen">
         <div class="max-w-6xl mx-auto px-6 py-10">
-            
             <div class="relative mb-12">
                 <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="text" id="search-bar" placeholder="Find your next favorite app..." 
@@ -86,35 +107,19 @@
             </div>
 
             <section class="mb-14">
-                <h3 class="text-2xl font-black mb-6 flex items-center">
-                    <span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Spotlights
-                </h3>
+                <h3 class="text-2xl font-black mb-6 flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Spotlights</h3>
                 <div id="featured-container" class="flex overflow-x-auto gap-6 no-scrollbar snap-x pb-4">
                     <div class="animate-pulse bg-gray-200 min-w-[450px] h-72 rounded-[3rem]"></div>
                 </div>
             </section>
 
             <section>
-                <div class="flex justify-between items-center mb-8">
-                    <h3 id="current-cat-title" class="text-2xl font-black">All Discoveries</h3>
-                    <div class="flex gap-2">
-                        <button class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400"><i class="fa-solid fa-sliders"></i></button>
-                    </div>
-                </div>
-                <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <h3 id="current-cat-title" class="text-2xl font-black mb-8">All Discoveries</h3>
+                <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
                     </div>
             </section>
         </div>
     </main>
-
-    <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] bg-gray-900/90 backdrop-blur-lg rounded-[2.5rem] p-2 shadow-2xl z-[100]">
-        <div class="flex justify-around items-center">
-            <button onclick="filterCat('All')" class="p-4 text-blue-400"><i class="fa-solid fa-house"></i></button>
-            <button class="p-4 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button class="p-4 text-gray-400"><i class="fa-solid fa-heart"></i></button>
-            <button class="p-4 text-gray-400"><i class="fa-solid fa-user"></i></button>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -132,25 +137,22 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
         let allApps = [];
         let currentFilter = 'All';
+        let activeDlUrl = "";
 
         onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
             const container = document.getElementById('featured-container');
-            container.innerHTML = data ? "" : "<p class='text-gray-400 px-4'>No featured spotlights today.</p>";
+            container.innerHTML = data ? "" : "<p class='text-gray-400 px-4'>No spotlights today.</p>";
             if(data) {
                 Object.values(data).forEach(item => {
-                    // Pulling directly from item.banner or item.icon as defined in your admin hub
-                    const displayImg = item.banner || item.icon || "https://via.placeholder.com/800x400";
                     container.innerHTML += `
                         <div class="relative min-w-[320px] md:min-w-[500px] h-72 rounded-[3rem] overflow-hidden snap-center shadow-lg group cursor-pointer">
-                            <img src="${displayImg}" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                            <img src="${item.banner || item.icon}" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent p-10 flex flex-col justify-end">
                                 <span class="text-blue-400 text-xs font-black uppercase tracking-widest mb-2">${item.category}</span>
-                                <h4 class="text-white text-3xl font-black leading-tight tracking-tighter">${item.name}</h4>
-                                <p class="text-gray-300 text-sm line-clamp-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">${item.description || ''}</p>
+                                <h4 class="text-white text-3xl font-black tracking-tighter">${item.name}</h4>
                             </div>
                         </div>`;
                 });
@@ -166,54 +168,97 @@
         function renderApps(filter = 'All', search = '') {
             const grid = document.getElementById('app-grid');
             grid.innerHTML = "";
-            
             const filtered = allApps.filter(app => {
                 const matchesCat = filter === 'All' || app.category === filter;
                 const matchesSearch = app.name.toLowerCase().includes(search.toLowerCase());
                 return matchesCat && matchesSearch;
             });
 
-            filtered.forEach(app => {
-                grid.innerHTML += `
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
-                        <div class="flex items-start gap-4 mb-6">
-                            <img src="${app.icon}" class="w-16 h-16 rounded-2xl shadow-inner object-cover bg-gray-50 border border-gray-50">
-                            <div class="flex-1">
-                                <h4 class="font-black text-base line-clamp-1">${app.name}</h4>
-                                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">${app.category}</p>
-                                <div class="flex items-center mt-1">
-                                    <i class="fa-solid fa-star text-orange-400 text-[10px]"></i>
-                                    <span class="ml-1 text-[10px] text-gray-500 font-bold">${app.rating || '5.0'}</span>
-                                </div>
+            filtered.forEach((app, index) => {
+                const card = document.createElement('div');
+                card.className = "app-card bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl group overflow-hidden";
+                card.onclick = (e) => { if(!e.target.closest('.get-btn')) card.classList.toggle('expanded'); };
+                
+                card.innerHTML = `
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="${app.icon}" class="w-16 h-16 rounded-2xl shadow-inner object-cover bg-gray-50 border border-gray-50">
+                        <div class="flex-1">
+                            <h4 class="font-black text-base line-clamp-1">${app.name}</h4>
+                            <p class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">${app.category}</p>
+                            <div class="flex items-center mt-1">
+                                <i class="fa-solid fa-star text-orange-400 text-[10px]"></i>
+                                <span class="ml-1 text-[10px] text-gray-500 font-bold">${app.rating || '5.0'}</span>
                             </div>
                         </div>
-                        <a href="${app.downloadUrl}" target="_blank" class="block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition transform active:scale-95 uppercase tracking-tighter">
-                            Get Now
-                        </a>
-                    </div>`;
+                    </div>
+                    
+                    <div class="details-pane mt-4 border-t border-gray-50 pt-4">
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'No description available for this application.'}</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-50 p-3 rounded-2xl text-center">
+                                <p class="text-[9px] uppercase font-black text-gray-400">Developer</p>
+                                <p class="text-xs font-bold text-gray-800">Verified Hub</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-2xl text-center">
+                                <p class="text-[9px] uppercase font-black text-gray-400">Size</p>
+                                <p class="text-xs font-bold text-gray-800">Adaptive</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="initDownload('${app.name}', '${app.downloadUrl}')" class="get-btn block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition transform active:scale-95 uppercase tracking-tighter">
+                        Get Now
+                    </button>
+                `;
+                grid.appendChild(card);
             });
         }
 
-        document.getElementById('search-bar').oninput = (e) => {
-            renderApps(currentFilter, e.target.value);
+        window.initDownload = (name, url) => {
+            activeDlUrl = url;
+            document.getElementById('target-app-name').innerText = name;
+            document.getElementById('dl-modal').classList.add('active');
+            document.getElementById('dl-initial').classList.remove('hidden');
+            document.getElementById('dl-progress').classList.add('hidden');
         };
+
+        window.closeDlModal = () => {
+            document.getElementById('dl-modal').classList.remove('active');
+        };
+
+        document.getElementById('start-dl-btn').onclick = () => {
+            document.getElementById('dl-initial').classList.add('hidden');
+            document.getElementById('dl-progress').classList.remove('hidden');
+            
+            let progress = 0;
+            const bar = document.getElementById('dl-bar');
+            const percentText = document.getElementById('dl-percent');
+            
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5;
+                if(progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.location.href = activeDlUrl;
+                        closeDlModal();
+                    }, 500);
+                }
+                bar.style.width = progress + '%';
+                percentText.innerText = progress + '%';
+            }, 200);
+        };
+
+        document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
 
         window.filterCat = (cat) => {
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
-            
             document.querySelectorAll('.category-item').forEach(btn => {
                 const btnText = btn.querySelector('.sidebar-text').innerText;
-                const isMatch = (cat === 'All' && btnText === 'All Discoveries') || 
-                                (cat === 'Games' && btnText === 'Gaming Zone') ||
-                                (cat === 'Apps' && btnText === 'Applications') ||
-                                (cat === 'Productivity' && btnText === 'Productivity') ||
-                                (cat === 'Entertainment' && btnText === 'Entertainment') ||
-                                (cat === 'Graphics & Design' && btnText === 'Design Tools');
-                
+                const isMatch = (cat === 'All' && btnText === 'All Discoveries') || (cat === 'Games' && btnText === 'Gaming Zone') || (cat === 'Apps' && btnText === 'Applications') || (cat === 'Productivity' && btnText === 'Productivity') || (cat === 'Entertainment' && btnText === 'Entertainment') || (cat === 'Graphics & Design' && btnText === 'Design Tools');
                 btn.classList.toggle('active', isMatch);
             });
-
             renderApps(cat, document.getElementById('search-bar').value);
         };
     </script>
