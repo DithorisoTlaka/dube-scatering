@@ -22,14 +22,17 @@
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
         .category-item.active { background: #2563eb; color: white; }
 
-        /* Expansion Styling */
+        /* Slideshow Animation */
+        .slide { display: none; animation: slideFade 0.8s ease-in-out forwards; }
+        .slide.active { display: block; }
+        @keyframes slideFade { from { opacity: 0; filter: blur(5px); } to { opacity: 1; filter: blur(0); } }
+
         .app-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; height: fit-content; }
         .app-card.expanded { grid-column: 1 / -1; cursor: default; }
         .details-pane { display: none; animation: fadeIn 0.5s ease forwards; }
         .expanded .details-pane { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Modal styling */
         .modal-backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-backdrop.active { display: flex; opacity: 1; }
     </style>
@@ -107,16 +110,21 @@
             </div>
 
             <section class="mb-14">
-                <h3 class="text-2xl font-black mb-6 flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Spotlights</h3>
-                <div id="featured-container" class="flex overflow-x-auto gap-6 no-scrollbar snap-x pb-4">
-                    <div class="animate-pulse bg-gray-200 min-w-[450px] h-72 rounded-[3rem]"></div>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-black flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured Spotlights</h3>
+                    <div class="flex gap-2">
+                        <button onclick="prevSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
                 </div>
+                <div id="slideshow-container" class="relative w-full h-[400px] rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200">
+                    </div>
             </section>
 
             <section>
                 <h3 id="current-cat-title" class="text-2xl font-black mb-8">All Discoveries</h3>
                 <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
-                    </div>
+                </div>
             </section>
         </div>
     </main>
@@ -140,25 +148,58 @@
         let allApps = [];
         let currentFilter = 'All';
         let activeDlUrl = "";
+        let slideIndex = 0;
 
+        // Slideshow Logic
         onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
-            const container = document.getElementById('featured-container');
-            container.innerHTML = data ? "" : "<p class='text-gray-400 px-4'>No spotlights today.</p>";
-            if(data) {
-                Object.values(data).forEach(item => {
-                    container.innerHTML += `
-                        <div class="relative min-w-[320px] md:min-w-[500px] h-72 rounded-[3rem] overflow-hidden snap-center shadow-lg group cursor-pointer">
-                            <img src="${item.banner || item.icon}" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent p-10 flex flex-col justify-end">
-                                <span class="text-blue-400 text-xs font-black uppercase tracking-widest mb-2">${item.category}</span>
-                                <h4 class="text-white text-3xl font-black tracking-tighter">${item.name}</h4>
+            const container = document.getElementById('slideshow-container');
+            if(!data) { container.innerHTML = "<div class='flex items-center justify-center h-full text-gray-400'>No featured apps</div>"; return; }
+            
+            container.innerHTML = "";
+            const apps = Object.values(data);
+            apps.forEach((item, idx) => {
+                const activeClass = idx === 0 ? 'active' : '';
+                container.innerHTML += `
+                    <div class="slide ${activeClass} absolute inset-0 w-full h-full">
+                        <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-12 flex flex-col justify-end">
+                            <div class="flex items-center gap-4 mb-4 translate-y-4 animate-[fadeIn_0.5s_ease_forwards]">
+                                <img src="${item.icon}" class="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-xl">
+                                <div>
+                                    <span class="text-blue-400 text-xs font-black uppercase tracking-widest">${item.category}</span>
+                                    <h4 class="text-white text-4xl font-black tracking-tighter">${item.name}</h4>
+                                </div>
                             </div>
-                        </div>`;
-                });
-            }
+                            <p class="text-gray-300 max-w-lg line-clamp-2 mb-6">${item.description || ''}</p>
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-blue-700 transition transform active:scale-95 shadow-xl shadow-blue-900/20">
+                                View Spotlight App
+                            </button>
+                        </div>
+                    </div>`;
+            });
+            startAutoSlide();
         });
 
+        function showSlide(n) {
+            const slides = document.getElementsByClassName("slide");
+            if (slides.length === 0) return;
+            if (n >= slides.length) slideIndex = 0;
+            if (n < 0) slideIndex = slides.length - 1;
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+            }
+            slides[slideIndex].classList.add("active");
+        }
+
+        window.nextSlide = () => { slideIndex++; showSlide(slideIndex); }
+        window.prevSlide = () => { slideIndex--; showSlide(slideIndex); }
+
+        function startAutoSlide() {
+            setInterval(() => { nextSlide(); }, 6000);
+        }
+
+        // App Grid Logic
         onValue(ref(db, 'apps'), (snap) => {
             const data = snap.val();
             allApps = data ? Object.values(data).filter(a => a.isConfirmed) : [];
@@ -174,7 +215,7 @@
                 return matchesCat && matchesSearch;
             });
 
-            filtered.forEach((app, index) => {
+            filtered.forEach((app) => {
                 const card = document.createElement('div');
                 card.className = "app-card bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl group overflow-hidden";
                 card.onclick = (e) => { if(!e.target.closest('.get-btn')) card.classList.toggle('expanded'); };
@@ -191,21 +232,9 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="details-pane mt-4 border-t border-gray-50 pt-4">
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'No description available for this application.'}</p>
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-50 p-3 rounded-2xl text-center">
-                                <p class="text-[9px] uppercase font-black text-gray-400">Developer</p>
-                                <p class="text-xs font-bold text-gray-800">Verified Hub</p>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded-2xl text-center">
-                                <p class="text-[9px] uppercase font-black text-gray-400">Size</p>
-                                <p class="text-xs font-bold text-gray-800">Adaptive</p>
-                            </div>
-                        </div>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'No description available.'}</p>
                     </div>
-
                     <button onclick="initDownload('${app.name}', '${app.downloadUrl}')" class="get-btn block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition transform active:scale-95 uppercase tracking-tighter">
                         Get Now
                     </button>
@@ -222,27 +251,20 @@
             document.getElementById('dl-progress').classList.add('hidden');
         };
 
-        window.closeDlModal = () => {
-            document.getElementById('dl-modal').classList.remove('active');
-        };
+        window.closeDlModal = () => document.getElementById('dl-modal').classList.remove('active');
 
         document.getElementById('start-dl-btn').onclick = () => {
             document.getElementById('dl-initial').classList.add('hidden');
             document.getElementById('dl-progress').classList.remove('hidden');
-            
             let progress = 0;
             const bar = document.getElementById('dl-bar');
             const percentText = document.getElementById('dl-percent');
-            
             const interval = setInterval(() => {
                 progress += Math.floor(Math.random() * 10) + 5;
                 if(progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    setTimeout(() => {
-                        window.location.href = activeDlUrl;
-                        closeDlModal();
-                    }, 500);
+                    setTimeout(() => { window.location.href = activeDlUrl; closeDlModal(); }, 500);
                 }
                 bar.style.width = progress + '%';
                 percentText.innerText = progress + '%';
@@ -250,14 +272,11 @@
         };
 
         document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
-
         window.filterCat = (cat) => {
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             document.querySelectorAll('.category-item').forEach(btn => {
-                const btnText = btn.querySelector('.sidebar-text').innerText;
-                const isMatch = (cat === 'All' && btnText === 'All Discoveries') || (cat === 'Games' && btnText === 'Gaming Zone') || (cat === 'Apps' && btnText === 'Applications') || (cat === 'Productivity' && btnText === 'Productivity') || (cat === 'Entertainment' && btnText === 'Entertainment') || (cat === 'Graphics & Design' && btnText === 'Design Tools');
-                btn.classList.toggle('active', isMatch);
+                btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All')));
             });
             renderApps(cat, document.getElementById('search-bar').value);
         };
