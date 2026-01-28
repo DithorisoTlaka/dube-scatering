@@ -22,46 +22,43 @@
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
         .category-item.active { background: #2563eb; color: white; }
 
-        /* Slideshow Animation */
         .slide { display: none; animation: slideFade 0.8s ease-in-out forwards; }
         .slide.active { display: block; }
-        @keyframes slideFade { from { opacity: 0; filter: blur(5px); } to { opacity: 1; filter: blur(0); } }
+        @keyframes slideFade { from { opacity: 0; } to { opacity: 1; } }
 
-        .app-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; height: fit-content; }
+        .app-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
         .app-card.expanded { grid-column: 1 / -1; cursor: default; }
-        .details-pane { display: none; animation: fadeIn 0.5s ease forwards; }
+        .details-pane { display: none; animation: fadeIn 0.4s ease forwards; }
         .expanded .details-pane { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .modal-backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); display: none; opacity: 0; transition: opacity 0.3s ease; z-index: 300; }
         .modal-backdrop.active { display: flex; opacity: 1; }
+        .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
     </style>
 </head>
 <body class="pb-24 md:pb-0">
 
-    <div id="dl-modal" class="modal-backdrop fixed inset-0 z-[200] items-center justify-center p-6">
-        <div class="bg-white rounded-[3rem] p-8 max-w-sm w-full text-center shadow-2xl">
-            <div id="dl-initial">
-                <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+    <div id="dl-modal" class="modal-backdrop fixed inset-0 items-center justify-center p-6">
+        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20">
+            <div id="dl-initial" class="text-center">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
-                <h3 class="text-2xl font-black tracking-tighter mb-2">Confirm Download</h3>
-                <p class="text-gray-500 font-medium mb-8">Are you sure you want to download <span id="target-app-name" class="text-black font-bold">this app</span>?</p>
-                <div class="flex flex-col gap-3">
-                    <button id="start-dl-btn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition active:scale-95">Download Now</button>
-                    <button onclick="closeDlModal()" class="w-full bg-gray-100 text-gray-500 py-4 rounded-2xl font-bold hover:bg-gray-200 transition">Cancel</button>
+                <h3 class="text-xl font-black tracking-tight mb-1">Install App?</h3>
+                <p class="text-gray-400 text-sm font-medium mb-6">Ready to download <span id="target-app-name" class="text-blue-600 font-bold"></span>?</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="closeDlModal()" class="py-3.5 rounded-xl font-bold text-gray-400 bg-gray-50 hover:bg-gray-100 transition">Skip</button>
+                    <button id="start-dl-btn" class="py-3.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition active:scale-95">Install</button>
                 </div>
             </div>
             
-            <div id="dl-progress" class="hidden">
-                <div class="w-20 h-20 bg-gray-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 relative overflow-hidden">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
+            <div id="dl-progress" class="hidden text-center">
+                <h3 class="text-lg font-black mb-4">Downloading...</h3>
+                <div class="w-full bg-gray-100 h-2 rounded-full mb-3 overflow-hidden">
+                    <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300 progress-glow"></div>
                 </div>
-                <h3 class="text-2xl font-black tracking-tighter mb-2">Downloading...</h3>
-                <div class="w-full bg-gray-100 h-3 rounded-full mb-4 overflow-hidden">
-                    <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
-                </div>
-                <p id="dl-percent" class="text-blue-600 font-black">0%</p>
+                <p id="dl-percent" class="text-blue-600 font-black text-sm">0%</p>
             </div>
         </div>
     </div>
@@ -105,26 +102,24 @@
         <div class="max-w-6xl mx-auto px-6 py-10">
             <div class="relative mb-12">
                 <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="search-bar" placeholder="Find your next favorite app..." 
+                <input type="text" id="search-bar" placeholder="Search for anything..." 
                     class="w-full pl-14 pr-6 py-5 bg-white rounded-[2rem] shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
 
             <section class="mb-14">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-black flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured Spotlights</h3>
+                    <h3 class="text-2xl font-black flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
                     <div class="flex gap-2">
                         <button onclick="prevSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
-                <div id="slideshow-container" class="relative w-full h-[400px] rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200">
-                    </div>
+                <div id="slideshow-container" class="relative w-full h-[400px] rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200"></div>
             </section>
 
             <section>
                 <h3 id="current-cat-title" class="text-2xl font-black mb-8">All Discoveries</h3>
-                <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
-                </div>
+                <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start"></div>
             </section>
         </div>
     </main>
@@ -150,56 +145,47 @@
         let activeDlUrl = "";
         let slideIndex = 0;
 
-        // Slideshow Logic
         onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
             const container = document.getElementById('slideshow-container');
-            if(!data) { container.innerHTML = "<div class='flex items-center justify-center h-full text-gray-400'>No featured apps</div>"; return; }
-            
+            if(!data) return;
             container.innerHTML = "";
-            const apps = Object.values(data);
-            apps.forEach((item, idx) => {
-                const activeClass = idx === 0 ? 'active' : '';
+            Object.values(data).forEach((item, idx) => {
                 container.innerHTML += `
-                    <div class="slide ${activeClass} absolute inset-0 w-full h-full">
+                    <div class="slide ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full">
                         <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-12 flex flex-col justify-end">
-                            <div class="flex items-center gap-4 mb-4 translate-y-4 animate-[fadeIn_0.5s_ease_forwards]">
-                                <img src="${item.icon}" class="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-xl">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent p-12 flex flex-col justify-end">
+                            <div class="flex items-center gap-5 mb-5">
+                                <img src="${item.icon}" class="w-16 h-16 rounded-2xl shadow-2xl">
                                 <div>
-                                    <span class="text-blue-400 text-xs font-black uppercase tracking-widest">${item.category}</span>
+                                    <span class="text-blue-400 text-[10px] font-black uppercase tracking-widest">${item.category}</span>
                                     <h4 class="text-white text-4xl font-black tracking-tighter">${item.name}</h4>
                                 </div>
                             </div>
-                            <p class="text-gray-300 max-w-lg line-clamp-2 mb-6">${item.description || ''}</p>
-                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-blue-700 transition transform active:scale-95 shadow-xl shadow-blue-900/20">
-                                View Spotlight App
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-8 py-4 rounded-2xl font-black text-xs hover:bg-gray-100 transition shadow-xl">
+                                Get Spotlight App
                             </button>
                         </div>
                     </div>`;
             });
-            startAutoSlide();
         });
 
-        function showSlide(n) {
-            const slides = document.getElementsByClassName("slide");
-            if (slides.length === 0) return;
-            if (n >= slides.length) slideIndex = 0;
-            if (n < 0) slideIndex = slides.length - 1;
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].classList.remove("active");
-            }
+        window.nextSlide = () => {
+            const slides = document.querySelectorAll(".slide");
+            if (!slides.length) return;
+            slides[slideIndex].classList.remove("active");
+            slideIndex = (slideIndex + 1) % slides.length;
             slides[slideIndex].classList.add("active");
         }
-
-        window.nextSlide = () => { slideIndex++; showSlide(slideIndex); }
-        window.prevSlide = () => { slideIndex--; showSlide(slideIndex); }
-
-        function startAutoSlide() {
-            setInterval(() => { nextSlide(); }, 6000);
+        window.prevSlide = () => {
+            const slides = document.querySelectorAll(".slide");
+            if (!slides.length) return;
+            slides[slideIndex].classList.remove("active");
+            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+            slides[slideIndex].classList.add("active");
         }
+        setInterval(nextSlide, 6000);
 
-        // App Grid Logic
         onValue(ref(db, 'apps'), (snap) => {
             const data = snap.val();
             allApps = data ? Object.values(data).filter(a => a.isConfirmed) : [];
@@ -216,26 +202,38 @@
             });
 
             filtered.forEach((app) => {
+                const relatedApps = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0, 3);
                 const card = document.createElement('div');
                 card.className = "app-card bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl group overflow-hidden";
                 card.onclick = (e) => { if(!e.target.closest('.get-btn')) card.classList.toggle('expanded'); };
                 
                 card.innerHTML = `
                     <div class="flex items-start gap-4 mb-4">
-                        <img src="${app.icon}" class="w-16 h-16 rounded-2xl shadow-inner object-cover bg-gray-50 border border-gray-50">
+                        <img src="${app.icon}" class="w-16 h-16 rounded-2xl object-cover bg-gray-50">
                         <div class="flex-1">
                             <h4 class="font-black text-base line-clamp-1">${app.name}</h4>
-                            <p class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">${app.category}</p>
-                            <div class="flex items-center mt-1">
-                                <i class="fa-solid fa-star text-orange-400 text-[10px]"></i>
-                                <span class="ml-1 text-[10px] text-gray-500 font-bold">${app.rating || '5.0'}</span>
+                            <p class="text-gray-400 text-[10px] font-bold uppercase">${app.category}</p>
+                            <div class="flex items-center mt-1 text-[10px] font-bold text-gray-500">
+                                <i class="fa-solid fa-star text-orange-400 mr-1"></i> ${app.rating || '5.0'}
                             </div>
                         </div>
                     </div>
-                    <div class="details-pane mt-4 border-t border-gray-50 pt-4">
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'No description available.'}</p>
+                    <div class="details-pane mt-4 border-t border-gray-50 pt-4 mb-4">
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'Verified secure application.'}</p>
+                        
+                        <div class="mb-6">
+                            <h5 class="text-xs font-black uppercase text-gray-400 mb-3 tracking-widest">Related in ${app.category}</h5>
+                            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                                ${relatedApps.map(r => `
+                                    <div class="min-w-[50px] text-center">
+                                        <img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 shadow-sm">
+                                        <p class="text-[8px] font-bold mt-1 text-gray-500 line-clamp-1">${r.name}</p>
+                                    </div>
+                                `).join('') || '<p class="text-[10px] text-gray-400">No related apps found.</p>'}
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="initDownload('${app.name}', '${app.downloadUrl}')" class="get-btn block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition transform active:scale-95 uppercase tracking-tighter">
+                    <button onclick="initDownload('${app.name}', '${app.downloadUrl}')" class="get-btn block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition uppercase">
                         Get Now
                     </button>
                 `;
@@ -258,26 +256,23 @@
             document.getElementById('dl-progress').classList.remove('hidden');
             let progress = 0;
             const bar = document.getElementById('dl-bar');
-            const percentText = document.getElementById('dl-percent');
+            const percent = document.getElementById('dl-percent');
             const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 10) + 5;
+                progress += Math.floor(Math.random() * 8) + 4;
                 if(progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    setTimeout(() => { window.location.href = activeDlUrl; closeDlModal(); }, 500);
+                    setTimeout(() => { window.location.href = activeDlUrl; closeDlModal(); }, 600);
                 }
                 bar.style.width = progress + '%';
-                percentText.innerText = progress + '%';
-            }, 200);
+                percent.innerText = progress + '%';
+            }, 180);
         };
 
         document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
         window.filterCat = (cat) => {
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
-            document.querySelectorAll('.category-item').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All')));
-            });
             renderApps(cat, document.getElementById('search-bar').value);
         };
     </script>
