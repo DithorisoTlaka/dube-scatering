@@ -168,7 +168,7 @@
         let activeDlUrl = "";
         let slideIndex = 0;
 
-        onValue(ref(db, 'featured'), (snap) => {
+        onValue(ref(db, 'banner'), (snap) => {
             const data = snap.val();
             const container = document.getElementById('slideshow-container');
             if(!data) return;
