@@ -20,7 +20,7 @@
         }
 
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
-        .category-item.active { background: #2563eb; color: white; }
+        .category-item.active { background: #2563eb !important; color: white !important; }
 
         .slide { display: none; animation: slideFade 0.8s ease-in-out forwards; }
         .slide.active { display: block; }
@@ -34,9 +34,14 @@
 
         .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); }
         .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+
+        /* Mobile Nav Styling */
+        .mobile-nav {
+            box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="pb-24 md:pb-0">
+<body class="pb-32 md:pb-0">
 
     <div id="details-modal" class="custom-modal modal-backdrop fixed inset-0 z-[250] items-center justify-center p-4">
         <div class="modal-content bg-white rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
@@ -121,6 +126,33 @@
             </button>
         </nav>
     </aside>
+
+    <nav class="mobile-nav fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex md:hidden justify-between items-center px-4 py-3 z-[200] overflow-x-auto no-scrollbar">
+        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-grid-2 text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">All</span>
+        </button>
+        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-gamepad text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Games</span>
+        </button>
+        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-layer-group text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Apps</span>
+        </button>
+        <button onclick="filterCat('Productivity')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Prod</span>
+        </button>
+        <button onclick="filterCat('Entertainment')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-clapperboard text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Entert</span>
+        </button>
+        <button onclick="filterCat('Graphics & Design')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+            <i class="fa-solid fa-bezier-curve text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Design</span>
+        </button>
+    </nav>
 
     <main class="main-content min-h-screen">
         <div class="max-w-6xl mx-auto px-6 py-10">
@@ -301,7 +333,6 @@
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             
-            // Toggle Spotlight Visibility
             const spotlight = document.getElementById('spotlight-section');
             if (cat === 'All') {
                 spotlight.style.display = 'block';
@@ -309,9 +340,9 @@
                 spotlight.style.display = 'none';
             }
 
+            // Updated selection logic for both Navbars
             document.querySelectorAll('.category-item').forEach(btn => {
-                const btnText = btn.querySelector('.sidebar-text').innerText;
-                const isMatch = (cat === 'All' && btnText === 'All Discoveries') || (cat === 'Games' && btnText === 'Gaming Zone') || (cat === 'Apps' && btnText === 'Applications') || (cat === 'Productivity' && btnText === 'Productivity') || (cat === 'Entertainment' && btnText === 'Entertainment') || (cat === 'Graphics & Design' && btnText === 'Design Tools');
+                const isMatch = btn.getAttribute('onclick').includes(`'${cat}'`);
                 btn.classList.toggle('active', isMatch);
             });
             renderApps(cat, document.getElementById('search-bar').value);
