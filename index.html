@@ -227,9 +227,14 @@
         });
 
         function updateCarousel() {
-            const featured = allAppsRaw.slice(-3).reverse();
-            if(featured.length === 0) {
-                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold">No Featured Apps</div>`;
+            // Only apps where banner === true (or exists and is truthy)
+            const featured = allAppsRaw
+                .filter(item => item.banner === true)
+                .slice(-3)           // still take up to the last 3 banner apps (most recent)
+                .reverse();          // newest on first slide
+
+            if (featured.length === 0) {
+                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold">No Banner Apps Available</div>`;
                 return;
             }
 
@@ -248,7 +253,7 @@
             clearInterval(carouselTimer);
             carouselTimer = setInterval(() => {
                 const slides = document.querySelectorAll('.carousel-item');
-                if(slides.length < 2) return;
+                if (slides.length < 2) return;
                 slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
                 slideIndex = (slideIndex + 1) % slides.length;
                 slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
