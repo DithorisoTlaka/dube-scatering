@@ -12,6 +12,7 @@
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .app-card:active { transform: scale(0.96); }
 
+        /* Smooth Transitions */
         .sidebar-smooth { 
             transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
         }
@@ -22,6 +23,7 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
+        /* Entrance Animation */
         @keyframes cardPop {
             from { opacity: 0; transform: translateY(20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -30,8 +32,10 @@
             animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* Carousel Fade */
         .carousel-item { transition: opacity 0.8s ease-in-out; }
 
+        /* Modal Transitions */
         #detail-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         #detail-content { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -65,11 +69,13 @@
             </a>
         </nav>
 
-        <div class="mt-auto flex items-center p-3 bg-gray-50 rounded-2xl cursor-pointer overflow-hidden">
-            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shrink-0">JS</div>
+        <div id="sidebar-user" onclick="handleAuth()" class="mt-auto flex items-center p-3 bg-gray-50 rounded-2xl cursor-pointer overflow-hidden hover:bg-gray-100 transition">
+            <div id="user-avatar-sidebar" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shrink-0 overflow-hidden">
+                <i class="fa-solid fa-user"></i>
+            </div>
             <div class="ml-3 fade-label opacity-0 group-hover/sidebar:opacity-100 whitespace-nowrap">
-                <p class="text-sm font-bold">John Smith</p>
-                <p class="text-[10px] text-gray-400">Pro Account</p>
+                <p id="user-name-sidebar" class="text-sm font-bold">Sign In</p>
+                <p id="user-status-sidebar" class="text-[10px] text-gray-400">Click to login</p>
             </div>
         </div>
     </aside>
@@ -78,7 +84,7 @@
         
         <header class="p-6 md:p-10 flex justify-between items-end sticky top-0 z-40 md:static glass md:bg-transparent md:backdrop-blur-none">
             <div>
-                <p class="text-[11px] font-extrabold text-gray-400 uppercase tracking-[0.2em]" id="current-date">Tuesday, Jan 27</p>
+                <p id="header-date" class="text-[11px] font-extrabold text-gray-400 uppercase tracking-[0.2em]">Tuesday, Jan 27</p>
                 <h1 id="header-title" class="text-4xl font-black tracking-tight">Today</h1>
             </div>
             <div class="hidden md:block w-80">
@@ -87,8 +93,8 @@
                     <input type="text" id="app-search" placeholder="Search apps..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition shadow-sm">
                 </div>
             </div>
-            <div class="md:hidden w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
-                <img src="https://ui-avatars.com/api/?name=John+Smith&background=0D8ABC&color=fff" alt="Profile">
+            <div onclick="handleAuth()" class="md:hidden w-10 h-10 bg-gray-200 rounded-full overflow-hidden cursor-pointer">
+                <img id="user-avatar-mobile" src="https://ui-avatars.com/api/?name=?&background=ddd&color=fff" alt="Profile">
             </div>
         </header>
 
@@ -139,8 +145,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // TODO: Replace with your actual Firebase project configuration
+        // CONFIGURATION: Update with your project details
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -153,21 +160,14 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        // --- UI State ---
-        const featuredItems = [
-            { title: "Retro Vibes: Ultimate Synth", subtitle: "Editor's Choice", desc: "Step into the 80s with the most advanced synthesizer app.", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" },
-            { title: "Wild Rift: New Season", subtitle: "Top Game", desc: "Master the Rift with brand new champions and rewards.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200" },
-            { title: "ProCreate: Masterclass", subtitle: "Featured App", desc: "Unlock your artistic potential with new brush engines.", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=1200" }
-        ];
+        // Data Storage
+        let remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
+        let currentUser = null;
 
-        let remoteAppData = {
-            Discover: [],
-            Games: [],
-            Apps: [],
-            Arcade: []
-        };
-
+        // UI References
         const grid = document.getElementById('app-grid');
         const headerTitle = document.getElementById('header-title');
         const sectionTitle = document.getElementById('section-title');
@@ -175,37 +175,70 @@
         const carousel = document.getElementById('discover-carousel');
         const modal = document.getElementById('detail-modal');
         const modalBody = document.getElementById('modal-body');
+        
         let currentCategory = 'Discover';
         let slideIndex = 0;
 
-        // --- Realtime Data Sync ---
-        const appsRef = ref(db, 'apps');
-        onValue(appsRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Reset local data
-                remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
-                
-                // Convert object to array and categorize
-                Object.keys(data).forEach(key => {
-                    const appObj = { id: key, ...data[key] };
-                    const cat = appObj.category || 'Apps';
-                    
-                    // Logic to map database categories to your tabs
-                    if (remoteAppData[cat]) {
-                        remoteAppData[cat].push(appObj);
-                    } else {
-                        remoteAppData.Apps.push(appObj);
-                    }
-                });
-                
-                // Re-render current view
-                renderApps(currentCategory);
+        // --- AUTH LOGIC ---
+        window.handleAuth = async () => {
+            if (currentUser) {
+                if (confirm("Do you want to sign out?")) {
+                    await signOut(auth);
+                }
+            } else {
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                    alert("Failed to sign in. Check console for details.");
+                }
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const sidebarAvatar = document.getElementById('user-avatar-sidebar');
+            const sidebarName = document.getElementById('user-name-sidebar');
+            const sidebarStatus = document.getElementById('user-status-sidebar');
+            const mobileAvatar = document.getElementById('user-avatar-mobile');
+
+            if (user) {
+                sidebarAvatar.innerHTML = `<img src="${user.photoURL}" class="w-full h-full object-cover">`;
+                mobileAvatar.src = user.photoURL;
+                sidebarName.innerText = user.displayName;
+                sidebarStatus.innerText = "Pro Account";
+            } else {
+                sidebarAvatar.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                mobileAvatar.src = `https://ui-avatars.com/api/?name=?&background=ddd&color=fff`;
+                sidebarName.innerText = "Sign In";
+                sidebarStatus.innerText = "Click to login";
             }
         });
 
-        // --- Functions ---
-        window.initCarousel = function() {
+        // --- DATABASE LOGIC ---
+        const appsRef = ref(db, 'apps');
+        onValue(appsRef, (snapshot) => {
+            const data = snapshot.val();
+            remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    const appObj = { id: key, ...data[key] };
+                    const cat = appObj.category || 'Apps';
+                    if (remoteAppData[cat]) remoteAppData[cat].push(appObj);
+                    else remoteAppData.Apps.push(appObj);
+                });
+            }
+            renderApps(currentCategory);
+        });
+
+        // --- CAROUSEL ---
+        const featuredItems = [
+            { title: "Retro Vibes: Ultimate Synth", subtitle: "Editor's Choice", desc: "Step into the 80s with the most advanced synthesizer app.", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200" },
+            { title: "Wild Rift: New Season", subtitle: "Top Game", desc: "Master the Rift with brand new champions and rewards.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200" },
+            { title: "ProCreate: Masterclass", subtitle: "Featured App", desc: "Unlock your artistic potential with new brush engines.", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=1200" }
+        ];
+
+        window.initCarousel = () => {
             carousel.innerHTML = featuredItems.map((item, i) => `
                 <div class="carousel-item absolute inset-0 opacity-0 ${i === 0 ? 'opacity-100' : ''}">
                     <img src="${item.img}" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105">
@@ -228,14 +261,13 @@
             }, 5000);
         }
 
-        window.renderApps = function(category, filter = '') {
+        // --- CORE UI RENDERING ---
+        window.renderApps = (category, filter = '') => {
             grid.innerHTML = '';
             carousel.style.display = category === 'Discover' ? 'block' : 'none';
             
-            const sourceData = (category === 'Discover' ? Object.values(remoteAppData).flat() : remoteAppData[category]);
-            const apps = sourceData.filter(app => 
-                app.name.toLowerCase().includes(filter.toLowerCase())
-            );
+            const source = (category === 'Discover' ? Object.values(remoteAppData).flat() : remoteAppData[category] || []);
+            const apps = source.filter(app => app.name.toLowerCase().includes(filter.toLowerCase()));
             
             apps.forEach((app, index) => {
                 const card = document.createElement('div');
@@ -252,7 +284,7 @@
                         <div class="flex items-center justify-between">
                              <button class="bg-[#F0F0F7] text-blue-600 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">${app.price || 'Free'}</button>
                              <div class="flex items-center space-x-1">
-                                <span class="text-xs font-bold text-gray-800">${app.rating || '5.0'}</span>
+                                <span class="text-xs font-bold text-gray-800">${app.rating || '4.9'}</span>
                                 <i class="fa-solid fa-star text-[10px] text-yellow-400"></i>
                              </div>
                         </div>
@@ -261,7 +293,7 @@
             });
         }
 
-        window.openDetail = function(app) {
+        window.openDetail = (app) => {
             modalBody.innerHTML = `
                 <img src="${app.img || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f'}" class="w-full h-72 object-cover" />
                 <div class="p-10">
@@ -273,13 +305,14 @@
                             <button class="bg-blue-600 text-white px-8 py-2 rounded-full font-bold">GET</button>
                         </div>
                     </div>
-                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc || 'No description available.'}</p>
+                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc || 'No description provided.'}</p>
                 </div>`;
             modal.classList.remove('modal-hidden');
-        }
+        };
 
-        window.closeDetail = function() { modal.classList.add('modal-hidden'); }
+        window.closeDetail = () => modal.classList.add('modal-hidden');
 
+        // Event Listeners
         searchInput.addEventListener('input', (e) => renderApps(currentCategory, e.target.value));
 
         document.querySelectorAll('.nav-link, .mobile-link').forEach(link => {
@@ -301,8 +334,8 @@
 
         // Initialize UI
         initCarousel();
-        const now = new Date();
-        document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        const date = new Date();
+        document.getElementById('header-date').innerText = date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
     </script>
 </body>
 </html>
