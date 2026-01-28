@@ -11,22 +11,17 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .app-card:active { transform: scale(0.96); }
-
         .sidebar-smooth { transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .content-smooth { transition: margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-label { transition: opacity 0.3s ease, transform 0.3s ease; }
-
         @keyframes cardPop {
             from { opacity: 0; transform: translateY(20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .animate-pop { animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .carousel-item { transition: opacity 0.8s ease-in-out; }
-
         #detail-modal, #download-modal, #confirm-modal, #success-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        
-        /* Progress Bar Animation */
         .progress-fill { transition: width 0.4s ease-out; }
     </style>
 </head>
@@ -37,7 +32,6 @@
             <span class="inline-block group-hover/sidebar:hidden">A"</span>
             <span class="hidden group-hover/sidebar:inline">All"Apps</span>
         </h1>
-        
         <nav class="space-y-1 flex-1">
             <a href="#" data-tab="Discover" class="nav-link flex items-center bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold transition-all">
                 <i class="fa-solid fa-house text-lg w-6 flex justify-center"></i> 
@@ -56,7 +50,6 @@
                 <span class="fade-label ml-4 opacity-0 group-hover/sidebar:opacity-100 pointer-events-none">Arcade</span>
             </a>
         </nav>
-
         <div id="sidebar-user" onclick="handleAuth()" class="mt-auto flex items-center p-3 bg-gray-50 rounded-2xl cursor-pointer overflow-hidden hover:bg-gray-100 transition">
             <div id="user-avatar-sidebar" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shrink-0 overflow-hidden">
                 <i class="fa-solid fa-user"></i>
@@ -80,13 +73,10 @@
                     <input type="text" id="app-search" placeholder="Search apps..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition shadow-sm">
                 </div>
             </div>
-            <div onclick="handleAuth()" class="md:hidden w-10 h-10 bg-gray-200 rounded-full overflow-hidden cursor-pointer">
-                <img id="user-avatar-mobile" src="https://ui-avatars.com/api/?name=?&background=ddd&color=fff" alt="Profile">
-            </div>
         </header>
 
         <section class="px-6 md:px-10 pb-12 max-w-7xl">
-            <div id="discover-carousel" class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer animate-pop">
+            <div id="discover-carousel" class="relative w-full h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 group cursor-pointer animate-pop bg-gray-200">
             </div>
 
             <div class="flex justify-between items-end mb-8">
@@ -94,7 +84,6 @@
                     <h2 id="section-title" class="text-3xl font-black">Must-Have Apps</h2>
                     <p class="text-gray-500 font-medium">Updated just now</p>
                 </div>
-                <a href="#" class="text-blue-600 font-bold hover:underline">See All</a>
             </div>
 
             <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -107,48 +96,6 @@
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             <div id="modal-body" class="overflow-y-auto"></div>
-        </div>
-    </div>
-
-    <div id="download-modal" class="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
-        <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] text-center shadow-2xl">
-            <div id="dl-icon-container" class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">
-                <i class="fa-solid fa-download animate-bounce"></i>
-            </div>
-            <h3 id="dl-name" class="text-xl font-black mb-1">Downloading...</h3>
-            <p id="dl-status" class="text-gray-400 text-sm mb-6">Waiting for server...</p>
-            <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden mb-4">
-                <div id="dl-progress-bar" class="progress-fill h-full bg-blue-600 w-0"></div>
-            </div>
-            <p id="dl-percentage" class="text-blue-600 font-black">0%</p>
-        </div>
-    </div>
-
-    <div id="confirm-modal" class="fixed inset-0 z-[75] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
-        <div class="bg-white w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl text-center">
-            <div id="confirm-icon" class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-                <i class="fa-solid fa-cloud-arrow-down"></i>
-            </div>
-            <h3 class="text-2xl font-black mb-3">Download App</h3>
-            <p id="confirm-text" class="text-gray-600 mb-8">Do you want to download <strong id="confirm-app-name"></strong>?</p>
-            <div class="flex gap-4 justify-center">
-                <button onclick="cancelDownload()" class="px-8 py-3 bg-gray-200 text-gray-800 font-bold rounded-full hover:bg-gray-300 transition">Cancel</button>
-                <button id="confirm-download-btn" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition">Download</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="success-modal" class="fixed inset-0 z-[80] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm modal-hidden">
-        <div class="bg-white w-full max-w-md p-10 rounded-[2.5rem] shadow-2xl text-center relative overflow-hidden">
-            <div class="absolute -top-20 -right-20 w-40 h-40 bg-green-100 rounded-full opacity-30"></div>
-            <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-green-100 rounded-full opacity-20"></div>
-            
-            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-5xl shadow-lg">
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <h3 class="text-2xl font-black mb-2">Installation Complete!</h3>
-            <p id="success-text" class="text-gray-600 mb-8">Enjoy using <strong id="success-app-name"></strong></p>
-            <button onclick="closeSuccessModal()" class="px-10 py-4 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 transition shadow-lg shadow-green-200">Open App</button>
         </div>
     </div>
 
@@ -174,37 +121,13 @@
 
         let allAppsRaw = [];
         let remoteAppData = { Discover: [], Games: [], Apps: [], Arcade: [] };
-        let currentUser = null;
         let slideIndex = 0;
         let carouselTimer;
-        let pendingDownloadApp = null;
 
         const grid = document.getElementById('app-grid');
         const carousel = document.getElementById('discover-carousel');
-        
-        // --- AUTH ---
-        window.handleAuth = async () => {
-            if (currentUser) { if (confirm("Sign out?")) await signOut(auth); } 
-            else { try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); } }
-        };
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const sidebarAvatar = document.getElementById('user-avatar-sidebar');
-            const sidebarName = document.getElementById('user-name-sidebar');
-            const mobileAvatar = document.getElementById('user-avatar-mobile');
-            if (user) {
-                sidebarAvatar.innerHTML = `<img src="${user.photoURL}" class="w-full h-full object-cover">`;
-                mobileAvatar.src = user.photoURL;
-                sidebarName.innerText = user.displayName;
-            } else {
-                sidebarAvatar.innerHTML = `<i class="fa-solid fa-user"></i>`;
-                mobileAvatar.src = `https://ui-avatars.com/api/?name=?&background=ddd&color=fff`;
-                sidebarName.innerText = "Sign In";
-            }
-        });
-
-        // --- DATA & CAROUSEL ---
+        // --- FETCH DATA ---
         onValue(ref(db, 'apps'), (snapshot) => {
             const data = snapshot.val();
             allAppsRaw = [];
@@ -222,21 +145,21 @@
             renderApps('Discover');
         });
 
+        // --- CAROUSEL RENDERER ---
         function updateCarousel() {
-            // Updated to pull from the "apps" node where banner property is true
-            const featured = allAppsRaw
-                .filter(item => item.banner === true)
-                .slice(-5)           // Get latest 5 banner apps
-                .reverse();          // Newest first
+            // Filters apps where 'banner' is true
+            const featured = allAppsRaw.filter(item => item.banner === true).slice(-5).reverse();
 
             if (featured.length === 0) {
-                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold">No Banner Apps Featured</div>`;
+                carousel.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 font-bold italic">Add apps with banner: true to see them here</div>`;
                 return;
             }
 
             carousel.innerHTML = featured.map((item, i) => `
-                <div class="carousel-item absolute inset-0 opacity-0 ${i === 0 ? 'opacity-100' : ''}">
-                    <img src="${item.img || 'https://i.postimg.cc/NFWKPjXM/git.jpg'}" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ${i === 0 ? 'opacity-100' : ''}">
+                    <img src="${item.img || 'https://images.unsplash.com/photo-1614332287897-cdc485fa562d?q=80&w=1200'}" 
+                         class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-105"
+                         onerror="this.src='https://images.unsplash.com/photo-1614332287897-cdc485fa562d?q=80&w=1200'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-10 left-10 right-10 text-white">
                         <p class="text-xs font-bold uppercase opacity-70 tracking-widest mb-2">Featured</p>
@@ -246,93 +169,23 @@
                 </div>
             `).join('');
 
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
             clearInterval(carouselTimer);
             slideIndex = 0;
-            if (featured.length > 1) {
-                carouselTimer = setInterval(() => {
-                    const slides = document.querySelectorAll('.carousel-item');
-                    if (slides.length < 2) return;
-                    slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
-                    slideIndex = (slideIndex + 1) % slides.length;
-                    slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
-                }, 5000);
-            }
+            const slides = document.querySelectorAll('.carousel-item');
+            if (slides.length <= 1) return;
+
+            carouselTimer = setInterval(() => {
+                slides[slideIndex].classList.replace('opacity-100', 'opacity-0');
+                slideIndex = (slideIndex + 1) % slides.length;
+                slides[slideIndex].classList.replace('opacity-0', 'opacity-100');
+            }, 5000);
         }
 
-        window.openDetailByKey = (id) => {
-            const app = allAppsRaw.find(a => a.id === id);
-            if(app) openDetail(app);
-        };
-
-        // --- DOWNLOAD FLOW ---
-        window.requestDownload = (name, color, icon) => {
-            pendingDownloadApp = { name, color, icon };
-            const modal = document.getElementById('confirm-modal');
-            document.getElementById('confirm-app-name').innerText = name;
-            
-            const iconEl = document.getElementById('confirm-icon');
-            iconEl.innerHTML = `<i class="fa-solid ${icon || 'fa-cloud-arrow-down'}"></i>`;
-            iconEl.className = `w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg bg-gradient-to-br ${color || 'from-blue-500 to-indigo-600'}`;
-
-            modal.classList.remove('modal-hidden');
-        };
-
-        window.confirmDownload = () => {
-            document.getElementById('confirm-modal').classList.add('modal-hidden');
-            if (!pendingDownloadApp) return;
-            startDownload(pendingDownloadApp.name, pendingDownloadApp.color, pendingDownloadApp.icon);
-            pendingDownloadApp = null;
-        };
-
-        window.cancelDownload = () => {
-            document.getElementById('confirm-modal').classList.add('modal-hidden');
-            pendingDownloadApp = null;
-        };
-
-        window.startDownload = (name, color, icon) => {
-            const modal = document.getElementById('download-modal');
-            const bar = document.getElementById('dl-progress-bar');
-            const percentText = document.getElementById('dl-percentage');
-            const statusText = document.getElementById('dl-status');
-            const iconBox = document.getElementById('dl-icon-container');
-            
-            document.getElementById('dl-name').innerText = name;
-            iconBox.className = `w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg bg-gradient-to-br ${color || 'from-blue-500 to-indigo-600'}`;
-            iconBox.innerHTML = `<i class="fa-solid ${icon || 'fa-rocket'} animate-bounce"></i>`;
-
-            modal.classList.remove('modal-hidden');
-            let progress = 0;
-            bar.style.width = '0%';
-            
-            const int = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 2;
-                if(progress > 100) progress = 100;
-                
-                bar.style.width = progress + '%';
-                percentText.innerText = progress + '%';
-                statusText.innerText = progress < 100 ? 'Installing components...' : 'Ready to use!';
-
-                if(progress >= 100) {
-                    clearInterval(int);
-                    setTimeout(() => {
-                        modal.classList.add('modal-hidden');
-                        showSuccessModal(name);
-                    }, 800);
-                }
-            }, 400);
-        };
-
-        function showSuccessModal(name) {
-            const modal = document.getElementById('success-modal');
-            document.getElementById('success-app-name').innerText = name;
-            modal.classList.remove('modal-hidden');
-        }
-
-        window.closeSuccessModal = () => {
-            document.getElementById('success-modal').classList.add('modal-hidden');
-        };
-
-        // --- UI RENDERING ---
+        // --- APP GRID RENDERER ---
         window.renderApps = (category, filter = '') => {
             grid.innerHTML = '';
             carousel.style.display = category === 'Discover' ? 'block' : 'none';
@@ -344,9 +197,15 @@
                 card.className = "app-card flex items-center space-x-4 bg-white p-5 rounded-[2rem] shadow-sm hover:shadow-xl transition duration-300 cursor-pointer border border-transparent hover:border-blue-100 opacity-0 animate-pop";
                 card.style.animationDelay = `${index * 40}ms`;
                 card.onclick = () => openDetail(app);
+
+                // Use icon_url if available, else use FontAwesome icon, else use default rocket
+                const iconDisplay = app.icon_url 
+                    ? `<img src="${app.icon_url}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${app.name}&background=random'">`
+                    : `<i class="fa-solid ${app.icon || 'fa-rocket'}"></i>`;
+
                 card.innerHTML = `
-                    <div class="w-20 h-20 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shrink-0 overflow-hidden">
-                        ${app.icon ? `<i class="fa-solid ${app.icon}"></i>` : (app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-rocket"></i>`)}
+                    <div class="w-20 h-20 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-[1.5rem] flex items-center justify-center text-white text-3xl shrink-0 overflow-hidden shadow-inner">
+                        ${iconDisplay}
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-extrabold text-gray-900 truncate text-lg leading-tight">${app.name}</h3>
@@ -360,41 +219,50 @@
             });
         };
 
+        // --- MODAL HELPERS ---
         window.openDetail = (app) => {
-            document.getElementById('modal-body').innerHTML = `
+            const modalBody = document.getElementById('modal-body');
+            const iconDisplay = app.icon_url 
+                    ? `<img src="${app.icon_url}" class="w-full h-full object-cover">`
+                    : `<i class="fa-solid ${app.icon || 'fa-rocket'}"></i>`;
+
+            modalBody.innerHTML = `
                 <img src="${app.img || 'https://images.unsplash.com/photo-1614332287897-cdc485fa562d?q=80&w=1200'}" class="w-full h-72 object-cover" />
                 <div class="p-10">
                     <div class="flex items-start space-x-6 mb-8">
-                        <div class="w-24 h-24 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-3xl flex items-center justify-center text-white text-4xl overflow-hidden">
-                            ${app.icon ? `<i class="fa-solid ${app.icon}"></i>` : (app.icon_url ? `<img src="${app.icon_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-rocket"></i>`)}
+                        <div class="w-24 h-24 bg-gradient-to-br ${app.color || 'from-blue-500 to-indigo-600'} rounded-3xl flex items-center justify-center text-white text-4xl overflow-hidden shadow-lg">
+                            ${iconDisplay}
                         </div>
                         <div class="flex-1">
                             <h2 class="text-4xl font-black">${app.name}</h2>
                             <p class="text-blue-600 font-bold mb-4">${app.category}</p>
-                            <button onclick="requestDownload('${app.name.replace(/'/g, "\\'")}', '${app.color || ''}', '${app.icon || ''}')" class="bg-blue-600 text-white px-10 py-3 rounded-full font-black shadow-lg shadow-blue-200 active:scale-95 transition">GET</button>
+                            <button class="bg-blue-600 text-white px-10 py-3 rounded-full font-black shadow-lg shadow-blue-200 active:scale-95 transition">GET</button>
                         </div>
                     </div>
-                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc || 'No description provided for this application.'}</p>
+                    <p class="text-gray-500 text-lg leading-relaxed">${app.desc || 'No description provided.'}</p>
                 </div>`;
             document.getElementById('detail-modal').classList.remove('modal-hidden');
         };
 
+        window.openDetailByKey = (id) => {
+            const app = allAppsRaw.find(a => a.id === id);
+            if(app) openDetail(app);
+        };
+
         window.closeDetail = () => document.getElementById('detail-modal').classList.add('modal-hidden');
 
-        // Listeners
+        // Global date and search
+        document.getElementById('header-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
         document.getElementById('app-search').addEventListener('input', (e) => renderApps('Discover', e.target.value));
-        document.querySelectorAll('.nav-link, .mobile-link').forEach(link => {
-            link.addEventListener('click', (e) => {
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
                 const tab = link.getAttribute('data-tab');
                 document.getElementById('header-title').innerText = tab === 'Discover' ? 'Today' : tab;
                 renderApps(tab);
             });
         });
-
-        document.getElementById('header-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-
-        // Connect confirm button
-        document.getElementById('confirm-download-btn').addEventListener('click', confirmDownload);
     </script>
 </body>
 </html>
