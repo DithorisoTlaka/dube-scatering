@@ -26,35 +26,61 @@
         .slide.active { display: block; }
         @keyframes slideFade { from { opacity: 0; } to { opacity: 1; } }
 
-        .app-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
-        .app-card.expanded { grid-column: 1 / -1; cursor: default; }
-        .details-pane { display: none; animation: fadeIn 0.4s ease forwards; }
-        .expanded .details-pane { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Modal Transitions */
+        .custom-modal { display: none; opacity: 0; transition: all 0.3s ease; }
+        .custom-modal.active { display: flex; opacity: 1; }
+        .modal-content { transform: scale(0.9); transition: transform 0.3s ease; }
+        .custom-modal.active .modal-content { transform: scale(1); }
 
-        .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); display: none; opacity: 0; transition: opacity 0.3s ease; z-index: 300; }
-        .modal-backdrop.active { display: flex; opacity: 1; }
+        .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); }
         .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
     </style>
 </head>
 <body class="pb-24 md:pb-0">
 
-    <div id="dl-modal" class="modal-backdrop fixed inset-0 items-center justify-center p-6">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20">
+    <div id="details-modal" class="custom-modal modal-backdrop fixed inset-0 z-[250] items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div id="modal-image-container" class="relative h-64 w-full">
+                <img id="modal-banner" src="" class="w-full h-full object-cover">
+                <button onclick="closeDetailsModal()" class="absolute top-6 right-6 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-black/40 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-8 overflow-y-auto no-scrollbar">
+                <div class="flex items-center gap-6 mb-8">
+                    <img id="modal-icon" src="" class="w-20 h-20 rounded-3xl shadow-lg border border-gray-100">
+                    <div>
+                        <h2 id="modal-title" class="text-3xl font-black tracking-tighter"></h2>
+                        <p id="modal-cat" class="text-blue-600 font-bold uppercase text-xs tracking-widest"></p>
+                    </div>
+                </div>
+                <p id="modal-desc" class="text-gray-500 leading-relaxed mb-8"></p>
+                <div class="mb-8">
+                    <h5 class="text-xs font-black uppercase text-gray-400 mb-4 tracking-widest">More like this</h5>
+                    <div id="related-container" class="flex gap-4 overflow-x-auto no-scrollbar"></div>
+                </div>
+                <button id="modal-dl-btn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition active:scale-95 shadow-xl shadow-blue-200">
+                    Download Application
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dl-modal" class="custom-modal modal-backdrop fixed inset-0 z-[300] items-center justify-center p-6">
+        <div class="modal-content bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20">
             <div id="dl-initial" class="text-center">
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
-                <h3 class="text-xl font-black tracking-tight mb-1">Install App?</h3>
-                <p class="text-gray-400 text-sm font-medium mb-6">Ready to download <span id="target-app-name" class="text-blue-600 font-bold"></span>?</p>
+                <h3 class="text-xl font-black tracking-tight mb-1">Confirm Install</h3>
+                <p class="text-gray-400 text-sm font-medium mb-6">Start download for <span id="target-app-name" class="text-blue-600 font-bold"></span>?</p>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="closeDlModal()" class="py-3.5 rounded-xl font-bold text-gray-400 bg-gray-50 hover:bg-gray-100 transition">Skip</button>
                     <button id="start-dl-btn" class="py-3.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition active:scale-95">Install</button>
                 </div>
             </div>
-            
             <div id="dl-progress" class="hidden text-center">
-                <h3 class="text-lg font-black mb-4">Downloading...</h3>
+                <h3 class="text-lg font-black mb-4 tracking-tighter">Downloading...</h3>
                 <div class="w-full bg-gray-100 h-2 rounded-full mb-3 overflow-hidden">
                     <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300 progress-glow"></div>
                 </div>
@@ -65,9 +91,7 @@
 
     <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white border-r border-gray-100 z-[100] hidden md:flex flex-col py-8 shadow-xl">
         <div class="px-6 mb-10 flex items-center overflow-hidden">
-            <div class="min-w-[32px] h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-                <i class="fa-solid fa-rocket"></i>
-            </div>
+            <div class="min-w-[32px] h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rocket"></i></div>
             <span class="sidebar-text ml-4 font-black text-xl tracking-tighter">MarketHub</span>
         </div>
         <nav class="flex-1 px-4 space-y-2">
@@ -102,11 +126,10 @@
         <div class="max-w-6xl mx-auto px-6 py-10">
             <div class="relative mb-12">
                 <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="search-bar" placeholder="Search for anything..." 
-                    class="w-full pl-14 pr-6 py-5 bg-white rounded-[2rem] shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <input type="text" id="search-bar" placeholder="Search for anything..." class="w-full pl-14 pr-6 py-5 bg-white rounded-[2rem] shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
 
-            <section class="mb-14">
+            <section id="spotlight-section" class="mb-14">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-black flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
                     <div class="flex gap-2">
@@ -154,7 +177,7 @@
                 container.innerHTML += `
                     <div class="slide ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full">
                         <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent p-12 flex flex-col justify-end">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent p-12 flex flex-col justify-end">
                             <div class="flex items-center gap-5 mb-5">
                                 <img src="${item.icon}" class="w-16 h-16 rounded-2xl shadow-2xl">
                                 <div>
@@ -162,9 +185,7 @@
                                     <h4 class="text-white text-4xl font-black tracking-tighter">${item.name}</h4>
                                 </div>
                             </div>
-                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-8 py-4 rounded-2xl font-black text-xs hover:bg-gray-100 transition shadow-xl">
-                                Get Spotlight App
-                            </button>
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-8 py-4 rounded-2xl font-black text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
                         </div>
                     </div>`;
             });
@@ -202,44 +223,49 @@
             });
 
             filtered.forEach((app) => {
-                const relatedApps = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0, 3);
                 const card = document.createElement('div');
-                card.className = "app-card bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl group overflow-hidden";
-                card.onclick = (e) => { if(!e.target.closest('.get-btn')) card.classList.toggle('expanded'); };
-                
+                card.className = "bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group";
+                card.onclick = () => openDetailsModal(app);
                 card.innerHTML = `
-                    <div class="flex items-start gap-4 mb-4">
-                        <img src="${app.icon}" class="w-16 h-16 rounded-2xl object-cover bg-gray-50">
+                    <div class="flex items-start gap-4 mb-6">
+                        <img src="${app.icon}" class="w-16 h-16 rounded-2xl object-cover bg-gray-50 shadow-inner">
                         <div class="flex-1">
-                            <h4 class="font-black text-base line-clamp-1">${app.name}</h4>
-                            <p class="text-gray-400 text-[10px] font-bold uppercase">${app.category}</p>
+                            <h4 class="font-black text-base line-clamp-1 group-hover:text-blue-600 transition">${app.name}</h4>
+                            <p class="text-gray-400 text-[10px] font-bold uppercase tracking-tight">${app.category}</p>
                             <div class="flex items-center mt-1 text-[10px] font-bold text-gray-500">
                                 <i class="fa-solid fa-star text-orange-400 mr-1"></i> ${app.rating || '5.0'}
                             </div>
                         </div>
                     </div>
-                    <div class="details-pane mt-4 border-t border-gray-50 pt-4 mb-4">
-                        <p class="text-gray-500 text-sm leading-relaxed mb-6">${app.description || 'Verified secure application.'}</p>
-                        
-                        <div class="mb-6">
-                            <h5 class="text-xs font-black uppercase text-gray-400 mb-3 tracking-widest">Related in ${app.category}</h5>
-                            <div class="flex gap-3 overflow-x-auto no-scrollbar">
-                                ${relatedApps.map(r => `
-                                    <div class="min-w-[50px] text-center">
-                                        <img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 shadow-sm">
-                                        <p class="text-[8px] font-bold mt-1 text-gray-500 line-clamp-1">${r.name}</p>
-                                    </div>
-                                `).join('') || '<p class="text-[10px] text-gray-400">No related apps found.</p>'}
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="initDownload('${app.name}', '${app.downloadUrl}')" class="get-btn block w-full text-center bg-gray-50 text-blue-600 py-3.5 rounded-2xl font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition uppercase">
-                        Get Now
-                    </button>
+                    <div class="w-full text-center bg-gray-50 text-gray-500 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition">Details</div>
                 `;
                 grid.appendChild(card);
             });
         }
+
+        window.openDetailsModal = (app) => {
+            document.getElementById('modal-banner').src = app.banner || app.icon;
+            document.getElementById('modal-icon').src = app.icon;
+            document.getElementById('modal-title').innerText = app.name;
+            document.getElementById('modal-cat').innerText = app.category;
+            document.getElementById('modal-desc').innerText = app.description || 'Verified safe and secure software from our marketplace.';
+            
+            const related = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0, 4);
+            const rContainer = document.getElementById('related-container');
+            rContainer.innerHTML = related.length ? "" : "<p class='text-[10px] text-gray-400'>No similar apps found.</p>";
+            related.forEach(r => {
+                rContainer.innerHTML += `
+                    <div class="min-w-[60px] cursor-pointer" onclick="event.stopPropagation(); openDetailsModal(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+                        <img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 shadow-sm">
+                        <p class="text-[8px] font-bold mt-1 text-gray-500 line-clamp-1 text-center">${r.name}</p>
+                    </div>`;
+            });
+
+            document.getElementById('modal-dl-btn').onclick = () => { closeDetailsModal(); initDownload(app.name, app.downloadUrl); };
+            document.getElementById('details-modal').classList.add('active');
+        };
+
+        window.closeDetailsModal = () => document.getElementById('details-modal').classList.remove('active');
 
         window.initDownload = (name, url) => {
             activeDlUrl = url;
@@ -270,9 +296,24 @@
         };
 
         document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
+
         window.filterCat = (cat) => {
             currentFilter = cat;
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
+            
+            // Toggle Spotlight Visibility
+            const spotlight = document.getElementById('spotlight-section');
+            if (cat === 'All') {
+                spotlight.style.display = 'block';
+            } else {
+                spotlight.style.display = 'none';
+            }
+
+            document.querySelectorAll('.category-item').forEach(btn => {
+                const btnText = btn.querySelector('.sidebar-text').innerText;
+                const isMatch = (cat === 'All' && btnText === 'All Discoveries') || (cat === 'Games' && btnText === 'Gaming Zone') || (cat === 'Apps' && btnText === 'Applications') || (cat === 'Productivity' && btnText === 'Productivity') || (cat === 'Entertainment' && btnText === 'Entertainment') || (cat === 'Graphics & Design' && btnText === 'Design Tools');
+                btn.classList.toggle('active', isMatch);
+            });
             renderApps(cat, document.getElementById('search-bar').value);
         };
     </script>
