@@ -11,312 +11,266 @@
                 extend: {
                     colors: {
                         dark: {
-                            bg: '#0B1120',
-                            card: '#151F32',
-                            border: '#1E293B',
-                            text: '#E2E8F0',
-                            muted: '#94A3B8'
+                            bg: '#0B1120',      /* Deep Blue/Black Background */
+                            card: '#151F32',    /* Lighter Slate for Cards */
+                            border: '#1E293B',  /* Border color */
+                            text: '#E2E8F0',    /* Main Text */
+                            muted: '#94A3B8'    /* Muted Text */
                         }
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                        '5xl': '2.5rem',
                     }
                 }
             }
         }
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <title>Vynix AppStore | Discover Apps & Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Vynix AppStore | Home</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
+        
         @media (min-width: 768px) {
             .sidebar { 
-                width: 84px; 
-                transition: width 0.42s cubic-bezier(0.34, 1.56, 0.64, 1); 
+                width: 80px; 
+                transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
             }
             .sidebar:hover { 
-                width: 272px; 
+                width: 260px; 
             }
+            
             .sidebar-text { 
                 opacity: 0; 
-                transition: opacity 0.2s ease; 
+                white-space: nowrap; 
+                transition: opacity 0.2s ease-in-out; 
+                pointer-events: none; 
             }
             .sidebar:hover .sidebar-text { 
                 opacity: 1; 
-                transition-delay: 0.14s;
+                pointer-events: auto; 
+                transition-delay: 0.1s;
             }
+
             .main-content { 
-                margin-left: 84px; 
-                transition: margin-left 0.42s cubic-bezier(0.34, 1.56, 0.64, 1); 
+                margin-left: 80px; 
+                transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
             }
+            
             #sidebar:hover ~ .main-content {
-                margin-left: 272px;
+                margin-left: 260px;
             }
         }
 
-        .category-item {
-            transition: all 0.22s ease;
-        }
-        .category-item:hover { 
-            background: rgba(59, 130, 246, 0.1); 
-            color: #3b82f6; 
-            transform: translateX(5px);
-        }
-        .category-item.active { 
-            background: #3b82f6 !important; 
-            color: white !important; 
-            transform: translateX(0);
-        }
+        .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+        .category-item.active { background: #2563eb !important; color: white !important; }
 
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .card-hover:hover {
-            transform: translateY(-8px) scale(1.024);
-            box-shadow: 0 22px 40px -12px rgba(0,0,0,0.16);
-        }
-        .dark .card-hover:hover {
-            box-shadow: 0 22px 40px -12px rgba(0,0,0,0.55);
-        }
+        .slide { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .slide.active { display: block; opacity: 1; }
 
-        .slide { 
-            opacity: 0; 
-            transform: scale(0.97); 
-            transition: all 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); 
-        }
-        .slide.active { 
-            opacity: 1; 
-            transform: scale(1); 
-        }
+        .dot { transition: all 0.3s ease; }
+        .dot.active { width: 24px; background-color: white; opacity: 1; }
 
-        .dot { transition: all 0.4s ease; }
-        .dot.active { width: 30px; background-color: white; }
+        .custom-modal { display: none; opacity: 0; transition: all 0.3s ease; }
+        .custom-modal.active { display: flex; opacity: 1; }
+        .modal-content { transform: scale(0.9); transition: transform 0.3s ease; }
+        .custom-modal.active .modal-content { transform: scale(1); }
 
-        .skeleton {
-            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
-            background-size: 200% 100%;
-            animation: loading 1.8s infinite;
-        }
-        .dark .skeleton {
-            background: linear-gradient(90deg, #2a3340 25%, #1e293b 50%, #2a3340 75%);
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+        .modal-backdrop { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
+        .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
 
-        .custom-modal { 
-            opacity: 0; 
-            transition: opacity 0.45s ease; 
+        .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1); }
+        html.dark .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5); }
+
+        #profile-dropdown {
+            transform: translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
         }
-        .custom-modal.active { 
-            opacity: 1; 
-        }
-        .modal-content { 
-            transform: scale(0.9) translateY(40px); 
-            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); 
-        }
-        .custom-modal.active .modal-content { 
-            transform: scale(1) translateY(0); 
+        #profile-dropdown.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-dark-text transition-colors duration-300 pb-28 md:pb-0">
+<body class="bg-[#F8F9FB] text-[#1a1a1a] dark:bg-dark-bg dark:text-dark-text transition-colors duration-300 pb-32 md:pb-0">
 
-    <!-- Details Modal -->
-    <div id="details-modal" class="custom-modal fixed inset-0 z-[250] items-center justify-center p-4 hidden backdrop-blur-xl bg-black/45">
-        <div class="modal-content bg-white dark:bg-dark-card rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100/70 dark:border-dark-border/50">
-            <div class="relative h-64 md:h-80 w-full">
+    <div id="details-modal" class="custom-modal modal-backdrop fixed inset-0 z-[250] items-center justify-center p-4">
+        <div class="modal-content bg-white dark:bg-dark-card rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-dark-border">
+            <div id="modal-image-container" class="relative h-64 w-full">
                 <img id="modal-banner" src="" class="w-full h-full object-cover">
-                <button aria-label="Close" onclick="closeDetailsModal()" class="absolute top-5 right-5 w-12 h-12 bg-black/45 backdrop-blur-lg text-white rounded-full flex items-center justify-center hover:bg-black/65 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
+                <button onclick="closeDetailsModal()" class="absolute top-6 right-6 w-10 h-10 bg-black/30 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-black/50 transition">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-7 md:p-9 overflow-y-auto no-scrollbar">
-                <div class="flex items-center gap-5 md:gap-6 mb-7">
-                    <img id="modal-icon" src="" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+            <div class="p-8 overflow-y-auto no-scrollbar">
+                <div class="flex items-center gap-6 mb-8">
+                    <img id="modal-icon" src="" class="w-20 h-20 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700">
                     <div>
-                        <h2 id="modal-title" class="text-3xl md:text-4xl font-extrabold tracking-tight dark:text-white"></h2>
-                        <p id="modal-cat" class="text-blue-600 dark:text-blue-400 font-bold uppercase text-xs md:text-sm tracking-widest mt-1"></p>
+                        <h2 id="modal-title" class="text-3xl font-black tracking-tighter dark:text-white"></h2>
+                        <p id="modal-cat" class="text-blue-600 font-bold uppercase text-xs tracking-widest"></p>
                     </div>
                 </div>
-                <p id="modal-desc" class="text-gray-600 dark:text-dark-muted leading-relaxed mb-9 text-[15px] md:text-base"></p>
-                <div class="mb-9">
-                    <h5 class="text-xs md:text-sm font-extrabold uppercase text-gray-400 dark:text-gray-500 mb-4 tracking-widest">You may also like</h5>
-                    <div id="related-container" class="flex gap-4 md:gap-5 overflow-x-auto no-scrollbar pb-3"></div>
+                <p id="modal-desc" class="text-gray-500 dark:text-dark-muted leading-relaxed mb-8"></p>
+                <div class="mb-8">
+                    <h5 class="text-xs font-black uppercase text-gray-400 dark:text-gray-500 mb-4 tracking-widest">More like this</h5>
+                    <div id="related-container" class="flex gap-4 overflow-x-auto no-scrollbar"></div>
                 </div>
-                <button id="modal-dl-btn" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-5 rounded-2xl font-extrabold text-base transition shadow-xl shadow-blue-500/25">
-                    Download Now
+                <button id="modal-dl-btn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none">
+                    Download Application
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Download Modal -->
-    <div id="dl-modal" class="custom-modal fixed inset-0 z-[300] items-center justify-center p-5 hidden backdrop-blur-xl bg-black/50">
-        <div class="modal-content bg-white dark:bg-dark-card rounded-3xl p-8 max-w-[380px] w-full shadow-2xl border border-gray-100/70 dark:border-dark-border/50">
+    <div id="dl-modal" class="custom-modal modal-backdrop fixed inset-0 z-[300] items-center justify-center p-6">
+        <div class="modal-content bg-white dark:bg-dark-card rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20 dark:border-dark-border">
             <div id="dl-initial" class="text-center">
-                <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6">
+                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
-                <h3 class="text-2xl font-extrabold tracking-tight mb-2 dark:text-white">Ready to Install</h3>
-                <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">Start downloading <span id="target-app-name" class="text-blue-600 dark:text-blue-400 font-bold"></span>?</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="closeDlModal()" class="py-4 rounded-2xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
-                    <button id="start-dl-btn" class="py-4 rounded-2xl font-bold bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition">Install</button>
+                <h3 class="text-xl font-black tracking-tight mb-1 dark:text-white">Confirm Install</h3>
+                <p class="text-gray-400 text-sm font-medium mb-6">Start download for <span id="target-app-name" class="text-blue-600 font-bold"></span>?</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="closeDlModal()" class="py-3.5 rounded-xl font-bold text-gray-400 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Skip</button>
+                    <button id="start-dl-btn" class="py-3.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition active:scale-95">Install</button>
                 </div>
             </div>
             <div id="dl-progress" class="hidden text-center">
-                <h3 class="text-xl font-extrabold mb-5 tracking-tight dark:text-white">Downloading…</h3>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 h-3 rounded-full mb-4 overflow-hidden">
-                    <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-200"></div>
+                <h3 class="text-lg font-black mb-4 tracking-tighter dark:text-white">Downloading...</h3>
+                <div class="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full mb-3 overflow-hidden">
+                    <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300 progress-glow"></div>
                 </div>
-                <p id="dl-percent" class="text-blue-600 dark:text-blue-400 font-extrabold text-base">0%</p>
+                <p id="dl-percent" class="text-blue-600 font-black text-sm">0%</p>
             </div>
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white dark:bg-dark-card border-r border-gray-100 dark:border-dark-border z-[100] hidden md:flex flex-col py-10 shadow-xl">
-        <div class="px-6 mb-12 flex items-center overflow-hidden">
-            <div class="min-w-[40px] h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
-                <i class="fa-solid fa-rocket"></i>
-            </div>
-            <span class="sidebar-text ml-5 font-extrabold text-2xl tracking-tight dark:text-white">Vynix</span>
+    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white dark:bg-dark-card border-r border-gray-100 dark:border-dark-border z-[100] hidden md:flex flex-col py-8 shadow-xl transition-colors duration-300">
+        <div class="px-6 mb-10 flex items-center overflow-hidden">
+            <div class="min-w-[32px] h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rocket"></i></div>
+            <span class="sidebar-text ml-4 font-black text-xl tracking-tighter dark:text-white">Vynix AppStore</span>
         </div>
-        <nav class="flex-1 px-5 space-y-2">
-            <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300" aria-current="page">
-                <i class="fa-solid fa-house min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Home</span>
+        <nav class="flex-1 px-4 space-y-2">
+            <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-house min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Home</span>
             </button>
-            <button onclick="filterCat('Games')" class="category-item w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300">
-                <i class="fa-solid fa-gamepad min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Games</span>
+            <button onclick="filterCat('Games')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-gamepad min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Gaming Zone</span>
             </button>
-            <button onclick="filterCat('Apps')" class="category-item w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300">
-                <i class="fa-solid fa-layer-group min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Apps</span>
+            <button onclick="filterCat('Apps')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-layer-group min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Applications</span>
             </button>
-            <button onclick="filterCat('Productivity')" class="category-item w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300">
-                <i class="fa-solid fa-list-check min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Productivity</span>
+            <button onclick="filterCat('Productivity')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-list-check min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Productivity</span>
             </button>
-            <button onclick="filterCat('Entertainment')" class="category-item w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300">
-                <i class="fa-solid fa-clapperboard min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Entertainment</span>
+            <button onclick="filterCat('Entertainment')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-clapperboard min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Entertainment</span>
             </button>
-            <button onclick="filterCat('Graphics & Design')" class="category-item w-full flex items-center p-4 rounded-2xl text-gray-700 dark:text-gray-300">
-                <i class="fa-solid fa-bezier-curve min-w-[24px] text-center text-xl"></i>
-                <span class="sidebar-text ml-5 font-semibold">Design</span>
+            <button onclick="filterCat('Graphics & Design')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-bezier-curve min-w-[20px] text-center"></i>
+                <span class="sidebar-text ml-4 font-bold text-sm">Design Tools</span>
             </button>
         </nav>
     </aside>
 
-    <!-- Mobile Nav -->
-    <nav class="mobile-nav fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-dark-card/95 border-t border-gray-100 dark:border-dark-border backdrop-blur-xl flex md:hidden justify-around items-center px-2 py-2 z-[200] no-scrollbar">
-        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-house text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Home</span>
+    <nav class="mobile-nav fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card border-t border-gray-100 dark:border-dark-border flex md:hidden justify-between items-center px-4 py-3 z-[200] overflow-x-auto no-scrollbar transition-colors duration-300">
+        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Home</span>
         </button>
-        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-gamepad text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Games</span>
+        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-gamepad text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Games</span>
         </button>
-        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-layer-group text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Apps</span>
+        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-layer-group text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Apps</span>
         </button>
-        <button onclick="filterCat('Productivity')" class="category-item flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-list-check text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Work</span>
+        <button onclick="filterCat('Productivity')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Prod</span>
         </button>
-        <button onclick="filterCat('Entertainment')" class="category-item flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-clapperboard text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Fun</span>
+        <button onclick="filterCat('Entertainment')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-clapperboard text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Entert</span>
         </button>
-        <button onclick="filterCat('Graphics & Design')" class="category-item flex flex-col items-center min-w-[56px] py-1.5 rounded-xl text-gray-700 dark:text-gray-300">
-            <i class="fa-solid fa-bezier-curve text-xl"></i>
-            <span class="text-[10px] font-medium mt-1">Design</span>
+        <button onclick="filterCat('Graphics & Design')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
+            <i class="fa-solid fa-bezier-curve text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Design</span>
         </button>
     </nav>
 
-    <!-- Main -->
     <main class="main-content min-h-screen transition-all duration-300">
-        <div class="sticky top-0 z-50 bg-gray-50/90 dark:bg-dark-bg/90 backdrop-blur-2xl px-5 md:px-6 py-5 md:py-6 border-b border-gray-100/70 dark:border-dark-border/50">
-            <div class="max-w-7xl mx-auto flex items-center gap-4">
+        <div class="sticky top-0 z-50 bg-[#F8F9FB]/80 dark:bg-dark-bg/80 backdrop-blur-xl px-6 py-6 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto flex items-center gap-3">
                 <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none"></i>
-                    <input type="text" id="search-bar" placeholder="Search apps, games…" class="w-full pl-14 pr-6 py-4 md:py-5 bg-white dark:bg-dark-card dark:text-white rounded-[2.5rem] shadow-sm border border-gray-200 dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium placeholder-gray-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search-bar" placeholder="Search for apps & games" class="w-full pl-14 pr-6 py-4 md:py-5 bg-white dark:bg-dark-card dark:text-white rounded-[2rem] shadow-sm border border-gray-100 dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium placeholder-gray-400">
                 </div>
-
-                <button onclick="toggleTheme()" aria-label="Toggle theme" class="w-14 h-14 shrink-0 rounded-[2.5rem] bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border flex items-center justify-center text-gray-600 dark:text-yellow-300 shadow-sm hover:shadow-md transition active:scale-95">
+                
+                <button onclick="toggleTheme()" class="w-14 h-14 shrink-0 rounded-[2rem] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border flex items-center justify-center text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md transition active:scale-95">
                     <i id="theme-icon" class="fa-solid fa-moon text-xl"></i>
                 </button>
 
                 <div class="relative">
-                    <button id="auth-btn" onclick="handleAuth()" aria-label="Sign in" class="flex items-center gap-3 px-5 py-4 h-14 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-[2.5rem] shadow-sm hover:shadow-md transition active:scale-95 text-gray-700 dark:text-white">
-                        <i id="auth-icon" class="fa-brands fa-google text-xl"></i>
-                        <span id="auth-text" class="hidden md:block font-semibold text-sm">Sign in</span>
+                    <button id="auth-btn" onclick="handleAuth()" class="flex items-center gap-3 px-5 py-4 h-14 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-[2rem] shadow-sm hover:shadow-md transition active:scale-95 text-gray-600 dark:text-white">
+                        <i id="auth-icon" class="fa-brands fa-google text-lg"></i>
+                        <span id="auth-text" class="hidden md:block font-bold text-sm tracking-tight">Login</span>
                     </button>
 
-                    <div id="profile-dropdown" class="absolute right-0 mt-3 w-80 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-2xl p-5 hidden">
-                        <div class="flex items-center gap-4 pb-4 mb-4 border-b border-gray-100 dark:border-dark-border">
-                            <img id="drop-img" src="" class="w-12 h-12 rounded-full ring-2 ring-gray-100 dark:ring-gray-700">
+                    <div id="profile-dropdown" class="absolute right-0 mt-4 w-72 bg-white dark:bg-dark-card rounded-[2rem] border border-gray-100 dark:border-dark-border shadow-2xl p-4 z-[1000]">
+                        <div class="flex items-center gap-4 px-2 mb-4 pb-4 border-b border-gray-100 dark:border-dark-border">
+                            <img id="drop-img" src="" class="w-10 h-10 rounded-full">
                             <div class="overflow-hidden">
-                                <p id="drop-name" class="font-bold text-base dark:text-white truncate"></p>
-                                <p id="drop-email" class="text-sm text-gray-500 dark:text-gray-400 truncate"></p>
+                                <p id="drop-name" class="font-black text-sm tracking-tighter truncate dark:text-white"></p>
+                                <p id="drop-email" class="text-[10px] text-gray-400 font-bold truncate"></p>
                             </div>
                         </div>
-                        <div class="mb-5">
-                            <h4 class="text-xs font-extrabold uppercase text-gray-400 dark:text-gray-500 mb-3 tracking-wider">Recent Downloads</h4>
-                            <div id="history-list" class="space-y-3 max-h-60 overflow-y-auto no-scrollbar"></div>
+                        
+                        <div class="mb-4">
+                            <h4 class="px-2 text-[10px] font-black uppercase text-gray-400 tracking-widest mb-3">Download History</h4>
+                            <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar">
+                                </div>
                         </div>
-                        <button onclick="initLogout()" class="w-full flex items-center justify-center gap-3 py-3.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl hover:bg-red-100 dark:hover:bg-red-900/30 transition font-semibold text-sm">
-                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+
+                        <button onclick="initLogout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-2xl transition font-bold text-xs uppercase tracking-widest">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Logout
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-5 md:px-6 pb-14">
-            <section id="spotlight-section" class="mb-16 mt-6">
-                <div class="flex justify-between items-center mb-7">
-                    <h3 class="text-2xl md:text-3xl font-extrabold flex items-center dark:text-white"><span class="inline-block w-3.5 h-8 bg-blue-600 rounded-full mr-4"></span>Featured</h3>
-                    <div class="flex gap-3">
-                        <button onclick="prevSlide()" aria-label="Previous" class="w-12 h-12 rounded-full bg-white dark:bg-dark-card shadow-md border border-gray-200 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <button onclick="nextSlide()" aria-label="Next" class="w-12 h-12 rounded-full bg-white dark:bg-dark-card shadow-md border border-gray-200 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
+        <div class="max-w-6xl mx-auto px-6 pb-10">
+            <section id="spotlight-section" class="mb-14 mt-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl md:text-2xl font-black flex items-center dark:text-white"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
+                    <div class="flex gap-2">
+                        <button onclick="prevSlide()" class="w-10 h-10 rounded-full bg-white dark:bg-dark-card dark:text-white shadow-sm border border-gray-100 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white dark:bg-dark-card dark:text-white shadow-sm border border-gray-100 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
-                <div class="relative w-full h-[240px] sm:h-[340px] md:h-[440px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-800 dark:to-gray-950">
-                    <div id="slideshow-wrapper" class="relative w-full h-full"></div>
-                    <div id="carousel-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"></div>
+                <div class="relative w-full h-[250px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200 dark:bg-gray-800">
+                    <div id="slideshow-wrapper" class="w-full h-full relative"></div>
+                    <div id="carousel-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20"></div>
                 </div>
             </section>
 
             <section>
-                <div class="flex justify-between items-end mb-8">
-                    <h3 id="current-cat-title" class="text-2xl md:text-3xl font-extrabold dark:text-white">Discover</h3>
-                    <span class="hidden md:block text-sm font-semibold text-gray-500 dark:text-gray-400">Trending • New • Popular</span>
+                <div class="flex justify-between items-end mb-6">
+                    <h3 id="current-cat-title" class="text-xl md:text-2xl font-black dark:text-white">All Discoveries</h3>
+                    <span class="md:hidden text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">Top Charts</span>
                 </div>
-
-                <div id="app-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"></div>
-
-                <div id="no-results" class="hidden text-center py-20">
-                    <i class="fa-solid fa-magnifying-glass text-6xl text-gray-300 dark:text-gray-600 mb-6 block"></i>
-                    <h4 class="text-xl font-bold text-gray-700 dark:text-gray-300 mb-3">Nothing found</h4>
-                    <p class="text-gray-500 dark:text-gray-400">Try different keywords or browse other categories.</p>
-                </div>
+                <div id="app-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 items-start"></div>
             </section>
         </div>
     </main>
@@ -349,11 +303,12 @@
         let slideIndex = 0;
         let totalSlides = 0;
 
+        // HISTORY LOGIC
         function saveToHistory(name, icon) {
             let history = JSON.parse(localStorage.getItem('vynix_history') || '[]');
             if (!history.find(item => item.name === name)) {
                 history.unshift({ name, icon, date: new Date().toLocaleDateString() });
-                localStorage.setItem('vynix_history', JSON.stringify(history.slice(0, 12)));
+                localStorage.setItem('vynix_history', JSON.stringify(history.slice(0, 10)));
                 renderHistory();
             }
         }
@@ -361,131 +316,150 @@
         function renderHistory() {
             const list = document.getElementById('history-list');
             const history = JSON.parse(localStorage.getItem('vynix_history') || '[]');
-            list.innerHTML = history.length === 0 
-                ? `<p class="text-sm text-gray-400 dark:text-gray-500 px-2">No recent downloads</p>`
-                : history.map(item => `
-                    <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition">
-                        <img src="${item.icon}" class="w-10 h-10 rounded-xl shadow-sm">
-                        <div>
-                            <p class="font-medium text-sm dark:text-white truncate">${item.name}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">${item.date}</p>
-                        </div>
+            if (history.length === 0) {
+                list.innerHTML = `<p class="px-2 text-[10px] text-gray-400 font-medium">No recent downloads.</p>`;
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-default">
+                    <img src="${item.icon}" class="w-8 h-8 rounded-lg shadow-sm">
+                    <div class="overflow-hidden">
+                        <p class="text-[11px] font-bold truncate dark:text-white">${item.name}</p>
+                        <p class="text-[9px] text-gray-400">${item.date}</p>
                     </div>
-                `).join('');
+                </div>
+            `).join('');
         }
 
+        // AUTH HANDLER
         window.handleAuth = async () => {
             if (auth.currentUser) {
-                document.getElementById('profile-dropdown').classList.toggle('hidden');
+                document.getElementById('profile-dropdown').classList.toggle('show');
             } else {
-                try { await signInWithPopup(auth, provider); }
-                catch (err) { console.error(err); }
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    console.error("Auth failed:", error);
+                }
             }
         };
 
         window.initLogout = async () => {
-            if (confirm("Sign out?")) {
+            if (confirm("Sign out of Vynix AppStore?")) {
                 await signOut(auth);
-                document.getElementById('profile-dropdown').classList.add('hidden');
+                document.getElementById('profile-dropdown').classList.remove('show');
             }
         };
 
-        onAuthStateChanged(auth, user => {
-            const btn = document.getElementById('auth-btn');
-            const text = document.getElementById('auth-text');
-            const iconEl = document.getElementById('auth-icon');
+        onAuthStateChanged(auth, (user) => {
+            const authBtn = document.getElementById('auth-btn');
+            const authText = document.getElementById('auth-text');
+            const authIcon = document.getElementById('auth-icon');
             const dropImg = document.getElementById('drop-img');
             const dropName = document.getElementById('drop-name');
             const dropEmail = document.getElementById('drop-email');
 
             if (user) {
-                text.textContent = user.displayName?.split(' ')[0] || 'Account';
-                iconEl.outerHTML = `<img id="auth-icon" src="${user.photoURL}" class="w-8 h-8 rounded-full">`;
-                btn.classList.add('border-blue-400/40', 'bg-blue-50/40', 'dark:bg-blue-950/30');
+                authText.innerText = user.displayName.split(' ')[0];
+                authIcon.outerHTML = `<img id="auth-icon" src="${user.photoURL}" class="w-6 h-6 rounded-full">`;
+                authBtn.classList.add('border-blue-500/50', 'bg-blue-50/50', 'dark:bg-blue-900/10');
                 dropImg.src = user.photoURL;
-                dropName.textContent = user.displayName;
-                dropEmail.textContent = user.email;
+                dropName.innerText = user.displayName;
+                dropEmail.innerText = user.email;
                 renderHistory();
             } else {
-                text.textContent = 'Sign in';
-                if (iconEl.tagName !== 'I') {
-                    iconEl.outerHTML = `<i id="auth-icon" class="fa-brands fa-google text-xl"></i>`;
+                authText.innerText = "Login";
+                const img = document.getElementById('auth-icon');
+                if (img && img.tagName === 'IMG') {
+                    img.outerHTML = `<i id="auth-icon" class="fa-brands fa-google text-lg"></i>`;
                 }
-                btn.classList.remove('border-blue-400/40', 'bg-blue-50/40', 'dark:bg-blue-950/30');
-                document.getElementById('profile-dropdown').classList.add('hidden');
+                authBtn.classList.remove('border-blue-500/50', 'bg-blue-50/50', 'dark:bg-blue-900/10');
+                document.getElementById('profile-dropdown').classList.remove('show');
             }
         });
 
-        document.addEventListener('click', e => {
-            const dd = document.getElementById('profile-dropdown');
-            const btn = document.getElementById('auth-btn');
-            if (dd && !btn.contains(e.target) && !dd.contains(e.target)) {
-                dd.classList.add('hidden');
+        window.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('profile-dropdown');
+            const authBtn = document.getElementById('auth-btn');
+            if (dropdown && !authBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
             }
         });
 
         window.toggleTheme = () => {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.theme = isDark ? 'dark' : 'light';
+            const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
-            icon.classList.toggle('fa-moon', !isDark);
-            icon.classList.toggle('fa-sun', isDark);
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                icon.classList.replace('fa-sun', 'fa-moon');
+                icon.parentElement.classList.replace('text-yellow-400', 'text-gray-600');
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+            }
         };
 
-        if (localStorage.theme === 'dark' || 
-           (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             const icon = document.getElementById('theme-icon');
-            icon?.classList.replace('fa-moon', 'fa-sun');
+            if(icon) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+            }
         }
 
-        onValue(ref(db, 'featured'), snap => {
+        onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
-            if (!data) return;
+            const container = document.getElementById('slideshow-wrapper');
+            const dotsContainer = document.getElementById('carousel-dots');
+            if(!data) return;
             const items = Object.values(data);
             totalSlides = items.length;
-            const wrapper = document.getElementById('slideshow-wrapper');
-            const dots = document.getElementById('carousel-dots');
-            wrapper.innerHTML = "";
-            dots.innerHTML = "";
-
-            items.forEach((item, i) => {
-                wrapper.innerHTML += `
-                    <div class="slide absolute inset-0 ${i===0?'active':''}">
+            container.innerHTML = "";
+            dotsContainer.innerHTML = "";
+            items.forEach((item, idx) => {
+                container.innerHTML += `
+                    <div class="slide ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full">
                         <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent/20 p-6 md:p-12 flex flex-col justify-end">
-                            <div class="flex items-center gap-5 mb-6">
-                                <img src="${item.icon}" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-2xl ring-2 ring-white/30">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 md:p-12 flex flex-col justify-end">
+                            <div class="flex items-center gap-4 md:gap-5 mb-4 md:mb-5">
+                                <img src="${item.icon}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl bg-white">
                                 <div>
-                                    <span class="text-blue-300 text-xs md:text-sm font-extrabold uppercase tracking-widest">${item.category}</span>
-                                    <h4 class="text-white text-3xl md:text-5xl font-black tracking-tighter drop-shadow-lg line-clamp-1">${item.name}</h4>
+                                    <span class="text-blue-400 text-[9px] md:text-[10px] font-black uppercase tracking-widest">${item.category}</span>
+                                    <h4 class="text-white text-2xl md:text-4xl font-black tracking-tighter line-clamp-1 drop-shadow-md">${item.name}</h4>
                                 </div>
                             </div>
-                            <button onclick="initDownload('${item.name}', '${item.downloadUrl||'#'}', '${item.icon}')" 
-                                    class="w-fit px-8 py-4 bg-white/95 backdrop-blur-sm text-black font-extrabold rounded-2xl hover:bg-white transition shadow-2xl text-sm md:text-base">
-                                View • Download
-                            </button>
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}', '${item.icon}')" class="w-max bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
                         </div>
                     </div>`;
-                dots.innerHTML += `<button onclick="goToSlide(${i})" class="dot w-3.5 h-3.5 rounded-full bg-white/60 ${i===0?'active w-10':''}" aria-label="Slide ${i+1}"></button>`;
+                dotsContainer.innerHTML += `<button onclick="goToSlide(${idx})" class="dot w-2 h-2 rounded-full bg-white/50 hover:bg-white/80 ${idx === 0 ? 'active w-6 bg-white opacity-100' : ''}"></button>`;
             });
         });
 
         function updateCarouselUI() {
-            document.querySelectorAll('.slide').forEach((s,i) => s.classList.toggle('active', i === slideIndex));
-            document.querySelectorAll('.dot').forEach((d,i) => {
-                d.classList.toggle('active', i === slideIndex);
-                d.classList.toggle('w-10', i === slideIndex);
+            const slides = document.querySelectorAll(".slide");
+            slides.forEach((s, i) => s.classList.toggle("active", i === slideIndex));
+            const dots = document.querySelectorAll(".dot");
+            dots.forEach((d, i) => {
+                if (i === slideIndex) {
+                    d.classList.add("active");
+                    d.classList.remove("bg-white/50");
+                } else {
+                    d.classList.remove("active");
+                    d.classList.add("bg-white/50");
+                }
             });
         }
 
-        window.goToSlide = i => { slideIndex = i; updateCarouselUI(); };
-        window.nextSlide = () => { slideIndex = (slideIndex + 1) % totalSlides; updateCarouselUI(); };
-        window.prevSlide = () => { slideIndex = (slideIndex - 1 + totalSlides) % totalSlides; updateCarouselUI(); };
-        setInterval(nextSlide, 6500);
+        window.goToSlide = (index) => { slideIndex = index; updateCarouselUI(); }
+        window.nextSlide = () => { if (totalSlides === 0) return; slideIndex = (slideIndex + 1) % totalSlides; updateCarouselUI(); }
+        window.prevSlide = () => { if (totalSlides === 0) return; slideIndex = (slideIndex - 1 + totalSlides) % totalSlides; updateCarouselUI(); }
+        setInterval(window.nextSlide, 6000);
 
-        onValue(ref(db, 'apps'), snap => {
+        onValue(ref(db, 'apps'), (snap) => {
             const data = snap.val();
             allApps = data ? Object.values(data).filter(a => a.isConfirmed) : [];
             renderApps();
@@ -493,90 +467,64 @@
 
         function renderApps(filter = 'All', search = '') {
             const grid = document.getElementById('app-grid');
-            const noRes = document.getElementById('no-results');
             grid.innerHTML = "";
-
-            const filtered = allApps.filter(a => {
-                return (filter === 'All' || a.category === filter) &&
-                       a.name.toLowerCase().includes(search.toLowerCase());
+            const filtered = allApps.filter(app => {
+                const matchesCat = filter === 'All' || app.category === filter;
+                const matchesSearch = app.name.toLowerCase().includes(search.toLowerCase());
+                return matchesCat && matchesSearch;
             });
-
-            if (filtered.length === 0 && search.trim() !== '') {
-                noRes.classList.remove('hidden');
-                return;
-            }
-            noRes.classList.add('hidden');
-
-            filtered.forEach(app => {
+            filtered.forEach((app) => {
                 const card = document.createElement('div');
-                card.className = "card-hover bg-white dark:bg-dark-card rounded-3xl p-5 border border-gray-100 dark:border-dark-border shadow-sm cursor-pointer group";
-                card.setAttribute('role', 'button');
+                card.className = "relative flex flex-row items-center gap-4 p-0 md:flex-col md:items-start md:gap-0 md:p-6 bg-transparent md:bg-white md:dark:bg-dark-card md:rounded-[2.5rem] md:border md:border-gray-100 md:dark:border-dark-border md:shadow-sm md:hover:shadow-xl transition-all cursor-pointer group";
                 card.onclick = () => openDetailsModal(app);
-
                 card.innerHTML = `
-                    <div class="flex flex-col items-center text-center">
-                        <img src="${app.icon}" class="w-24 h-24 rounded-3xl shadow-lg object-cover mb-4 ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-blue-400/50 transition-all" alt="${app.name}">
-                        <h4 class="font-bold text-base dark:text-gray-100 group-hover:text-blue-600 transition line-clamp-1">${app.name}</h4>
-                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mt-1">${app.category}</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i class="fa-solid fa-star text-amber-500 mr-1.5"></i>
-                            <span>${app.rating || '4.7'}</span>
+                    <div class="relative shrink-0">
+                        <img src="${app.icon}" class="w-16 h-16 md:w-16 md:h-16 rounded-[14px] md:rounded-2xl object-cover bg-gray-50 dark:bg-gray-800 shadow-sm md:shadow-inner md:mb-6">
+                    </div>
+                    <div class="flex-1 md:w-full min-w-0">
+                        <h4 class="text-[15px] md:text-base font-medium md:font-black text-gray-900 dark:text-gray-100 line-clamp-1 group-hover:text-blue-600 transition tracking-tight">${app.name}</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-[13px] md:text-[10px] md:font-bold md:uppercase md:tracking-tight truncate">${app.category}</p>
+                        <div class="flex items-center mt-1 text-[11px] md:text-[10px] font-medium md:font-bold text-gray-500 dark:text-gray-500">
+                            <span class="flex items-center mr-2"><i class="fa-solid fa-star text-[10px] text-gray-900 dark:text-gray-300 mr-1"></i> ${app.rating || '4.5'}</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-400 mx-1 md:hidden"></span>
+                            <span class="md:hidden">24 MB</span>
                         </div>
                     </div>
+                    <div class="hidden md:block w-full text-center bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition mt-6">Details</div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        window.openDetailsModal = app => {
+        window.openDetailsModal = (app) => {
             document.getElementById('modal-banner').src = app.banner || app.icon;
             document.getElementById('modal-icon').src = app.icon;
-            document.getElementById('modal-title').textContent = app.name;
-            document.getElementById('modal-cat').textContent = app.category;
-            document.getElementById('modal-desc').textContent = app.description || 'High-quality, safe & verified application.';
-            
-            const related = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0,6);
-            const cont = document.getElementById('related-container');
-            cont.innerHTML = related.length ? '' : '<p class="text-sm text-gray-400 dark:text-gray-500 text-center py-6">No similar apps available yet.</p>';
-            
+            document.getElementById('modal-title').innerText = app.name;
+            document.getElementById('modal-cat').innerText = app.category;
+            document.getElementById('modal-desc').innerText = app.description || 'Verified safe and secure.';
+            const related = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0, 4);
+            const rContainer = document.getElementById('related-container');
+            rContainer.innerHTML = related.length ? "" : "<p class='text-[10px] text-gray-400'>No similar apps found.</p>";
             related.forEach(r => {
-                cont.innerHTML += `
-                    <div class="min-w-[100px] text-center cursor-pointer transition hover:scale-105 active:scale-95" 
-                         onclick="event.stopPropagation(); openDetailsModal(${JSON.stringify(r).replace(/"/g,'&quot;')})">
-                        <img src="${r.icon}" class="w-20 h-20 rounded-2xl shadow-md mx-auto border border-gray-100 dark:border-gray-700">
-                        <p class="text-xs font-semibold mt-2 dark:text-gray-300 line-clamp-1">${r.name}</p>
-                    </div>`;
+                rContainer.innerHTML += `<div class="min-w-[60px] cursor-pointer" onclick="event.stopPropagation(); openDetailsModal(${JSON.stringify(r).replace(/"/g, '&quot;')})"><img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm bg-white"><p class="text-[8px] font-bold mt-1 text-gray-500 dark:text-gray-400 line-clamp-1 text-center">${r.name}</p></div>`;
             });
-
-            document.getElementById('modal-dl-btn').onclick = () => {
-                closeDetailsModal();
-                initDownload(app.name, app.downloadUrl, app.icon);
-            };
-
-            document.getElementById('details-modal').classList.remove('hidden');
+            document.getElementById('modal-dl-btn').onclick = () => { closeDetailsModal(); initDownload(app.name, app.downloadUrl, app.icon); };
             document.getElementById('details-modal').classList.add('active');
         };
 
-        window.closeDetailsModal = () => {
-            document.getElementById('details-modal').classList.remove('active');
-            setTimeout(() => document.getElementById('details-modal').classList.add('hidden'), 450);
-        };
+        window.closeDetailsModal = () => document.getElementById('details-modal').classList.remove('active');
 
         window.initDownload = (name, url, icon) => {
             activeDlUrl = url;
             activeAppName = name;
             activeAppIcon = icon;
-            document.getElementById('target-app-name').textContent = name;
-            document.getElementById('dl-modal').classList.remove('hidden');
+            document.getElementById('target-app-name').innerText = name;
             document.getElementById('dl-modal').classList.add('active');
             document.getElementById('dl-initial').classList.remove('hidden');
             document.getElementById('dl-progress').classList.add('hidden');
         };
 
-        window.closeDlModal = () => {
-            document.getElementById('dl-modal').classList.remove('active');
-            setTimeout(() => document.getElementById('dl-modal').classList.add('hidden'), 450);
-        };
+        window.closeDlModal = () => document.getElementById('dl-modal').classList.remove('active');
 
         document.getElementById('start-dl-btn').onclick = () => {
             document.getElementById('dl-initial').classList.add('hidden');
@@ -584,39 +532,37 @@
             let progress = 0;
             const bar = document.getElementById('dl-bar');
             const percent = document.getElementById('dl-percent');
-            const iv = setInterval(() => {
-                progress += Math.floor(Math.random() * 7 + 5);
-                if (progress >= 100) {
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 4;
+                if(progress >= 100) {
                     progress = 100;
-                    clearInterval(iv);
+                    clearInterval(interval);
                     saveToHistory(activeAppName, activeAppIcon);
-                    setTimeout(() => {
-                        window.location.href = activeDlUrl;
-                        closeDlModal();
-                    }, 700);
+                    setTimeout(() => { window.location.href = activeDlUrl; closeDlModal(); }, 600);
                 }
                 bar.style.width = progress + '%';
-                percent.textContent = progress + '%';
-            }, 160);
+                percent.innerText = progress + '%';
+            }, 180);
         };
 
-        document.getElementById('search-bar').oninput = e => renderApps(currentFilter, e.target.value);
+        document.getElementById('search-bar').oninput = (e) => renderApps(currentFilter, e.target.value);
 
-        window.filterCat = cat => {
+        window.filterCat = (cat) => {
             currentFilter = cat;
-            document.getElementById('current-cat-title').textContent = cat === 'All' ? 'Discover' : cat;
+            document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             document.getElementById('spotlight-section').style.display = cat === 'All' ? 'block' : 'none';
-            
-            document.querySelectorAll('.category-item').forEach(el => {
-                const match = el.getAttribute('onclick')?.includes(`'${cat}'`);
-                el.classList.toggle('active', match);
+            document.querySelectorAll('.category-item').forEach(btn => {
+                const isMatch = btn.getAttribute('onclick').includes(`'${cat}'`);
+                btn.classList.toggle('active', isMatch);
+                if (!isMatch) {
+                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.remove('text-white');
+                } else {
+                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                }
             });
-
             renderApps(cat, document.getElementById('search-bar').value);
         };
-
-        // Initial render
-        filterCat('All');
     </script>
 </body>
 </html>
