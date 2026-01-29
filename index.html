@@ -23,7 +23,7 @@
         }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Vynix App Store | Home</title>
+    <title>Vynix AppStore | Home</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
@@ -32,7 +32,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         @media (min-width: 768px) {
-            /* Sidebar Animation */
             .sidebar { 
                 width: 80px; 
                 transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
@@ -53,13 +52,11 @@
                 transition-delay: 0.1s;
             }
 
-            /* Main Content Shift Logic */
             .main-content { 
                 margin-left: 80px; 
                 transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
             }
             
-            /* Sibling selector: When sidebar is hovered, shift main content */
             #sidebar:hover ~ .main-content {
                 margin-left: 260px;
             }
@@ -68,15 +65,12 @@
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
         .category-item.active { background: #2563eb !important; color: white !important; }
 
-        /* Carousel Animation */
         .slide { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .slide.active { display: block; opacity: 1; }
 
-        /* Dot Animation */
         .dot { transition: all 0.3s ease; }
         .dot.active { width: 24px; background-color: white; opacity: 1; }
 
-        /* Modal Transitions */
         .custom-modal { display: none; opacity: 0; transition: all 0.3s ease; }
         .custom-modal.active { display: flex; opacity: 1; }
         .modal-content { transform: scale(0.9); transition: transform 0.3s ease; }
@@ -87,6 +81,18 @@
 
         .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1); }
         html.dark .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5); }
+
+        #profile-dropdown {
+            transform: translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+        #profile-dropdown.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="bg-[#F8F9FB] text-[#1a1a1a] dark:bg-dark-bg dark:text-dark-text transition-colors duration-300 pb-32 md:pb-0">
@@ -145,7 +151,7 @@
     <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white dark:bg-dark-card border-r border-gray-100 dark:border-dark-border z-[100] hidden md:flex flex-col py-8 shadow-xl transition-colors duration-300">
         <div class="px-6 mb-10 flex items-center overflow-hidden">
             <div class="min-w-[32px] h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rocket"></i></div>
-            <span class="sidebar-text ml-4 font-black text-xl tracking-tighter dark:text-white">Vynix App Store</span>
+            <span class="sidebar-text ml-4 font-black text-xl tracking-tighter dark:text-white">Vynix AppStore</span>
         </div>
         <nav class="flex-1 px-4 space-y-2">
             <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
@@ -203,18 +209,49 @@
     </nav>
 
     <main class="main-content min-h-screen transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-6 py-10">
-            <div class="flex items-center gap-4 mb-12">
+        <div class="sticky top-0 z-50 bg-[#F8F9FB]/80 dark:bg-dark-bg/80 backdrop-blur-xl px-6 py-6 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto flex items-center gap-3">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="text" id="search-bar" placeholder="Search for apps & games" class="w-full pl-14 pr-6 py-4 md:py-5 bg-white dark:bg-dark-card dark:text-white rounded-[2rem] shadow-sm border border-gray-100 dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium placeholder-gray-400">
                 </div>
-                <button onclick="toggleTheme()" class="w-14 h-14 rounded-[2rem] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border flex items-center justify-center text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md transition active:scale-95">
+                
+                <button onclick="toggleTheme()" class="w-14 h-14 shrink-0 rounded-[2rem] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border flex items-center justify-center text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md transition active:scale-95">
                     <i id="theme-icon" class="fa-solid fa-moon text-xl"></i>
                 </button>
-            </div>
 
-            <section id="spotlight-section" class="mb-14">
+                <div class="relative">
+                    <button id="auth-btn" onclick="handleAuth()" class="flex items-center gap-3 px-5 py-4 h-14 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-[2rem] shadow-sm hover:shadow-md transition active:scale-95 text-gray-600 dark:text-white">
+                        <i id="auth-icon" class="fa-brands fa-google text-lg"></i>
+                        <span id="auth-text" class="hidden md:block font-bold text-sm tracking-tight">Login</span>
+                    </button>
+
+                    <div id="profile-dropdown" class="absolute right-0 mt-4 w-72 bg-white dark:bg-dark-card rounded-[2rem] border border-gray-100 dark:border-dark-border shadow-2xl p-4 z-[1000]">
+                        <div class="flex items-center gap-4 px-2 mb-4 pb-4 border-b border-gray-100 dark:border-dark-border">
+                            <img id="drop-img" src="" class="w-10 h-10 rounded-full">
+                            <div class="overflow-hidden">
+                                <p id="drop-name" class="font-black text-sm tracking-tighter truncate dark:text-white"></p>
+                                <p id="drop-email" class="text-[10px] text-gray-400 font-bold truncate"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="px-2 text-[10px] font-black uppercase text-gray-400 tracking-widest mb-3">Download History</h4>
+                            <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar">
+                                </div>
+                        </div>
+
+                        <button onclick="initLogout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-2xl transition font-bold text-xs uppercase tracking-widest">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 pb-10">
+            <section id="spotlight-section" class="mb-14 mt-4">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl md:text-2xl font-black flex items-center dark:text-white"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
                     <div class="flex gap-2">
@@ -241,6 +278,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD_lFs83fyT6pNcNECGueOYJeedGVKY7GA",
@@ -254,13 +292,100 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
         let allApps = [];
         let currentFilter = 'All';
         let activeDlUrl = "";
+        let activeAppName = "";
+        let activeAppIcon = "";
         let slideIndex = 0;
         let totalSlides = 0;
 
-        // THEME
+        // HISTORY LOGIC
+        function saveToHistory(name, icon) {
+            let history = JSON.parse(localStorage.getItem('vynix_history') || '[]');
+            if (!history.find(item => item.name === name)) {
+                history.unshift({ name, icon, date: new Date().toLocaleDateString() });
+                localStorage.setItem('vynix_history', JSON.stringify(history.slice(0, 10)));
+                renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('vynix_history') || '[]');
+            if (history.length === 0) {
+                list.innerHTML = `<p class="px-2 text-[10px] text-gray-400 font-medium">No recent downloads.</p>`;
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-default">
+                    <img src="${item.icon}" class="w-8 h-8 rounded-lg shadow-sm">
+                    <div class="overflow-hidden">
+                        <p class="text-[11px] font-bold truncate dark:text-white">${item.name}</p>
+                        <p class="text-[9px] text-gray-400">${item.date}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // AUTH HANDLER
+        window.handleAuth = async () => {
+            if (auth.currentUser) {
+                document.getElementById('profile-dropdown').classList.toggle('show');
+            } else {
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    console.error("Auth failed:", error);
+                }
+            }
+        };
+
+        window.initLogout = async () => {
+            if (confirm("Sign out of Vynix AppStore?")) {
+                await signOut(auth);
+                document.getElementById('profile-dropdown').classList.remove('show');
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const authBtn = document.getElementById('auth-btn');
+            const authText = document.getElementById('auth-text');
+            const authIcon = document.getElementById('auth-icon');
+            const dropImg = document.getElementById('drop-img');
+            const dropName = document.getElementById('drop-name');
+            const dropEmail = document.getElementById('drop-email');
+
+            if (user) {
+                authText.innerText = user.displayName.split(' ')[0];
+                authIcon.outerHTML = `<img id="auth-icon" src="${user.photoURL}" class="w-6 h-6 rounded-full">`;
+                authBtn.classList.add('border-blue-500/50', 'bg-blue-50/50', 'dark:bg-blue-900/10');
+                dropImg.src = user.photoURL;
+                dropName.innerText = user.displayName;
+                dropEmail.innerText = user.email;
+                renderHistory();
+            } else {
+                authText.innerText = "Login";
+                const img = document.getElementById('auth-icon');
+                if (img && img.tagName === 'IMG') {
+                    img.outerHTML = `<i id="auth-icon" class="fa-brands fa-google text-lg"></i>`;
+                }
+                authBtn.classList.remove('border-blue-500/50', 'bg-blue-50/50', 'dark:bg-blue-900/10');
+                document.getElementById('profile-dropdown').classList.remove('show');
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('profile-dropdown');
+            const authBtn = document.getElementById('auth-btn');
+            if (dropdown && !authBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
         window.toggleTheme = () => {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
@@ -280,11 +405,12 @@
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             const icon = document.getElementById('theme-icon');
-            icon.classList.replace('fa-moon', 'fa-sun');
-            icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+            if(icon) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+            }
         }
 
-        // CAROUSEL
         onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
             const container = document.getElementById('slideshow-wrapper');
@@ -306,7 +432,7 @@
                                     <h4 class="text-white text-2xl md:text-4xl font-black tracking-tighter line-clamp-1 drop-shadow-md">${item.name}</h4>
                                 </div>
                             </div>
-                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
+                            <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}', '${item.icon}')" class="w-max bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
                         </div>
                     </div>`;
                 dotsContainer.innerHTML += `<button onclick="goToSlide(${idx})" class="dot w-2 h-2 rounded-full bg-white/50 hover:bg-white/80 ${idx === 0 ? 'active w-6 bg-white opacity-100' : ''}"></button>`;
@@ -333,7 +459,6 @@
         window.prevSlide = () => { if (totalSlides === 0) return; slideIndex = (slideIndex - 1 + totalSlides) % totalSlides; updateCarouselUI(); }
         setInterval(window.nextSlide, 6000);
 
-        // APPS
         onValue(ref(db, 'apps'), (snap) => {
             const data = snap.val();
             allApps = data ? Object.values(data).filter(a => a.isConfirmed) : [];
@@ -383,14 +508,16 @@
             related.forEach(r => {
                 rContainer.innerHTML += `<div class="min-w-[60px] cursor-pointer" onclick="event.stopPropagation(); openDetailsModal(${JSON.stringify(r).replace(/"/g, '&quot;')})"><img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm bg-white"><p class="text-[8px] font-bold mt-1 text-gray-500 dark:text-gray-400 line-clamp-1 text-center">${r.name}</p></div>`;
             });
-            document.getElementById('modal-dl-btn').onclick = () => { closeDetailsModal(); initDownload(app.name, app.downloadUrl); };
+            document.getElementById('modal-dl-btn').onclick = () => { closeDetailsModal(); initDownload(app.name, app.downloadUrl, app.icon); };
             document.getElementById('details-modal').classList.add('active');
         };
 
         window.closeDetailsModal = () => document.getElementById('details-modal').classList.remove('active');
 
-        window.initDownload = (name, url) => {
+        window.initDownload = (name, url, icon) => {
             activeDlUrl = url;
+            activeAppName = name;
+            activeAppIcon = icon;
             document.getElementById('target-app-name').innerText = name;
             document.getElementById('dl-modal').classList.add('active');
             document.getElementById('dl-initial').classList.remove('hidden');
@@ -410,6 +537,7 @@
                 if(progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
+                    saveToHistory(activeAppName, activeAppIcon);
                     setTimeout(() => { window.location.href = activeDlUrl; closeDlModal(); }, 600);
                 }
                 bar.style.width = progress + '%';
