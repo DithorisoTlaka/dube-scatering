@@ -32,11 +32,37 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         @media (min-width: 768px) {
-            .sidebar { width: 80px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-            .sidebar:hover { width: 260px; }
-            .sidebar-text { opacity: 0; white-space: nowrap; transition: opacity 0.2s; pointer-events: none; }
-            .sidebar:hover .sidebar-text { opacity: 1; pointer-events: auto; }
-            .main-content { margin-left: 80px; transition: margin-left 0.3s; }
+            /* Sidebar Animation */
+            .sidebar { 
+                width: 80px; 
+                transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            }
+            .sidebar:hover { 
+                width: 260px; 
+            }
+            
+            .sidebar-text { 
+                opacity: 0; 
+                white-space: nowrap; 
+                transition: opacity 0.2s ease-in-out; 
+                pointer-events: none; 
+            }
+            .sidebar:hover .sidebar-text { 
+                opacity: 1; 
+                pointer-events: auto; 
+                transition-delay: 0.1s;
+            }
+
+            /* Main Content Shift Logic */
+            .main-content { 
+                margin-left: 80px; 
+                transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            }
+            
+            /* Sibling selector: When sidebar is hovered, shift main content */
+            #sidebar:hover ~ .main-content {
+                margin-left: 260px;
+            }
         }
 
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
@@ -292,7 +318,6 @@
                     </div>`;
 
                 // Generate Dot
-                // Active dot gets 'w-6 opacity-100', inactive gets 'w-2 opacity-50'
                 dotsContainer.innerHTML += `
                     <button onclick="goToSlide(${idx})" class="dot w-2 h-2 rounded-full bg-white/50 hover:bg-white/80 ${idx === 0 ? 'active w-6 bg-white opacity-100' : ''}"></button>
                 `;
@@ -336,7 +361,6 @@
             updateCarouselUI();
         }
         
-        // Auto advance
         setInterval(window.nextSlide, 6000);
 
         // --- APPS LOGIC ---
@@ -357,7 +381,6 @@
 
             filtered.forEach((app) => {
                 const card = document.createElement('div');
-                // Updated Class list for Dark Mode + Mobile Row Layout
                 card.className = "relative flex flex-row items-center gap-4 p-0 md:flex-col md:items-start md:gap-0 md:p-6 bg-transparent md:bg-white md:dark:bg-dark-card md:rounded-[2.5rem] md:border md:border-gray-100 md:dark:border-dark-border md:shadow-sm md:hover:shadow-xl transition-all cursor-pointer group";
                 card.onclick = () => openDetailsModal(app);
                 
@@ -448,7 +471,6 @@
             document.querySelectorAll('.category-item').forEach(btn => {
                 const isMatch = btn.getAttribute('onclick').includes(`'${cat}'`);
                 btn.classList.toggle('active', isMatch);
-                // Ensure text colors reset when not active
                 if (!isMatch) {
                     btn.classList.add('text-gray-600', 'dark:text-gray-400');
                     btn.classList.remove('text-white');
