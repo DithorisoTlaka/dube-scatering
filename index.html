@@ -1,16 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0B1120',      /* Deep Blue/Black Background */
+                            card: '#151F32',    /* Lighter Slate for Cards */
+                            border: '#1E293B',  /* Border color */
+                            text: '#E2E8F0',    /* Main Text */
+                            muted: '#94A3B8'    /* Muted Text */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>App Discovery | Home</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
-        /* Using standard Google Fonts for that "Store" feel */
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8F9FB; color: #1a1a1a; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
@@ -25,9 +42,13 @@
         .category-item:hover { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
         .category-item.active { background: #2563eb !important; color: white !important; }
 
-        .slide { display: none; animation: slideFade 0.8s ease-in-out forwards; }
-        .slide.active { display: block; }
-        @keyframes slideFade { from { opacity: 0; } to { opacity: 1; } }
+        /* Carousel Animation */
+        .slide { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .slide.active { display: block; opacity: 1; }
+
+        /* Dot Animation */
+        .dot { transition: all 0.3s ease; }
+        .dot.active { width: 24px; background-color: white; opacity: 1; }
 
         /* Modal Transitions */
         .custom-modal { display: none; opacity: 0; transition: all 0.3s ease; }
@@ -35,39 +56,37 @@
         .modal-content { transform: scale(0.9); transition: transform 0.3s ease; }
         .custom-modal.active .modal-content { transform: scale(1); }
 
-        .modal-backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); }
+        .modal-backdrop { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
         .progress-glow { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
 
-        /* Mobile Nav Styling */
-        .mobile-nav {
-            box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
+        .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1); }
+        html.dark .mobile-nav { box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.5); }
     </style>
 </head>
-<body class="pb-32 md:pb-0">
+<body class="bg-[#F8F9FB] text-[#1a1a1a] dark:bg-dark-bg dark:text-dark-text transition-colors duration-300 pb-32 md:pb-0">
 
     <div id="details-modal" class="custom-modal modal-backdrop fixed inset-0 z-[250] items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+        <div class="modal-content bg-white dark:bg-dark-card rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-gray-100 dark:border-dark-border">
             <div id="modal-image-container" class="relative h-64 w-full">
                 <img id="modal-banner" src="" class="w-full h-full object-cover">
-                <button onclick="closeDetailsModal()" class="absolute top-6 right-6 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-black/40 transition">
+                <button onclick="closeDetailsModal()" class="absolute top-6 right-6 w-10 h-10 bg-black/30 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-black/50 transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <div class="p-8 overflow-y-auto no-scrollbar">
                 <div class="flex items-center gap-6 mb-8">
-                    <img id="modal-icon" src="" class="w-20 h-20 rounded-3xl shadow-lg border border-gray-100">
+                    <img id="modal-icon" src="" class="w-20 h-20 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700">
                     <div>
-                        <h2 id="modal-title" class="text-3xl font-black tracking-tighter"></h2>
+                        <h2 id="modal-title" class="text-3xl font-black tracking-tighter dark:text-white"></h2>
                         <p id="modal-cat" class="text-blue-600 font-bold uppercase text-xs tracking-widest"></p>
                     </div>
                 </div>
-                <p id="modal-desc" class="text-gray-500 leading-relaxed mb-8"></p>
+                <p id="modal-desc" class="text-gray-500 dark:text-dark-muted leading-relaxed mb-8"></p>
                 <div class="mb-8">
-                    <h5 class="text-xs font-black uppercase text-gray-400 mb-4 tracking-widest">More like this</h5>
+                    <h5 class="text-xs font-black uppercase text-gray-400 dark:text-gray-500 mb-4 tracking-widest">More like this</h5>
                     <div id="related-container" class="flex gap-4 overflow-x-auto no-scrollbar"></div>
                 </div>
-                <button id="modal-dl-btn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition active:scale-95 shadow-xl shadow-blue-200">
+                <button id="modal-dl-btn" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-700 transition active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none">
                     Download Application
                 </button>
             </div>
@@ -75,21 +94,21 @@
     </div>
 
     <div id="dl-modal" class="custom-modal modal-backdrop fixed inset-0 z-[300] items-center justify-center p-6">
-        <div class="modal-content bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20">
+        <div class="modal-content bg-white dark:bg-dark-card rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl border border-white/20 dark:border-dark-border">
             <div id="dl-initial" class="text-center">
-                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">
+                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
-                <h3 class="text-xl font-black tracking-tight mb-1">Confirm Install</h3>
+                <h3 class="text-xl font-black tracking-tight mb-1 dark:text-white">Confirm Install</h3>
                 <p class="text-gray-400 text-sm font-medium mb-6">Start download for <span id="target-app-name" class="text-blue-600 font-bold"></span>?</p>
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="closeDlModal()" class="py-3.5 rounded-xl font-bold text-gray-400 bg-gray-50 hover:bg-gray-100 transition">Skip</button>
+                    <button onclick="closeDlModal()" class="py-3.5 rounded-xl font-bold text-gray-400 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Skip</button>
                     <button id="start-dl-btn" class="py-3.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition active:scale-95">Install</button>
                 </div>
             </div>
             <div id="dl-progress" class="hidden text-center">
-                <h3 class="text-lg font-black mb-4 tracking-tighter">Downloading...</h3>
-                <div class="w-full bg-gray-100 h-2 rounded-full mb-3 overflow-hidden">
+                <h3 class="text-lg font-black mb-4 tracking-tighter dark:text-white">Downloading...</h3>
+                <div class="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full mb-3 overflow-hidden">
                     <div id="dl-bar" class="bg-blue-600 h-full w-0 transition-all duration-300 progress-glow"></div>
                 </div>
                 <p id="dl-percent" class="text-blue-600 font-black text-sm">0%</p>
@@ -97,88 +116,98 @@
         </div>
     </div>
 
-    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white border-r border-gray-100 z-[100] hidden md:flex flex-col py-8 shadow-xl">
+    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white dark:bg-dark-card border-r border-gray-100 dark:border-dark-border z-[100] hidden md:flex flex-col py-8 shadow-xl transition-colors duration-300">
         <div class="px-6 mb-10 flex items-center overflow-hidden">
             <div class="min-w-[32px] h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rocket"></i></div>
-            <span class="sidebar-text ml-4 font-black text-xl tracking-tighter">MarketHub</span>
+            <span class="sidebar-text ml-4 font-black text-xl tracking-tighter dark:text-white">MarketHub</span>
         </div>
         <nav class="flex-1 px-4 space-y-2">
-            <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('All')" class="category-item active w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-grid-2 min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">All Discoveries</span>
             </button>
-            <button onclick="filterCat('Games')" class="category-item w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('Games')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-gamepad min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Gaming Zone</span>
             </button>
-            <button onclick="filterCat('Apps')" class="category-item w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('Apps')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-layer-group min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Applications</span>
             </button>
-            <button onclick="filterCat('Productivity')" class="category-item w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('Productivity')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-list-check min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Productivity</span>
             </button>
-            <button onclick="filterCat('Entertainment')" class="category-item w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('Entertainment')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-clapperboard min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Entertainment</span>
             </button>
-            <button onclick="filterCat('Graphics & Design')" class="category-item w-full flex items-center p-4 rounded-2xl transition group">
+            <button onclick="filterCat('Graphics & Design')" class="category-item w-full flex items-center p-4 rounded-2xl transition group text-gray-600 dark:text-gray-400">
                 <i class="fa-solid fa-bezier-curve min-w-[20px] text-center"></i>
                 <span class="sidebar-text ml-4 font-bold text-sm">Design Tools</span>
             </button>
         </nav>
     </aside>
 
-    <nav class="mobile-nav fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex md:hidden justify-between items-center px-4 py-3 z-[200] overflow-x-auto no-scrollbar">
-        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+    <nav class="mobile-nav fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card border-t border-gray-100 dark:border-dark-border flex md:hidden justify-between items-center px-4 py-3 z-[200] overflow-x-auto no-scrollbar transition-colors duration-300">
+        <button onclick="filterCat('All')" class="category-item active flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-grid-2 text-lg"></i>
             <span class="text-[10px] font-bold mt-1">All</span>
         </button>
-        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+        <button onclick="filterCat('Games')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-gamepad text-lg"></i>
             <span class="text-[10px] font-bold mt-1">Games</span>
         </button>
-        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+        <button onclick="filterCat('Apps')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-layer-group text-lg"></i>
             <span class="text-[10px] font-bold mt-1">Apps</span>
         </button>
-        <button onclick="filterCat('Productivity')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+        <button onclick="filterCat('Productivity')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-list-check text-lg"></i>
             <span class="text-[10px] font-bold mt-1">Prod</span>
         </button>
-        <button onclick="filterCat('Entertainment')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+        <button onclick="filterCat('Entertainment')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-clapperboard text-lg"></i>
             <span class="text-[10px] font-bold mt-1">Entert</span>
         </button>
-        <button onclick="filterCat('Graphics & Design')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all">
+        <button onclick="filterCat('Graphics & Design')" class="category-item flex flex-col items-center justify-center min-w-[64px] py-1 rounded-xl transition-all text-gray-600 dark:text-gray-400">
             <i class="fa-solid fa-bezier-curve text-lg"></i>
             <span class="text-[10px] font-bold mt-1">Design</span>
         </button>
     </nav>
 
-    <main class="main-content min-h-screen">
+    <main class="main-content min-h-screen transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-10">
-            <div class="relative mb-12">
-                <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="search-bar" placeholder="Search for apps & games" class="w-full pl-14 pr-6 py-4 md:py-5 bg-white rounded-[2rem] shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search-bar" placeholder="Search for apps & games" class="w-full pl-14 pr-6 py-4 md:py-5 bg-white dark:bg-dark-card dark:text-white rounded-[2rem] shadow-sm border border-gray-100 dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium placeholder-gray-400">
+                </div>
+                <button onclick="toggleTheme()" class="w-14 h-14 rounded-[2rem] bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border flex items-center justify-center text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md transition active:scale-95">
+                    <i id="theme-icon" class="fa-solid fa-moon text-xl"></i>
+                </button>
             </div>
 
             <section id="spotlight-section" class="mb-14">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl md:text-2xl font-black flex items-center"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
+                    <h3 class="text-xl md:text-2xl font-black flex items-center dark:text-white"><span class="w-2 h-6 bg-blue-600 rounded-full mr-3"></span> Featured</h3>
                     <div class="flex gap-2">
-                        <button onclick="prevSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center hover:bg-gray-50"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="prevSlide()" class="w-10 h-10 rounded-full bg-white dark:bg-dark-card dark:text-white shadow-sm border border-gray-100 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="nextSlide()" class="w-10 h-10 rounded-full bg-white dark:bg-dark-card dark:text-white shadow-sm border border-gray-100 dark:border-dark-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
-                <div id="slideshow-container" class="relative w-full h-[250px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200"></div>
+                <div class="relative w-full h-[250px] md:h-[400px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl bg-gray-200 dark:bg-gray-800">
+                    <div id="slideshow-wrapper" class="w-full h-full relative">
+                        </div>
+                    <div id="carousel-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+                        </div>
+                </div>
             </section>
 
             <section>
                 <div class="flex justify-between items-end mb-6">
-                    <h3 id="current-cat-title" class="text-xl md:text-2xl font-black">All Discoveries</h3>
-                    <span class="md:hidden text-xs font-bold text-green-700 uppercase tracking-wider">Top Charts</span>
+                    <h3 id="current-cat-title" class="text-xl md:text-2xl font-black dark:text-white">All Discoveries</h3>
+                    <span class="md:hidden text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">Top Charts</span>
                 </div>
                 <div id="app-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 items-start"></div>
             </section>
@@ -205,46 +234,112 @@
         let currentFilter = 'All';
         let activeDlUrl = "";
         let slideIndex = 0;
+        let totalSlides = 0;
 
+        // --- THEME LOGIC ---
+        window.toggleTheme = () => {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                icon.classList.replace('fa-sun', 'fa-moon');
+                icon.parentElement.classList.replace('text-yellow-400', 'text-gray-600');
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+            }
+        };
+
+        // Initialize Theme
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.replace('fa-moon', 'fa-sun');
+            icon.parentElement.classList.replace('text-gray-600', 'text-yellow-400');
+        }
+
+        // --- CAROUSEL LOGIC ---
         onValue(ref(db, 'featured'), (snap) => {
             const data = snap.val();
-            const container = document.getElementById('slideshow-container');
+            const container = document.getElementById('slideshow-wrapper');
+            const dotsContainer = document.getElementById('carousel-dots');
+            
             if(!data) return;
+            
+            const items = Object.values(data);
+            totalSlides = items.length;
             container.innerHTML = "";
-            Object.values(data).forEach((item, idx) => {
+            dotsContainer.innerHTML = "";
+
+            items.forEach((item, idx) => {
+                // Generate Slide
                 container.innerHTML += `
                     <div class="slide ${idx === 0 ? 'active' : ''} absolute inset-0 w-full h-full">
                         <img src="${item.banner || item.icon}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent p-6 md:p-12 flex flex-col justify-end">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 md:p-12 flex flex-col justify-end">
                             <div class="flex items-center gap-4 md:gap-5 mb-4 md:mb-5">
-                                <img src="${item.icon}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl">
+                                <img src="${item.icon}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl bg-white">
                                 <div>
                                     <span class="text-blue-400 text-[9px] md:text-[10px] font-black uppercase tracking-widest">${item.category}</span>
-                                    <h4 class="text-white text-2xl md:text-4xl font-black tracking-tighter line-clamp-1">${item.name}</h4>
+                                    <h4 class="text-white text-2xl md:text-4xl font-black tracking-tighter line-clamp-1 drop-shadow-md">${item.name}</h4>
                                 </div>
                             </div>
                             <button onclick="initDownload('${item.name}', '${item.downloadUrl || '#'}')" class="w-max bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs hover:bg-gray-100 transition shadow-xl">View Details</button>
                         </div>
                     </div>`;
+
+                // Generate Dot
+                // Active dot gets 'w-6 opacity-100', inactive gets 'w-2 opacity-50'
+                dotsContainer.innerHTML += `
+                    <button onclick="goToSlide(${idx})" class="dot w-2 h-2 rounded-full bg-white/50 hover:bg-white/80 ${idx === 0 ? 'active w-6 bg-white opacity-100' : ''}"></button>
+                `;
             });
         });
 
-        window.nextSlide = () => {
+        function updateCarouselUI() {
+            // Update Slides
             const slides = document.querySelectorAll(".slide");
-            if (!slides.length) return;
-            slides[slideIndex].classList.remove("active");
-            slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add("active");
-        }
-        window.prevSlide = () => {
-            const slides = document.querySelectorAll(".slide");
-            if (!slides.length) return;
-            slides[slideIndex].classList.remove("active");
-            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-            slides[slideIndex].classList.add("active");
-        }
-        setInterval(nextSlide, 6000);
+            slides.forEach((s, i) => {
+                s.classList.toggle("active", i === slideIndex);
+            });
 
+            // Update Dots
+            const dots = document.querySelectorAll(".dot");
+            dots.forEach((d, i) => {
+                if (i === slideIndex) {
+                    d.classList.add("active");
+                    d.classList.remove("bg-white/50");
+                } else {
+                    d.classList.remove("active");
+                    d.classList.add("bg-white/50");
+                }
+            });
+        }
+
+        window.goToSlide = (index) => {
+            slideIndex = index;
+            updateCarouselUI();
+        }
+
+        window.nextSlide = () => {
+            if (totalSlides === 0) return;
+            slideIndex = (slideIndex + 1) % totalSlides;
+            updateCarouselUI();
+        }
+        
+        window.prevSlide = () => {
+            if (totalSlides === 0) return;
+            slideIndex = (slideIndex - 1 + totalSlides) % totalSlides;
+            updateCarouselUI();
+        }
+        
+        // Auto advance
+        setInterval(window.nextSlide, 6000);
+
+        // --- APPS LOGIC ---
         onValue(ref(db, 'apps'), (snap) => {
             const data = snap.val();
             allApps = data ? Object.values(data).filter(a => a.isConfirmed) : [];
@@ -262,28 +357,28 @@
 
             filtered.forEach((app) => {
                 const card = document.createElement('div');
-                // Updated Class list: Mobile = Row (Play Store style), Desktop = Card
-                card.className = "relative flex flex-row items-center gap-4 p-0 md:flex-col md:items-start md:gap-0 md:p-6 bg-transparent md:bg-white md:rounded-[2.5rem] md:border md:border-gray-100 md:shadow-sm md:hover:shadow-xl transition-all cursor-pointer group";
+                // Updated Class list for Dark Mode + Mobile Row Layout
+                card.className = "relative flex flex-row items-center gap-4 p-0 md:flex-col md:items-start md:gap-0 md:p-6 bg-transparent md:bg-white md:dark:bg-dark-card md:rounded-[2.5rem] md:border md:border-gray-100 md:dark:border-dark-border md:shadow-sm md:hover:shadow-xl transition-all cursor-pointer group";
                 card.onclick = () => openDetailsModal(app);
                 
                 card.innerHTML = `
                     <div class="relative shrink-0">
-                        <img src="${app.icon}" class="w-16 h-16 md:w-16 md:h-16 rounded-[14px] md:rounded-2xl object-cover bg-gray-50 shadow-sm md:shadow-inner md:mb-6">
+                        <img src="${app.icon}" class="w-16 h-16 md:w-16 md:h-16 rounded-[14px] md:rounded-2xl object-cover bg-gray-50 dark:bg-gray-800 shadow-sm md:shadow-inner md:mb-6">
                     </div>
                     
                     <div class="flex-1 md:w-full min-w-0">
-                        <h4 class="text-[15px] md:text-base font-medium md:font-black text-gray-900 line-clamp-1 group-hover:text-blue-600 transition tracking-tight">${app.name}</h4>
+                        <h4 class="text-[15px] md:text-base font-medium md:font-black text-gray-900 dark:text-gray-100 line-clamp-1 group-hover:text-blue-600 transition tracking-tight">${app.name}</h4>
                         
-                        <p class="text-gray-500 text-[13px] md:text-[10px] md:font-bold md:uppercase md:tracking-tight truncate">${app.category}</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-[13px] md:text-[10px] md:font-bold md:uppercase md:tracking-tight truncate">${app.category}</p>
                         
-                        <div class="flex items-center mt-1 text-[11px] md:text-[10px] font-medium md:font-bold text-gray-500">
-                            <span class="flex items-center mr-2"><i class="fa-solid fa-star text-[10px] text-gray-900 mr-1"></i> ${app.rating || '4.5'}</span>
+                        <div class="flex items-center mt-1 text-[11px] md:text-[10px] font-medium md:font-bold text-gray-500 dark:text-gray-500">
+                            <span class="flex items-center mr-2"><i class="fa-solid fa-star text-[10px] text-gray-900 dark:text-gray-300 mr-1"></i> ${app.rating || '4.5'}</span>
                             <span class="w-1 h-1 rounded-full bg-gray-400 mx-1 md:hidden"></span>
                             <span class="md:hidden">24 MB</span>
                         </div>
                     </div>
                     
-                    <div class="hidden md:block w-full text-center bg-gray-50 text-gray-500 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition mt-6">Details</div>
+                    <div class="hidden md:block w-full text-center bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest group-hover:bg-blue-600 group-hover:text-white transition mt-6">Details</div>
                 `;
                 grid.appendChild(card);
             });
@@ -294,7 +389,7 @@
             document.getElementById('modal-icon').src = app.icon;
             document.getElementById('modal-title').innerText = app.name;
             document.getElementById('modal-cat').innerText = app.category;
-            document.getElementById('modal-desc').innerText = app.description || 'Verified safe and secure software from our marketplace. This application has been checked for viruses and malware.';
+            document.getElementById('modal-desc').innerText = app.description || 'Verified safe and secure software from our marketplace.';
             
             const related = allApps.filter(a => a.category === app.category && a.name !== app.name).slice(0, 4);
             const rContainer = document.getElementById('related-container');
@@ -302,8 +397,8 @@
             related.forEach(r => {
                 rContainer.innerHTML += `
                     <div class="min-w-[60px] cursor-pointer" onclick="event.stopPropagation(); openDetailsModal(${JSON.stringify(r).replace(/"/g, '&quot;')})">
-                        <img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 shadow-sm">
-                        <p class="text-[8px] font-bold mt-1 text-gray-500 line-clamp-1 text-center">${r.name}</p>
+                        <img src="${r.icon}" class="w-12 h-12 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm bg-white">
+                        <p class="text-[8px] font-bold mt-1 text-gray-500 dark:text-gray-400 line-clamp-1 text-center">${r.name}</p>
                     </div>`;
             });
 
@@ -348,15 +443,18 @@
             document.getElementById('current-cat-title').innerText = cat === 'All' ? 'All Discoveries' : cat;
             
             const spotlight = document.getElementById('spotlight-section');
-            if (cat === 'All') {
-                spotlight.style.display = 'block';
-            } else {
-                spotlight.style.display = 'none';
-            }
+            spotlight.style.display = cat === 'All' ? 'block' : 'none';
 
             document.querySelectorAll('.category-item').forEach(btn => {
                 const isMatch = btn.getAttribute('onclick').includes(`'${cat}'`);
                 btn.classList.toggle('active', isMatch);
+                // Ensure text colors reset when not active
+                if (!isMatch) {
+                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.remove('text-white');
+                } else {
+                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                }
             });
             renderApps(cat, document.getElementById('search-bar').value);
         };
